@@ -1,102 +1,116 @@
-# Ficha Clínica de Psiquiatria — Daktus/Amil
+# Pipeline de Criação de Conteúdo Médico — Daktus/Amil
+### Caso de uso: Ficha Clínica de Psiquiatria Ambulatorial
 
-Ficha clínica especializada de psiquiatria ambulatorial para a plataforma **Daktus**, em parceria com o plano de saúde **Amil**. Produz dois artefatos interdependentes: um **Playbook Clínico** (`.md`) e uma **Ficha JSON** (`.json`) implementável diretamente na plataforma.
-
----
-
-## Estado do Projeto
-
-| Fase | Status |
-|------|--------|
-| Fase 0 — Briefing e arquitetura | ✅ Completa |
-| Ingestão de evidências (10 relatórios OE) | ✅ Completa |
-| Auditoria do banco de evidências | ✅ Completa |
-| **Fase 1 — Playbook clínico** | ✅ Completa |
-| Fase 2 — Auditoria do playbook | ⏳ Pendente |
-| Fase 3 — Revisão clínica (humana) | ⏳ Pendente |
-| Fase 4 — Codificação JSON | ⏳ Pendente |
-| Fase 5 — QA e entrega | ⏳ Pendente |
+> **Este repositório documenta dois produtos simultâneos:** o protocolo clínico de psiquiatria para a plataforma Daktus, e o **modelo operacional** que o produziu — um pipeline skill-based replicável para qualquer especialidade médica.
 
 ---
 
-## Estrutura do Projeto
+## O que é isto
+
+Um agente de IA orquestrou, do briefing à entrega, a criação de um protocolo clínico especializado. Todo o processo foi documentado com profundidade suficiente para ser extraído como conjunto de skills reutilizáveis — portáveis, versionadas e operáveis por qualquer agente, em qualquer máquina, via chat ou CLI.
+
+A tese: **documentar o processo com a mesma rigorosidade do produto final transforma o know-how operacional em infraestrutura**.
+
+---
+
+## O Pipeline
+
+```
+BRIEFING → INGESTÃO DE EVIDÊNCIAS → AUDITORIA → PLAYBOOK → REVISÃO CLÍNICA → JSON → QA → ENTREGA
+```
+
+Cada fase é executada por uma **sub-skill dedicada** (`tools/skills/`), carregada sob demanda (progressive disclosure). O agente lê apenas a skill da fase atual — preservando janela de contexto e mantendo foco operacional.
+
+```
+SKILL.md (orchestrator)
+│
+├── briefing-arquitetura    → mapeia briefing em arquitetura de nós clínicos
+├── ingestao-evidencias     → ingere relatórios OpenEvidence no banco bibliográfico
+├── auditoria-banco         → classifica referências em TIER 1/2/3 antes do playbook
+├── redacao-playbook        → redige clusters clínicos com rastreamento de evidências
+├── auditoria-playbook      → citation scan + semantic scan + coverage scan
+├── codificacao-json        → paper design → TUSS → JSON Daktus → validação
+└── qa-entrega              → checklist de 28 pontos pré-entrega
+```
+
+O agente nunca avança de fase sem aprovação explícita. Cada sessão gera um log em `history/` — o ponto de sincronização entre instâncias e entre sessões.
+
+---
+
+## Estado do Projeto (Psiquiatria)
+
+| Fase | Entregável | Status |
+|------|-----------|--------|
+| 0 — Briefing e arquitetura | Mapa de clusters clínicos | ✅ |
+| 1 — Ingestão de evidências | Banco v3.0 — 412 REFs, 266 AFIs | ✅ |
+| 2 — Auditoria do banco | AUDITORIA_MASTER.md — TIER 1/2/3 | ✅ |
+| 3 — Playbook clínico | `playbook_psiquiatria.md` — 645 linhas | ✅ |
+| 4 — Revisão clínica (humana) | — | ⏳ |
+| 5 — JSON + QA | `ficha_psiquiatria.json` | ⏳ |
+
+---
+
+## Estrutura do Repositório
 
 ```
 /
-├── SKILL.md                  # Orchestrator do pipeline — ler sempre ao iniciar
-├── INFRAESTRUTURA.md         # Arquitetura completa do sistema de skills
+├── SKILL.md                        # Orchestrator — ler ao iniciar qualquer sessão
+├── INFRAESTRUTURA.md               # Arquitetura do pipeline e lógica de skills
 │
 ├── tools/
-│   ├── skills/               # 7 sub-skills do pipeline (progressive disclosure)
-│   │   ├── briefing-arquitetura/
-│   │   ├── ingestao-evidencias/
-│   │   ├── auditoria-banco/
-│   │   ├── redacao-playbook/
-│   │   ├── auditoria-playbook/
-│   │   ├── codificacao-json/
-│   │   └── qa-entrega/
-│   ├── KICKSTART_PSIQUIATRIA.md       # Onboarding para Antigravity (chat)
-│   ├── CLAUDECODE_KICKSTART.md        # Onboarding para Claude Code (CLI)
-│   ├── GUARDRAIL_EVIDENCIAS.md        # Protocolo de gestão de evidências
-│   └── ...                            # Demais documentos de instrução
+│   ├── skills/                     # 7 sub-skills — carregadas por fase
+│   ├── KICKSTART_PSIQUIATRIA.md    # Onboarding para Antigravity (chat)
+│   ├── CLAUDECODE_KICKSTART.md     # Onboarding para Claude Code (CLI)
+│   ├── GUARDRAIL_EVIDENCIAS.md     # Protocolo de gestão de evidências (G1–G6)
+│   ├── PROMPT_ALINHAMENTO_MULTIAGENTE.md  # Prompt reutilizável para novos projetos
+│   └── ...                         # Demais documentos de instrução
 │
 ├── research/
-│   ├── BANCO_EVIDENCIAS_PSIQUIATRIA.md  # v3.0 — 412 REFs, 266 AFIs (autoridade clínica)
-│   ├── AUDITORIA_MASTER.md              # Classificação TIER 1/2/3, flags BR + Briefing
-│   └── OE_RELATORIO_01..10.md           # Relatórios brutos do OpenEvidence
+│   ├── BANCO_EVIDENCIAS_PSIQUIATRIA.md   # v3.0 — autoridade clínica (412 REFs, 266 AFIs)
+│   ├── AUDITORIA_MASTER.md               # Classificação TIER 1/2/3 + flags BR/Briefing
+│   └── OE_RELATORIO_01..10.md            # 10 relatórios OpenEvidence por tema
 │
 ├── playbooks/
-│   └── playbook_psiquiatria.md  # v1.0 — 645 linhas, tabelas 6 colunas
+│   └── playbook_psiquiatria.md     # v1.0 — referência cross-especialidade incluída
 │
-├── jsons/                       # Fichas de referência UX (ginecologia, cardiologia, reumatologia)
-├── scripts/                     # validate_json.py, audit_references.py, versionar.py
-└── history/                     # Session logs 001–006
+├── jsons/                          # Fichas de referência UX (ginecologia, cardiologia, reumatologia)
+├── scripts/                        # validate_json.py · audit_references.py · versionar.py
+├── history/                        # Session logs 001–006 — rastreabilidade completa
+└── versions/                       # Backups timestampados de artefatos
 ```
 
 ---
 
-## Banco de Evidências (v3.0)
+## O Banco de Evidências
 
 | Métrica | Valor |
 |---------|-------|
 | Referências ativas | 412 |
-| TIER 1 — âncoras obrigatórias | 147 |
+| TIER 1 — guidelines, RCTs de alto nível | 147 |
 | TIER 2 — condicionais | 182 |
-| TIER 3 — contexto | 83 |
-| Afirmações clínicas (AFIs) | 266 |
-| Relatórios OpenEvidence | 10 |
+| TIER 3 — contexto (excluídas do playbook) | 83 |
+| Afirmações clínicas indexadas (AFIs) | 266 |
+| Relatórios OpenEvidence ingeridos | 10 |
 
-Temas cobertos: Gate P0 (risco suicida), monitoramento de fármacos (Lítio/VPA/CBZ/Clozapina), transtornos do humor, ansiedade/TOC/TEPT, psicose/EPS, TDAH, TEA, TPB, transtornos alimentares, interações medicamentosas e critérios de internação.
-
----
-
-## Playbook (v1.0)
-
-Estrutura por classe farmacológica (não por síndrome):
-
-- **Gate P0** — rastreio de risco suicida (C-SSRS + plano de segurança + legislação)
-- **Condições** — tabela diagnóstica (19 condições, CID-10 + critério DSM-5-TR)
-- **Exames** — Baseline, monitoramento de estabilizadores, monitoramento de antipsicóticos, ECG, escalas
-- **Terapêuticas §1–§9** — Antidepressivos, Estabilizadores, Antipsicóticos, TDAH, Psicoterapias, Nichos, Crise (EPS/SNM), Burnout, DDIs
-- **KPIs auditáveis** — 12 metas clínicas mensuráveis
-
----
-
-## Pipeline de Produção
-
-```
-Briefing → Ingestão OE → Auditoria do banco → Playbook → Auditoria → Revisão clínica → JSON → QA → Entrega
-```
-
-Baseado em **progressive disclosure**: cada sessão carrega apenas a skill da fase atual, preservando a janela de contexto. Ver `SKILL.md` para detalhes.
+Cada AFI é rastreável até sua(s) REF(s). Cada REF tem Tier, flag BR-relevante e flag Briefing-central. Nenhuma afirmação do playbook existe sem âncora verificável no banco.
 
 ---
 
 ## Operação Multi-Agente
 
+Dois agentes operam sobre os mesmos artefatos com responsabilidades distintas:
+
 | Agente | Interface | Responsabilidade |
 |--------|-----------|-----------------|
-| **Antigravity** | Claude chat | Conteúdo clínico, auditoria de evidências, redação de playbook |
-| **Claude Code** | CLI / worktree | Git, scripts, validação JSON, operações de arquivo |
+| **Antigravity** | Claude chat (contexto longo) | Raciocínio clínico, auditoria de evidências, redação de conteúdo |
+| **Claude Code** | CLI / worktree | Git, scripts, validação JSON, organização de arquivos, QA automatizado |
 
-**Ponto de encontro:** `history/session_XXX.md` — ambos os agentes leem o log mais recente ao iniciar qualquer sessão.
+**Sincronização:** `history/session_XXX.md` — lido por ambos ao iniciar. Qualquer agente que altere o estado do projeto registra no log.
+
+---
+
+## Replicabilidade
+
+As skills são **especialidade-agnósticas**. A única adaptação necessária para um novo projeto é o mapa de clusters do Briefing. O repositório inclui `tools/PROMPT_ALINHAMENTO_MULTIAGENTE.md` — prompt reutilizável para onboarding de qualquer novo projeto neste mesmo modelo operacional.
+
+Projetos já produzidos com versões anteriores do pipeline: Reumatologia, Cardiologia, Ginecologia.
