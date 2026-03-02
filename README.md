@@ -1,5 +1,5 @@
 # agente-daktus-content
-### Pipeline de Criação de Conteúdo Médico — Daktus/Amil
+### Pipeline de Criação de Conteúdo Médico — Daktus
 
 > Estágio 1 do pipeline Daktus: transforma um briefing clínico em playbook estruturado e ficha JSON pronta para validação.
 > Estágio 2 → [`agente-daktus-qa`](https://github.com/daanmt/agente-daktus-qa)
@@ -23,7 +23,7 @@ Dois repositórios, um pipeline. O `content` produz; o `qa` valida e corrige. O 
 
 Um agente de IA orquestra, do briefing à entrega, a criação de protocolo clínico especializado para a plataforma Daktus. O processo inteiro é documentado como **skills exportáveis** — portáveis, versionadas, replicáveis para qualquer especialidade médica.
 
-**Caso de uso atual:** Ficha Clínica de Psiquiatria Ambulatorial (parceria Amil)
+**Caso de uso atual:** Ficha Clínica de Psiquiatria Ambulatorial
 
 **Casos anteriores:** Reumatologia, Cardiologia, Ginecologia
 
