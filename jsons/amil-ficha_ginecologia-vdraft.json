@@ -4,7 +4,7 @@
     "company": "amil",
     "name": "ficha_ginecologia",
     "version": "draft",
-    "createdAt": "2026-02-25T17:06:24.590Z",
+    "createdAt": "2026-02-27T21:46:04.728Z",
     "description": ""
   },
   "nodes": [
@@ -159,14 +159,14 @@
               {
                 "iid": "16beca56-db0f-444f-be35-3897528cc290",
                 "id": "trouxe_dxa",
-                "label": "DXA",
+                "label": "Densitometria ossea",
                 "preselected": false,
                 "exclusive": false
               },
               {
                 "iid": "34792f64-cddd-4c53-9329-65238597ab83",
                 "id": "trouxe_usgtv",
-                "label": "USGTV",
+                "label": "Ultrassom transvaginal",
                 "preselected": false,
                 "exclusive": false
               },
@@ -250,7 +250,7 @@
             "id": "Pdfd0601e-82b1-453f-8b9a-34abf2fcd83b",
             "nodeId": "node-bb461b9b-8970-4603-8714-62361847a56f",
             "uid": "hpv",
-            "titulo": "<p><strong>Último teste de HPV / Papanicolau:</strong></p>",
+            "titulo": "<p><strong>Último teste de HPV (conferir em prontuário):</strong></p>",
             "descricao": "",
             "condicional": "visivel",
             "expressao": "",
@@ -294,10 +294,50 @@
             ]
           },
           {
+            "id": "P277029c3-f912-451b-a5e3-e7dd603dee94",
+            "nodeId": "node-bb461b9b-8970-4603-8714-62361847a56f",
+            "uid": "papa",
+            "titulo": "<p><strong>Último teste de Papanicolau (conferir em prontuário):</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "dac7766e-e010-44cf-97fa-e8d4153596d9",
+                "id": "papa_nunca",
+                "label": "Nunca realizou",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "89717a6f-b92b-4fd3-9dc1-075100e9e945",
+                "id": "papa_menos_1a",
+                "label": "< 1 ano",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "98653fa9-62dd-4695-b5e4-50660800dbd7",
+                "id": "papa_1_3a",
+                "label": "1–3 anos",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "623382d1-c2dd-4dd4-88f1-68f7777fb808",
+                "id": "papa_mais_3a",
+                "label": "> 3 anos",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
             "id": "P42549e4b-91b8-4dfa-a7b8-e56b94bbb5b3",
             "nodeId": "node-bb461b9b-8970-4603-8714-62361847a56f",
             "uid": "mamografia",
-            "titulo": "<p><strong>Última mamografia:</strong></p>",
+            "titulo": "<p><strong>Última mamografia (conferir em prontuário):</strong></p>",
             "descricao": "",
             "condicional": "visivel",
             "expressao": "",
@@ -337,7 +377,7 @@
             "id": "P38384f9f-8dc8-4de2-a129-c0e62e718b67",
             "nodeId": "node-bb461b9b-8970-4603-8714-62361847a56f",
             "uid": "dxa",
-            "titulo": "<p><strong>Última densitometria óssea (DXA):</strong></p>",
+            "titulo": "<p><strong>Última densitometria óssea (conferir em prontuário):</strong></p>",
             "descricao": "",
             "condicional": "visivel",
             "expressao": "",
@@ -397,103 +437,6 @@
           }
         ],
         "questions": [
-          {
-            "id": "P6192063a-597e-4613-b44c-42b0785cd7ee",
-            "nodeId": "node-23cfdf6d-2eca-4b5a-ab88-d66d93b860d9",
-            "uid": "gestacoes",
-            "titulo": "<p><strong>Número de gestações (G):</strong></p>",
-            "descricao": "",
-            "condicional": "visivel",
-            "expressao": "",
-            "select": "number",
-            "options": [],
-            "opcional": true
-          },
-          {
-            "id": "P3f4ba571-7c65-4de1-9191-0acf46bac91b",
-            "nodeId": "node-23cfdf6d-2eca-4b5a-ab88-d66d93b860d9",
-            "uid": "partos",
-            "titulo": "<p><strong>Número de partos (P):</strong></p>",
-            "descricao": "",
-            "condicional": "visivel",
-            "expressao": "",
-            "select": "number",
-            "options": [],
-            "opcional": true
-          },
-          {
-            "id": "Pa8bd875b-fc4e-415d-bad3-33a3339934c0",
-            "nodeId": "node-23cfdf6d-2eca-4b5a-ab88-d66d93b860d9",
-            "uid": "abortos_perdas",
-            "titulo": "<p><strong>Número de abortos / perdas fetais (A):</strong></p>",
-            "descricao": "",
-            "condicional": "visivel",
-            "expressao": "",
-            "select": "number",
-            "options": [],
-            "opcional": true
-          },
-          {
-            "id": "P56e62e71-857e-4255-9cc0-fa3e42024f78",
-            "nodeId": "node-23cfdf6d-2eca-4b5a-ab88-d66d93b860d9",
-            "uid": "hist_oncologico",
-            "titulo": "<p><strong>História oncológica ginecológica:</strong></p>",
-            "descricao": "",
-            "condicional": "visivel",
-            "expressao": "",
-            "select": "multiChoice",
-            "options": [
-              {
-                "iid": "36ba84a9-b662-4658-a4d7-d20c6abcc502",
-                "id": "sem_historia",
-                "label": "Sem história oncológica",
-                "preselected": true,
-                "exclusive": true
-              },
-              {
-                "iid": "7d41549d-9e36-4fe6-85a9-a380b20b0434",
-                "id": "nic2_mais",
-                "label": "NIC2+ (lesão cervical de alto grau prévia)",
-                "preselected": false,
-                "exclusive": false
-              },
-              {
-                "iid": "1d8eff3f-305c-4ef4-9461-81bc93177174",
-                "id": "ca_mama",
-                "label": "Câncer de mama pessoal",
-                "preselected": false,
-                "exclusive": false
-              },
-              {
-                "iid": "42ef8c01-0660-4ee9-b312-4f863818d9fa",
-                "id": "brca",
-                "label": "Mutação BRCA1/2 confirmada",
-                "preselected": false,
-                "exclusive": false
-              },
-              {
-                "iid": "039c6f19-5f0a-4992-8360-0ad22ad83cc2",
-                "id": "rt_toracica",
-                "label": "Radioterapia torácica entre 10–30 anos de idade",
-                "preselected": false,
-                "exclusive": false
-              },
-              {
-                "iid": "7fb4ef7d-8ff4-437f-bdc9-3f47867c6a29",
-                "id": "lynch",
-                "label": "Síndrome de Lynch",
-                "preselected": false,
-                "exclusive": false
-              },
-              {
-                "iid": "9cb485c6-f3a0-4594-a382-f72c7c950cbb",
-                "id": "ca_endometrio",
-                "label": "Câncer de endométrio prévio",
-                "preselected": false,
-                "exclusive": false
-              }
-            ]
-          },
           {
             "id": "P46b0823b-3d6c-4e1d-8e97-fcb39cf986bd",
             "nodeId": "node-23cfdf6d-2eca-4b5a-ab88-d66d93b860d9",
@@ -1278,7 +1221,7 @@
             "titulo": "<p><strong>Sinais de hiperandrogenismo:</strong></p>",
             "descricao": "",
             "condicional": "visivel",
-            "expressao": "'amenorreia_irregularidade' in queixa_principal",
+            "expressao": "'amenorreia_irregularidade' in queixa_principal or 'sop' in comorbidades",
             "select": "multiChoice",
             "options": [
               {
@@ -1509,18 +1452,6 @@
                 "exclusive": false
               }
             ]
-          },
-          {
-            "id": "P06357fef-738a-410f-801e-0a4ee4b02272",
-            "nodeId": "node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
-            "uid": "histerectomia",
-            "titulo": "<p><strong>Paciente foi histerectomizada?</strong></p>",
-            "descricao": "",
-            "condicional": "visivel",
-            "expressao": "'climaterio' in queixa_principal",
-            "select": "boolean",
-            "options": [],
-            "defaultValue": "false"
           },
           {
             "id": "P1ac6fb88-84c3-49f1-a6fa-b382d8891055",
@@ -1780,11 +1711,84 @@
         "descricao": "",
         "condicionais": [
           {
-            "linkId": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
+            "linkId": "summary-ginecoamil-v1",
             "condicao": ""
           }
         ],
         "questions": [
+          {
+            "id": "P403d7e46",
+            "nodeId": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
+            "uid": "histerectomia_previa",
+            "titulo": "<p><strong>Paciente realizou histerectomia total prévia?</strong></p>",
+            "descricao": "Inclui histerectomia total abdominal, laparoscópica ou vaginal. Histerectomia subtotal (preserva colo) NÃO selecionar.",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P67918840-9f46-4396-acfc-9e421b6798a3",
+            "nodeId": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
+            "uid": "hist_oncologico",
+            "titulo": "<p><strong>História oncológica ginecológica:</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "89396c4a-e671-4940-bd3f-3dc9f4c7c859",
+                "id": "sem_historia",
+                "label": "Sem história oncológica",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "d27d061e-3822-46b8-b54f-5baae1188a11",
+                "id": "nic2_mais",
+                "label": "NIC2+ (lesão cervical de alto grau prévia)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "cf606270-a752-45aa-8cbd-b0bbe86274cf",
+                "id": "ca_mama",
+                "label": "Câncer de mama pessoal",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "451f06e2-807c-4104-81fb-1de41a698b28",
+                "id": "brca",
+                "label": "Mutação BRCA1/2 confirmada",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b0373390-1a4c-43c6-b784-9df442f2ce0e",
+                "id": "rt_toracica",
+                "label": "Radioterapia torácica entre 10–30 anos de idade",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "26c2b80e-b3af-430e-8088-eb9b63c5c996",
+                "id": "lynch",
+                "label": "Síndrome de Lynch",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "2dc81942-987b-458a-b93e-33b3536c2270",
+                "id": "ca_endometrio",
+                "label": "Câncer de endométrio prévio",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
           {
             "id": "Pd65bd01b-457a-403d-b95b-1ce35a50389b",
             "nodeId": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
@@ -2390,10 +2394,65 @@
       }
     },
     {
+      "id": "summary-ginecoamil-v1",
+      "type": "summary",
+      "position": {
+        "x": 6300,
+        "y": 100
+      },
+      "data": {
+        "label": "Processamento — Variáveis Clínicas",
+        "descricao": "<p>Nodo de processamento com variáveis clínicas derivadas para uso nas condições da conduta.</p>",
+        "condicionais": [
+          {
+            "linkId": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
+            "condicao": ""
+          }
+        ],
+        "clinicalExpressions": [
+          {
+            "id": "expr-e6389774-45f9-4f9d-98fd-5e02499308d3",
+            "name": "alto_risco_mama",
+            "formula": "selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama')"
+          },
+          {
+            "id": "expr-8761cc9a-b1d4-4048-86be-97ba070b1765",
+            "name": "rastreio_cervical_habitual",
+            "formula": "(age >= 25) and (age <= 64) and ('hpv_nunca' in hpv or 'hpv_mais_5a' in hpv) and (histerectomia_previa is False)"
+          },
+          {
+            "id": "expr-4a0d653a-ea58-42ee-926b-24c5254ac9c5",
+            "name": "rastreio_cervical_intensificado",
+            "formula": "(age >= 25) and (not 'hpv_menos_1a' in hpv) and ((imunocomprometimento is True) or ('nic2_mais' in hist_oncologico)) and (histerectomia_previa is False)"
+          },
+          {
+            "id": "expr-ea8ece5c-db5b-4699-b7e3-77b5258fa1f1",
+            "name": "co_teste_papanicolau",
+            "formula": "((imunocomprometimento is True) and (age >= 25) and (not 'papa_menos_1a' in papa)) or (('nic2_mais' in hist_oncologico) and (histerectomia_previa is True) and (not 'papa_menos_1a' in papa))"
+          },
+          {
+            "id": "expr-7f0dde20-ce1e-41a5-bba5-8b3b230a8937",
+            "name": "trh_indicada",
+            "formula": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)"
+          },
+          {
+            "id": "expr-56fbc568-2daa-42bc-9c01-3fc127b343fd",
+            "name": "espessamento_endometrial_significativo",
+            "formula": "(('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados)) or (((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual))"
+          },
+          {
+            "id": "expr-b6b46fb6-4367-417c-8d0e-fab469aef15a",
+            "name": "poi_suspeita",
+            "formula": "('trouxe_lab' in exames_recentes) and (fsh_resultado > 25) and (age < 45)"
+          }
+        ]
+      }
+    },
+    {
       "id": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
       "type": "conduct",
       "position": {
-        "x": 6300,
+        "x": 7200,
         "y": 100
       },
       "data": {
@@ -2408,7 +2467,7 @@
               "nome": "Rastreamento cervical (HPV)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 25 and age <= 64) or ('nic2_mais' in hist_oncologico)",
+              "condicao": "(rastreio_cervical_habitual) or (rastreio_cervical_intensificado) or ('nic2_mais' in hist_oncologico and (histerectomia_previa is False)) or (co_teste_papanicolau)",
               "narrativa": "<p>O rastreamento do colo do útero hoje é feito com o <strong>teste de DNA-HPV</strong>, que detecta o vírus antes de qualquer alteração aparecer nas células. Ele substituiu o Papanicolau como exame principal e é mais preciso.</p><p><strong>📅 Com que frequência?</strong></p><ul><li><p>Se o resultado for negativo: repetir a cada <strong>5 anos</strong>.</p></li><li><p>Se você tiver imunidade baixa (HIV, uso de corticoide): repetir todo ano.</p></li><li><p>Se já teve lesão de alto grau (NIC2+) ou câncer tratado: acompanhamento anual por 25 anos.</p></li></ul><p><strong>🔬 O que significa HPV positivo?</strong></p><p>HPV positivo não significa câncer. A maioria das infecções desaparece sozinha. O protocolo indica qual exame fazer a seguir dependendo do tipo de vírus encontrado — siga as orientações do seu médico.</p><p>Não interrompa o acompanhamento mesmo que não tenha sintomas. A detecção precoce salva vidas.</p>",
               "categorias": []
             },
@@ -2417,7 +2476,7 @@
               "nome": "Rastreamento de mama",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 40) or ('queixa_mamaria' in queixa_principal)",
+              "condicao": "(age >= 40 and age <= 74) or 'queixa_mamaria' in queixa_principal or alto_risco_mama",
               "narrativa": "<p>O exame das mamas é feito em duas frentes: o que você observa no dia a dia e os exames de imagem indicados pelo médico.</p><p><strong>👀 O que observar?</strong></p><ul><li><p>Nódulos ou caroços novos, mesmo sem dor</p></li><li><p>Mudança no formato ou tamanho da mama</p></li><li><p>Descarga pelo mamilo (especialmente transparente, sanguinolenta ou em um só lado)</p></li><li><p>Alteração na pele (vermelhidão, aspecto de casca de laranja)</p></li></ul><p><strong>📅 Mamografia</strong></p><p>Indicada anualmente a partir dos <strong>40 anos</strong>. O resultado usa uma escala chamada BI-RADS: valores 1 e 2 são normais; BI-RADS 3 pede retorno em 6 meses; BI-RADS 4 ou 5 requer investigação especializada — não é diagnóstico de câncer, é indicação de biópsia.</p><p>Mamas densas (frequentes em mulheres mais jovens) podem precisar de ultrassom complementar. Seu médico irá informar se for o seu caso.</p>",
               "categorias": []
             },
@@ -2471,7 +2530,7 @@
               "nome": "Saúde óssea e osteoporose",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('osteoporose' in comorbidades) or (t_score <= -1.0) or ('menopausa' in status_menstrual)",
+              "condicao": "('osteoporose' in comorbidades) or (t_score <= -1.0) or ('menopausa' in status_menstrual) or (histerectomia_previa is True) or (poi_suspeita is True)",
               "narrativa": "<p>Os ossos perdem densidade naturalmente com o tempo, mas a queda do estrogênio na menopausa acelera esse processo. A osteoporose é silenciosa — não dói — mas aumenta muito o risco de fraturas.</p><p><strong>A densitometria óssea</strong> mede a resistência dos seus ossos e é o exame que define o diagnóstico. É indolor, rápido e recomendado a partir dos 65 anos (ou antes, se você for menopausada precocemente ou tiver fatores de risco).</p><p><strong>Como proteger seus ossos:</strong></p><ul><li><p>Cálcio na dieta: leite, iogurte, queijo, couve, brócolis</p></li><li><p>Vitamina D: exposição solar moderada + suplemento se indicado</p></li><li><p>Exercício físico com impacto (caminhada, musculação): estimula a formação óssea</p></li><li><p>Evitar tabagismo e álcool em excesso</p></li></ul><p>Se o tratamento com medicamento (como o alendronato) for indicado, tome em jejum, com bastante água, e <strong>fique em pé por 30 minutos após</strong> para evitar irritação no esôfago.</p>",
               "categorias": []
             },
@@ -2509,7 +2568,7 @@
               "nome": "HPV (vírus do papiloma humano) + subtipagem quando necessário PCR - pesquisa",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 25 and age <= 64 and ('hpv_nunca' in hpv or 'hpv_mais_5a' in hpv)) or (imunocomprometimento is True and not 'hpv_menos_1a' in hpv) or ('nic2_mais' in hist_oncologico and not 'hpv_menos_1a' in hpv)",
+              "condicao": "rastreio_cervical_habitual or rastreio_cervical_intensificado",
               "codigo": [
                 {
                   "iid": "6d9ff629-03c6-48af-baa6-a610cd6d1d2e",
@@ -2561,7 +2620,7 @@
               "nome": "Procedimento diagnóstico em citopatologia cérvico-vaginal oncótica",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "'hpv_outros_hr' in hpv_resultado",
+              "condicao": "'hpv_outros_hr' in hpv_resultado\nor co_teste_papanicolau\nor 'cito_nao_realizada' in citologia_reflexa_resultado",
               "codigo": [
                 {
                   "iid": "38f9d43b-ff75-427c-91f7-f30637d5b6b4",
@@ -2821,7 +2880,7 @@
               "nome": "Mamografia digital bilateral",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 40 and ('mamo_nunca' in mamografia or 'mamo_mais_2a' in mamografia)) or (selected_any(hist_oncologico,'brca','rt_toracica','ca_mama') and not 'mamo_menos_1a' in mamografia) or (nodulo_palpavel is True and age >= 40)",
+              "condicao": "(age >= 40 and age <= 74 and ('mamo_nunca' in mamografia or 'mamo_mais_2a' in mamografia))\nor (alto_risco_mama and not 'mamo_menos_1a' in mamografia)\nor (nodulo_palpavel is True and age >= 40)",
               "codigo": [
                 {
                   "iid": "3333fbe6-f091-4d8d-8f17-87bfb65cf62b",
@@ -2873,7 +2932,7 @@
               "nome": "US - Mamas",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('birads_0' in mamo_resultado) or ('birads_3' in mamo_resultado) or (nodulo_palpavel is True and age < 40) or ('unilateral_uniductal' in descarga_papilar) or selected_any(hist_oncologico,'brca','rt_toracica','ca_mama') or ('mastalgia_aciclica' in dor_mamaria_tipo) or ('densa' in densidade_mamaria)",
+              "condicao": "('birads_0' in mamo_resultado)\nor ('birads_3' in mamo_resultado)\nor (nodulo_palpavel is True and age < 40)\nor ('unilateral_uniductal' in descarga_papilar)\nor alto_risco_mama\nor ('mastalgia_aciclica' in dor_mamaria_tipo)\nor ('densa' in densidade_mamaria)",
               "codigo": [
                 {
                   "iid": "ee2ffbb5-25c0-4cdf-8dfb-6dccdde63e1d",
@@ -2925,7 +2984,7 @@
               "nome": "RM - Mama (bilateral)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "selected_any(hist_oncologico,'brca','rt_toracica') or ('birads_4_5' in mamo_resultado)",
+              "condicao": "alto_risco_mama or ('birads_4_5' in mamo_resultado)",
               "codigo": [
                 {
                   "iid": "9ae865ff-7ee7-480b-9774-a34d477c36b4",
@@ -3029,7 +3088,7 @@
               "nome": "Histeroscopia diagnóstica com biópsia",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual or histerectomia is True)) or ('usgtv_polipos' in usgtv_achados) or (infertilidade_associada is True and not 'usgtv_normal' in usgtv_achados) or (sua_refrataria is True and 'usgtv_espessamento' in usgtv_achados)",
+              "condicao": "(espessamento_endometrial_significativo is True) or (infertilidade_associada is True and not 'usgtv_normal' in usgtv_achados) or ((sua_refrataria is True) and (selected_any(usgtv_achados, 'usgtv_espessamento', 'usgtv_polipos')))",
               "codigo": [
                 {
                   "iid": "752f0fbc-84a4-441d-a67a-7377d1ab15cf",
@@ -3133,7 +3192,7 @@
               "nome": "Densitometria óssea - rotina: coluna e fêmur (ou dois segmentos)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 65 and ('dxa_nunca' in dxa or 'dxa_mais_3a' in dxa)) or ((('menopausa' in status_menstrual) or (histerectomia is True)) and age < 65 and ('dxa_nunca' in dxa or 'dxa_mais_3a' in dxa)) or ('osteoporose' in comorbidades and ('dxa_nunca' in dxa or 'dxa_mais_3a' in dxa)) or (fsh_resultado > 25 and age < 45) or ('corticoide_cronico' in muc and ('dxa_nunca' in dxa or 'dxa_mais_3a' in dxa))",
+              "condicao": "((selected_any(dxa, 'dxa_nunca', 'dxa_mais_3a')) and (((age >= 65) or (poi_suspeita is True) or ('corticoide_cronico' in muc)) or \r\n((age < 65) and ('menopausa' in status_menstrual) or (histerectomia_previa is True)))) or ((selected_any(dxa, 'dxa_nunca', 'dxa_2_3a', 'dxa_mais_3a')) and ('osteoporose' in comorbidades))",
               "codigo": [
                 {
                   "iid": "024af8e6-f0a3-48c6-833c-bbfb6936d52d",
@@ -3237,7 +3296,7 @@
               "nome": "T4 livre - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "((tsh > 4.5) or (tsh < 0.3)) and not ('trouxe_lab' in exames_recentes and t4l_resultado > 0)",
+              "condicao": "(tsh > 4.5 or tsh < 0.3)",
               "codigo": [
                 {
                   "iid": "337eb06d-f2e3-46f4-bb00-227d959757c9",
@@ -3393,7 +3452,7 @@
               "nome": "Estradiol - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('amenorreia_irregularidade' in queixa_principal) or (fsh_resultado > 25) or (infertilidade_associada is True)",
+              "condicao": "('amenorreia_irregularidade' in queixa_principal) or (poi_suspeita is True) or (infertilidade_associada is True)",
               "codigo": [
                 {
                   "iid": "abf2f1a4-c023-450d-ba0a-c9aaebe36cb8",
@@ -3497,7 +3556,7 @@
               "nome": "Testosterona total - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "not 'sem_sinais' in hiperandrogenismo_sinais",
+              "condicao": "(not 'sem_sinais' in hiperandrogenismo_sinais)",
               "codigo": [
                 {
                   "iid": "090f2e57-41ac-4573-ba4f-156ffe76f293",
@@ -3549,7 +3608,7 @@
               "nome": "Sulfato de dehidroepiandrosterona (S-DHEA) - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "not 'sem_sinais' in hiperandrogenismo_sinais",
+              "condicao": "(not 'sem_sinais' in hiperandrogenismo_sinais)",
               "codigo": [
                 {
                   "iid": "26160e2e-9836-4052-ac9b-7a6b6f2e5030",
@@ -3601,7 +3660,7 @@
               "nome": "17-alfa-hidroxiprogesterona - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "not 'sem_sinais' in hiperandrogenismo_sinais",
+              "condicao": "(not 'sem_sinais' in hiperandrogenismo_sinais)",
               "codigo": [
                 {
                   "iid": "f3aaf5d5-23c6-444b-bc0a-fd2a0c568f57",
@@ -3965,7 +4024,7 @@
               "nome": "Hemograma com contagem de plaquetas ou frações (eritrograma, leucograma, plaquetas)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('fluxo_aumentado' in sua_padrao) or ('amenorreia_irregularidade' in queixa_principal) or (infertilidade_associada is True) or (hemoglobina < 12)",
+              "condicao": "('fluxo_aumentado' in sua_padrao) or ('amenorreia_irregularidade' in queixa_principal) or (infertilidade_associada is True) or (('trouxe_lab' in exames_recentes) and (hemoglobina < 12))",
               "codigo": [
                 {
                   "iid": "5708e91f-3563-4298-b7d5-830e1edb4e3c",
@@ -4121,7 +4180,7 @@
               "nome": "Vitamina \"D\" 25 HIDROXI, pesquisa e/ou dosagem (Vitamina D3)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('osteoporose' in comorbidades) or (t_score <= -1.0) or ('menopausa' in status_menstrual or (histerectomia is True)) or ('drc' in comorbidades) or ('cirurgia_bariatrica' in comorbidades) or (fsh_resultado > 25)",
+              "condicao": "('osteoporose' in comorbidades) or (t_score <= -1.0) or ('menopausa' in status_menstrual or histerectomia_previa is True) or ('drc' in comorbidades)\nor ('cirurgia_bariatrica' in comorbidades) or (poi_suspeita is True)",
               "codigo": [
                 {
                   "iid": "bfb4d6ab-7be1-476b-9be3-5da501e5a8e0",
@@ -4173,7 +4232,7 @@
               "nome": "Vitamina B12 - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('cirurgia_bariatrica' in comorbidades) or ('dm' in comorbidades) or (hemoglobina < 12)",
+              "condicao": "('cirurgia_bariatrica' in comorbidades) or ('dm' in comorbidades) or (('trouxe_lab' in exames_recentes) and (hemoglobina < 12))",
               "codigo": [
                 {
                   "iid": "9a1cca5d-3d03-4488-ba94-0ce7a5c26afe",
@@ -4277,7 +4336,7 @@
               "nome": "Ferro sérico - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(hemoglobina < 12) and ('trouxe_lab' in exames_recentes)",
+              "condicao": "('trouxe_lab' in exames_recentes) and (hemoglobina < 12)",
               "codigo": [
                 {
                   "iid": "5e0ce58d-66cb-4f79-a294-73c52e3a70d5",
@@ -4766,7 +4825,7 @@
               "nome": "Azitromicina 1g",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('clam_positivo' in chlamydia_gonorreia_resultado) or ('ambos_positivos' in chlamydia_gonorreia_resultado) or ('mucopurulento' in corrimento_caracteristica and not 'sem_FR_ist' in FR_ist)",
+              "condicao": "('clam_positivo' in chlamydia_gonorreia_resultado)\nor ('ambos_positivos' in chlamydia_gonorreia_resultado)\nor ('mucopurulento' in corrimento_caracteristica and not 'sem_FR_ist_med' in fr_ist_med)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -4983,7 +5042,7 @@
               "nome": "Estradiol 1mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)",
+              "condicao": "trh_indicada",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5014,7 +5073,7 @@
               "nome": "Progesterona micronizada 100mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh) and (histerectomia is False)",
+              "condicao": "(trh_indicada is True) and (histerectomia_previa is False)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5045,7 +5104,7 @@
               "nome": "Estradiol adesivo transdérmico 0,025–0,05mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh) and ('obesidade' in comorbidades or 'has' in comorbidades or 'tabagismo' in historia_social)",
+              "condicao": "trh_indicada and ('obesidade' in comorbidades or 'has' in comorbidades or 'tabagismo' in historia_social)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5107,7 +5166,7 @@
               "nome": "Tibolona 2,5mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh) and (not 'ca_mama_pessoal' in contraindicacao_trh) and (not 'tev_previo' in contraindicacao_trh)",
+              "condicao": "trh_indicada\nand (not 'ca_mama_pessoal' in contraindicacao_trh)\nand (not 'tev_previo' in contraindicacao_trh)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5138,7 +5197,7 @@
               "nome": "Levotiroxina 50mcg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('hipotireoidismo' in comorbidades) or ('hipo_tsh_fora_meta' in controle_hipotireoidismo) or (tsh > 10)",
+              "condicao": "('hipotireoidismo' in comorbidades)\nor ('hipo_tsh_fora_meta' in controle_hipotireoidismo)\nor ('trouxe_lab' in exames_recentes and tsh > 10)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5169,7 +5228,7 @@
               "nome": "Metformina 500mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('sop' in comorbidades) or ('dm' in comorbidades) or (hba1c >= 5.7) or ('sop_anovulacao_persistente' in controle_sop)",
+              "condicao": "('sop' in comorbidades)\nor ('dm' in comorbidades)\nor ('trouxe_lab' in exames_recentes and hba1c >= 5.7)\nor ('sop_anovulacao_persistente' in controle_sop)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5224,7 +5283,7 @@
               "nome": "GO Oncológico — sangramento pós-menopausa com espessamento endometrial",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('pos_menopausa' in sua_padrao) and ((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc))",
+              "condicao": "('pos_menopausa' in sua_padrao) and espessamento_endometrial_significativo",
               "indicacao": "Investigação de CA endometrial",
               "cid": "N95.0",
               "narrativa": "",
@@ -5334,7 +5393,7 @@
               "nome": "Mastologia — BI-RADS ≥4 / nódulo suspeito",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('birads_4_5' in mamo_resultado) or ('birads_6' in mamo_resultado) or ('unilateral_uniductal' in descarga_papilar and nodulo_palpavel is True)",
+              "condicao": "('birads_4_5' in mamo_resultado)\nor ('birads_6' in mamo_resultado)\nor ('unilateral_uniductal' in descarga_papilar)",
               "indicacao": "BI-RADS ≥4 — biópsia urgente",
               "cid": "N63",
               "narrativa": "",
@@ -5400,7 +5459,7 @@
               "nome": "Endocrinologia — Insuficiência Ovariana Prematura (POI)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "fsh_resultado > 25 and age < 45",
+              "condicao": "(poi_suspeita is True)",
               "indicacao": "POI — avaliação e manejo hormonal",
               "cid": "E28.3",
               "narrativa": "",
@@ -5422,7 +5481,7 @@
               "nome": "Endocrinologia / Neurologia — Hiperprolactinemia (PRL > 25 ng/mL; RM sela se PRL > 100)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "prolactina_resultado > 25",
+              "condicao": "'trouxe_lab' in exames_recentes and prolactina_resultado > 25",
               "indicacao": "Hiperprolactinemia — investigação de prolactinoma",
               "cid": "E22.1",
               "narrativa": "",
@@ -5444,7 +5503,7 @@
               "nome": "Endocrinologia — Hiperandrogenismo grave / virilização URGENTE",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('virilizacao_rapida' in hiperandrogenismo_sinais) or (testosterona_resultado > 200)",
+              "condicao": "('virilizacao_rapida' in hiperandrogenismo_sinais)\nor ('trouxe_lab' in exames_recentes and testosterona_resultado > 200)",
               "indicacao": "URGÊNCIA: excluir tumor adrenal ou ovariano",
               "cid": "E28.1",
               "narrativa": "",
@@ -5510,7 +5569,7 @@
               "nome": "Nutrição",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('obesidade' in comorbidades) or ('sop' in comorbidades) or ('dm' in comorbidades) or (hba1c >= 5.7) or (perda_peso_intensa is True)",
+              "condicao": "('obesidade' in comorbidades)\nor ('sop' in comorbidades)\nor ('dm' in comorbidades)\nor ('trouxe_lab' in exames_recentes and hba1c >= 5.7)\nor (perda_peso_intensa is True)",
               "indicacao": "Acompanhamento nutricional — obesidade/SOP/DM",
               "cid": "E66.9",
               "narrativa": "",
@@ -5649,7 +5708,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual or histerectomia is True)",
+              "condicao": "espessamento_endometrial_significativo",
               "conteudo": "<p>Espessura endometrial acima do limiar (>4mm sem TRH / >8mm com TRH). Indicar histeroscopia diagnóstica com biópsia. Encaminhar para GO Oncológico se biópsia com hiperplasia atípica ou carcinoma.</p>",
               "observacao": ""
             },
@@ -5659,7 +5718,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)",
+              "condicao": "trh_indicada",
               "conteudo": "<p>Paciente elegível para TRH. Janela de oportunidade: iniciar até 10 anos após menopausa ou antes dos 60 anos. Com útero: estrogênio + progestagênio obrigatório. Histerectomizada: estrogênio isolado. Preferir via transdérmica em obesidade, HAS, tabagismo ou histórico de hipertrigliceridemia (menor risco trombótico vs oral). Não há duração máxima definida — individualizar.</p>",
               "observacao": ""
             },
@@ -5669,7 +5728,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "('virilizacao_rapida' in hiperandrogenismo_sinais) or (testosterona_resultado > 200)",
+              "condicao": "('virilizacao_rapida' in hiperandrogenismo_sinais)\nor ('trouxe_lab' in exames_recentes and testosterona_resultado > 200)",
               "conteudo": "<p>Virilização de instalação rápida ou testosterona > 200 ng/dL — suspeita de tumor produtor de androgênios. Encaminhamento urgente para Endocrinologia. Não iniciar tratamento para SOP sem afastar neoplasia.</p>",
               "observacao": ""
             },
@@ -5679,7 +5738,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "(fsh_resultado > 25) and (age < 45)",
+              "condicao": "(poi_suspeita is True)",
               "conteudo": "<p>FSH elevado em paciente < 45 anos. Investigar insuficiência ovariana prematura (POI). Solicitar LH e estradiol se não coletados. Encaminhar para Endocrinologia. Orientar sobre risco cardiovascular e ósseo — TRH até 50 anos é protetora.</p>",
               "observacao": ""
             },
@@ -5729,7 +5788,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "(tsh > 4.5) and (tsh <= 10)",
+              "condicao": "'trouxe_lab' in exames_recentes and tsh > 4.5 and tsh <= 10",
               "conteudo": "<p><strong>TSH entre 4,5 e 10 µUI/mL — hipotireoidismo subclínico.</strong></p><p>Tratamento não é universal nesta faixa. Indicar levotiroxina se: sintomas presentes, anti-TPO positivo, gestação planejada, TSH progressivamente crescente ou &gt; 7–8 µUI/mL em paciente sintomática. Solicitar T4 livre e anti-TPO. Repetir TSH em 3–6 meses se aguardar conduta. Encaminhar à Endocrinologia se dúvida.</p>",
               "observacao": ""
             },
@@ -5739,9 +5798,30 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "'hpv_outros_hr' in hpv_resultado",
+              "condicao": "selected_any(citologia_reflexa_resultado, 'cito_negativa', 'cito_asc_us', 'cito_lsil', 'cito_hsil_mais')",
               "conteudo": "<p><strong>hrHPV não-16/18 — conduta por resultado da citologia reflexa:</strong></p><ul><li><p><strong>Negativa:</strong> repetir co-teste (HPV + citologia) em 1 ano. Não solicitar colposcopia.</p></li><li><p><strong>ASC-US ou LSIL:</strong> colposcopia solicitada nesta consulta.</p></li><li><p><strong>HSIL ou superior:</strong> colposcopia urgente + encaminhar GO Oncológico.</p></li><li><p><strong>Não realizada:</strong> solicitar citologia convencional nesta consulta e retornar com resultado.</p></li></ul>",
               "observacao": ""
+            },
+            {
+              "id": "876612d6-3eca-412c-9846-9ce779187a21",
+              "nome": "Conduta: hrHPV não-16/18 com citologia reflexa negativa",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'hpv_outros_hr' in hpv_resultado and 'cito_negativa' in citologia_reflexa_resultado"
+            },
+            {
+              "id": "0ae591fa-24b2-424e-80d7-d07e017db569",
+              "nome": "Conduta: NIC1 em colposcopia — seguimento sem tratamento imediato",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'colpo_nic1' in colposcopia_resultado"
+            },
+            {
+              "id": "11bbb9f5-25d2-44de-9899-f013c373813d",
+              "nome": "Alerta: citologia reflexa não realizada — pendente",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'cito_nao_realizada' in citologia_reflexa_resultado"
             }
           ]
         }
@@ -5780,8 +5860,14 @@
       "data": {}
     },
     {
-      "id": "e-node-30532994-2e70-49f1-a55d-d4d5455bac1a-conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
+      "id": "e-node-30532994-2e70-49f1-a55d-d4d5455bac1a-summary-ginecoamil-v1",
       "source": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
+      "target": "summary-ginecoamil-v1",
+      "data": {}
+    },
+    {
+      "id": "e-summary-ginecoamil-v1-conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
+      "source": "summary-ginecoamil-v1",
       "target": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
       "data": {}
     }

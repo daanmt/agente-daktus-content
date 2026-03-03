@@ -1,8 +1,9 @@
-# INTELIGÊNCIA CONSOLIDADA DE PROJETOS — REUMATOLOGIA E CARDIOLOGIA
+# PADROES DE ARQUITETURA JSON — Fichas Daktus
 
-> **Documento complementar ao sistema de instruções do agente Daktus.**  
-> Sintetiza os aprendizados extraídos dos projetos de Reumatologia e Cardiologia para alimentar o desenvolvimento de novos protocolos (Psiquiatria, Neurologia, etc.).  
-> Leia este documento junto com `AGENT_PROMPT_PROTOCOLO_DAKTUS.md`, `CONTEXTO_FERRAMENTAS_E_PLANEJAMENTO_PSIQUIATRIA.md` e `GUARDRAIL_EVIDENCIAS.md`.
+> **Documento complementar ao sistema de instrucoes do agente Daktus.**
+> Sintetiza padroes arquiteturais reutilizaveis extraidos de projetos anteriores (Reumatologia, Cardiologia, Ginecologia).
+> Aplica a qualquer nova especialidade.
+> Leia junto com `AGENT_PROMPT_PROTOCOLO_DAKTUS.md` e `GUARDRAIL_EVIDENCIAS.md`.
 
 ---
 

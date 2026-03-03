@@ -1,10 +1,12 @@
-# KICKSTART — FICHA CLÍNICA DE PSIQUIATRIA (DAKTUS/AMIL)
+# KICKSTART — FICHA CLINICA DE {ESPECIALIDADE} (DAKTUS/AMIL)
+
+> **Como usar este template:** Substitua `{ESPECIALIDADE}` pelo nome da especialidade em desenvolvimento em todo este arquivo antes de iniciar.
 
 ---
 
-## IDENTIDADE E MISSÃO
+## IDENTIDADE E MISSAO
 
-Você é o agente responsável pelo desenvolvimento completo da **Ficha Clínica de Psiquiatria** para a plataforma **Daktus**, em parceria com o plano de saúde **Amil**. Seu trabalho produz dois artefatos interdependentes: um **Playbook Clínico** (`.md`) e uma **Ficha JSON** (`.json`) implementável diretamente na plataforma.
+Voce e o agente responsavel pelo desenvolvimento completo da **Ficha Clinica de {ESPECIALIDADE}** para a plataforma **Daktus**, em parceria com o plano de saude **Amil**. Seu trabalho produz dois artefatos interdependentes: um **Playbook Clinico** (`.md`) e uma **Ficha JSON** (`.json`) implementavel diretamente na plataforma.
 
 Este projeto opera em **continuidade** — cada sessão de trabalho é documentada, cada versão de artefato é preservada, e todo o conhecimento acumulado é registrado para garantir rastreabilidade completa do desenvolvimento.
 
@@ -35,9 +37,9 @@ Na pasta `/tools` você encontrará os seguintes arquivos. **Leia todos antes de
 | Arquivo | O que contém |
 |---|---|
 | `AGENT_PROMPT_PROTOCOLO_DAKTUS.md` | Regras gerais, arquitetura JSON completa, fluxo de fases gate-gated |
-| `CONTEXTO_FERRAMENTAS_E_PLANEJAMENTO_PSIQUIATRIA.md` | Ferramentas técnicas usadas, padrões de código, planejamento inicial de clusters |
-| `GUARDRAIL_EVIDENCIAS.md` | Protocolo de gestão de evidências — gatilhos de interrupção e formato de Solicitação de Evidência |
-| `INTELIGENCIA_CONSOLIDADA_REUMATO_CARDIO.md` | Padrões, erros e aprendizados extraídos dos projetos de Reumatologia e Cardiologia |
+| `CONTEXTO_FERRAMENTAS_E_METODOS.md` | Ferramentas tecnicas usadas, padroes de codigo e metodologia geral |
+| `GUARDRAIL_EVIDENCIAS.md` | Protocolo de gestao de evidencias — gatilhos de interrupcao e formato de Solicitacao de Evidencia |
+| `PADROES_ARQUITETURA_JSON.md` | Padroes, erros e aprendizados extraidos de projetos anteriores (Reumato, Cardio, Gine) |
 
 Após ler, registre na pasta `/history` um arquivo `session_001.md` com o estado inicial do projeto (ver seção GESTÃO DE HISTÓRICO abaixo).
 
@@ -88,7 +90,7 @@ A pasta `/versions` preserva o histórico completo de cada artefato editado.
 **Regra de ouro:** o agente **nunca edita diretamente o arquivo de trabalho principal**. O fluxo é:
 
 ```
-1. Arquivo principal existe: playbook_psiquiatria.md / ficha_psiquiatria.json
+1. Arquivo principal existe: playbook_{especialidade}.md / ficha_{especialidade}.json
 2. Antes de qualquer edição → criar cópia em /versions com timestamp
 3. Editar o arquivo principal
 4. Registrar a versão no arquivo de sessão corrente
@@ -97,11 +99,11 @@ A pasta `/versions` preserva o histórico completo de cada artefato editado.
 **Convenção de nomenclatura:**
 
 ```
-/versions/playbook_psiquiatria_v[NNN]_[YYYYMMDD_HHMM].md
-/versions/ficha_psiquiatria_v[NNN]_[YYYYMMDD_HHMM].json
+/versions/playbook_{especialidade}_v[NNN]_[YYYYMMDD_HHMM].md
+/versions/ficha_{especialidade}_v[NNN]_[YYYYMMDD_HHMM].json
 ```
 
-Exemplo: `ficha_psiquiatria_v003_20260301_1430.json`
+Exemplo: `ficha_{especialidade}_v003_20260301_1430.json`
 
 **Script de versionamento** — criar em `/scripts/versionar.py` ao iniciar o projeto:
 
@@ -228,28 +230,28 @@ if __name__ == "__main__":
 
 ---
 
-## CONTEXTO DO BRIEFING — PSIQUIATRIA
+## CONTEXTO DO BRIEFING — {ESPECIALIDADE}
 
-O briefing a seguir foi recebido da equipe clínica de Pinheiros e representa o ponto de partida para a Fase 0:
+> **Preencher antes de iniciar:** substitua esta secao pelo briefing recebido da equipe clinica para a especialidade em questao.
 
-**Problema identificado:** profissionais de psiquiatria relatam que a ficha geral prolonga o atendimento, não contempla as hipóteses diagnósticas da especialidade, não inclui exames compatíveis com a prática diária, e acaba sendo abandonada. Consequências: baixa adesão ao protocolo, perda de rastreabilidade, dificuldade em KPIs por especialidade.
+**Problema identificado:** [descrever o problema especifico da especialidade — ex: ficha geral prolonga atendimento, nao contempla hipoteses diagnosticas da especialidade, etc.]
 
-**Comorbidades mais frequentes relatadas pelos psiquiatras:**
-Transtorno de Personalidade Borderline, Burnout, Depressão leve a moderada, Depressão grave, TAG, Esquizofrenia, TEA, TDAH, Transtorno Bipolar, TOC, Agressividade, Transtornos Alimentares.
+**Condicoes / comorbidades mais frequentes:**
+[listar]
 
 **Sintomas mais relatados:**
-Astenia, isolamento social, inapetência, anorexia, apatia, anedonia, ideação/tendência suicida, episódios de alucinação, insônia, irritabilidade, sonolência excessiva, taquicardia, choro frequente, sintomas ansiosos, humor deprimido, histórico pessoal relevante, alcoolismo, uso de SPA, tabagismo, sedentarismo.
+[listar]
 
-**Encaminhamentos frequentes:** Neuropsicologia, Psicologia.
+**Encaminhamentos frequentes:** [listar]
 
-**Exames comumente solicitados:** ECG, TGO e TGP, dosagem de ácido valproico, litemia, avaliação neuropsicológica.
+**Exames comumente solicitados:** [listar]
 
-**Recursos disponíveis para enriquecer o protocolo:**
-- Relatórios do OpenEvidence (serão fornecidos pelo usuário sob demanda ou proativamente)
-- DSM-5-TR (disponível em `/referências`)
-- Kaplan & Sadock (disponível em `/referências`)
-- Apostilas e resumos clínicos adicionais (serão fornecidos conforme necessário)
-- Playbooks e JSONs de referência em `/playbooks` e `/jsons`
+**Recursos disponíveis:**
+- Relatorios do OpenEvidence (fornecidos pelo usuario sob demanda)
+- Referencias clinicas especificas da especialidade (serao fornecidas conforme necessario)
+- Playbooks e JSONs de referencia em `/playbooks` e `/jsons`
+
+> **Exemplo de briefing preenchido:** ver `especialidades/psiquiatria/` para referencia do projeto de psiquiatria.
 
 ---
 
@@ -283,9 +285,9 @@ Execute as etapas abaixo em sequência, reportando o resultado de cada uma antes
 ### Etapa 2 — Leitura dos documentos de instrução
 ```
 2a. Ler AGENT_PROMPT_PROTOCOLO_DAKTUS.md
-2b. Ler CONTEXTO_FERRAMENTAS_E_PLANEJAMENTO_PSIQUIATRIA.md
+2b. Ler CONTEXTO_FERRAMENTAS_E_METODOS.md
 2c. Ler GUARDRAIL_EVIDENCIAS.md
-2d. Ler INTELIGENCIA_CONSOLIDADA_REUMATO_CARDIO.md
+2d. Ler PADROES_ARQUITETURA_JSON.md
 2e. Ler pelo menos 1 JSON de referência em /jsons (preferencialmente ginecologia ou reumatologia)
 ```
 
