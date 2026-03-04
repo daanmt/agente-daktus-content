@@ -1,141 +1,158 @@
-# SKILL — PIPELINE DE PRODUÇÃO DAKTUS
+# SKILL — PIPELINE DE PRODUCAO DAKTUS
 ## Orchestrator | Antigravity Content Team
 
 ---
 
 ## O QUE ESTA SKILL FAZ
 
-Esta é a skill mestra do pipeline de produção de fichas clínicas Daktus. Ela define a arquitetura de pastas de qualquer projeto, descreve todas as sub-skills disponíveis e determina quando invocar cada uma. O agente **nunca avança de fase sem aprovação explícita do usuário**.
+Esta e a skill mestra do pipeline de producao de fichas clinicas Daktus. Define a arquitetura de pastas, descreve todas as sub-skills e determina quando invocar cada uma. O agente **nunca avanca de fase sem aprovacao explicita do usuario**.
 
 ---
 
-## ARQUITETURA CANÔNICA DE PROJETO
-
-Todo projeto de ficha clínica Daktus deve seguir esta estrutura de pastas. Ao iniciar um projeto novo, verificar se a estrutura existe; se não, criá-la.
+## ARQUITETURA CANONICA DE PROJETO
 
 ```
-/{especialidade}/
+agente-daktus-content/
+├── ESTADO.md                 ← fonte de verdade do estado atual
+├── CLAUDE.md                 ← protocolo de inicio de sessao
+├── SKILL.md                  ← este arquivo (orchestrator)
+├── README.md
 │
-├── tools/                             ← skills e documentos de instrução do agente
-│   └── skills/                        ← esta pasta (pipeline de produção)
+├── tools/                    ← metodo agnostico
+│   ├── skills/               ← 7 sub-skills (uma por fase)
+│   ├── AGENT_PROMPT_PROTOCOLO_DAKTUS.md    ← instrucoes tecnicas JSON
+│   ├── CONTEXTO_FERRAMENTAS_E_METODOS.md   ← como usar bash/python/git
+│   ├── GUARDRAIL_EVIDENCIAS.md             ← gatilhos G1-G6
+│   ├── KICKSTART_NOVA_ESPECIALIDADE.md     ← template de onboarding
+│   └── PADROES_ARQUITETURA_JSON.md         ← padroes reutilizaveis
 │
-├── research/                          ← evidências e banco bibliográfico
-│   ├── BANCO_EVIDENCIAS_{ESP}.md      ← ARQUIVO MESTRE de referências e AFIs
-│   ├── AUDITORIA_BANCO_v1.md          ← resultado da auditoria pré-playbook
-│   └── OE_{tema}_{N}.md               ← relatórios brutos do OpenEvidence
+├── especialidades/
+│   └── {nome}/
+│       ├── research/         ← banco de evidencias, auditorias, relatorios OE
+│       ├── playbooks/        ← playbook clinico (draft → final)
+│       └── jsons/            ← fichas JSON produzidas
 │
-├── history/                           ← rastreabilidade de sessões
-│   └── session_{NNN}.md              ← log de cada sessão (001, 002, ...)
+├── referencia/               ← JSONs e playbooks de projetos ja entregues (read-only)
 │
-├── playbooks/                         ← documentação clínica
-│   ├── playbook_{esp}_vDRAFT.md
-│   └── playbook_{esp}_vFINAL.md      ← aprovado clinicamente
+├── history/                  ← UNICO diretorio de sessions (001, 002, ...)
+│   └── session_{NNN}.md
 │
-├── jsons/                             ← fichas produzidas
-│   ├── ficha_{esp}_v{versao}.json    ← ficha Daktus validada
-│   └── referencia/                    ← JSONs de outras especialidades para referência UX
-│
-└── scripts/                           ← automação e validação
+└── scripts/                  ← automacao e validacao
     ├── validate_json.py
     ├── audit_references.py
+    ├── audit_logic.py
     └── versionar.py
 ```
 
-**Arquivo mais importante do projeto:** `research/BANCO_EVIDENCIAS_{ESP}.md`
-É a autoridade clínica. Toda afirmação do playbook deve rastrear até uma entrada deste arquivo.
+**Arquivo mais importante por especialidade:** `especialidades/{nome}/research/BANCO_EVIDENCIAS_{ESP}.md`
+E a autoridade clinica. Toda afirmacao do playbook deve rastrear ate uma entrada deste arquivo.
 
 ---
 
-## SUB-SKILLS DISPONÍVEIS
+## LOGICA DE ATIVACAO (PROGRESSIVE DISCLOSURE)
+
+O agente conhece todas as skills por este orchestrator — que lista apenas nome e descricao de cada sub-skill. O conteudo completo de cada skill so e lido quando a fase e ativada. Isso preserva a janela de contexto para o trabalho real.
+
+| Dimensao | Agente monolitico | Skills (este modelo) |
+|----------|-------------------|---------------------|
+| Janela de contexto | Carrega tudo sempre | Carrega apenas a fase atual |
+| Manutencao | Requer redeploy | Editar o `.md` da sub-skill |
+| Aprendizado | Estatico apos deploy | Retroalimentacao continua via Git |
+| Portabilidade | Acoplado a plataforma | Pasta de arquivos — funciona em qualquer LLM |
+| Foco operacional | Pode misturar fases | Cada sessao = uma fase = uma skill |
+| Reproduzibilidade | Baixa | Alta — mesma pasta para qualquer especialidade |
+
+---
+
+## SUB-SKILLS DISPONIVEIS
 
 | Skill | Pasta | Invocar quando |
 |-------|-------|----------------|
-| `briefing-arquitetura` | `/tools/skills/briefing-arquitetura/` | Início de projeto — especialidade nova |
-| `ingestao-evidencias` | `/tools/skills/ingestao-evidencias/` | Ao receber relatório do OpenEvidence |
+| `briefing-arquitetura` | `/tools/skills/briefing-arquitetura/` | Inicio de projeto — especialidade nova |
+| `ingestao-evidencias` | `/tools/skills/ingestao-evidencias/` | Ao receber relatorio do OpenEvidence |
 | `auditoria-banco` | `/tools/skills/auditoria-banco/` | Antes de iniciar qualquer cluster do playbook |
-| `redacao-playbook` | `/tools/skills/redacao-playbook/` | Após auditoria do banco aprovada |
-| `auditoria-playbook` | `/tools/skills/auditoria-playbook/` | Após draft completo de cada cluster |
-| `codificacao-json` | `/tools/skills/codificacao-json/` | Após playbook aprovado clinicamente |
-| `qa-entrega` | `/tools/skills/qa-entrega/` | Antes de entregar para homologação |
+| `redacao-playbook` | `/tools/skills/redacao-playbook/` | Apos auditoria do banco aprovada |
+| `auditoria-playbook` | `/tools/skills/auditoria-playbook/` | Apos draft completo de cada cluster |
+| `codificacao-json` | `/tools/skills/codificacao-json/` | Apos playbook aprovado clinicamente |
+| `qa-entrega` | `/tools/skills/qa-entrega/` | Antes de entregar para homologacao |
 
 ---
 
-## SEQUÊNCIA INVIOLÁVEL DE FASES
+## SEQUENCIA INVIOLAVEL DE FASES
 
 ```
-FASE 0  →  briefing-arquitetura      (mapa de nós aprovado)
+FASE 0  →  briefing-arquitetura      (mapa de nos aprovado)
         ↓
-        →  ingestao-evidencias        (loop contínuo — relatórios OE chegam ao longo do projeto)
+        →  ingestao-evidencias        (loop continuo — relatorios OE chegam ao longo do projeto)
         ↓
-FASE 2* →  auditoria-banco           (pré-auditoria antecipada antes do playbook)
+FASE 2* →  auditoria-banco           (pre-auditoria antecipada antes do playbook)
         ↓
 FASE 1  →  redacao-playbook          (cluster por cluster — ordem definida na skill)
         ↓
 FASE 2  →  auditoria-playbook        (citation, semantic, coverage scans)
         ↓
-FASE 3  →  [revisão clínica humana — sem skill]
+FASE 3  →  [revisao clinica humana — sem skill]
         ↓
-FASE 4  →  codificacao-json          (paper design → TUSS → JSON → validação)
+FASE 4  →  codificacao-json          (paper design → TUSS → JSON → validacao)
         ↓
 FASE 5  →  qa-entrega                (28 checks antes da entrega)
 ```
 
-*A Fase 2 de auditoria do banco é antecipada por decisão estratégica — banco inflado contamina o playbook.
+*A Fase 2 de auditoria do banco e antecipada por decisao estrategica — banco inflado contamina o playbook.
 
 ---
 
 ## REGRAS GERAIS DE COMPORTAMENTO
 
-1. **Sempre ler** `history/session_XXX.md` antes de qualquer ação — saber onde o projeto parou.
+1. **Sempre ler** `ESTADO.md` e `history/session_XXX.md` (mais recente) antes de qualquer acao.
 2. **Sempre ler** a sub-skill da fase atual antes de produzir qualquer artefato.
 3. **Nunca assumir contexto** — verificar arquivos antes de operar.
-4. **Toda mudança clínica** requer classificação M1/M2/M3/M4 e confirmação antes de aplicar.
-5. **Solicitações de Evidência** são emitidas quando há conflito entre fontes (gatilhos G1–G6, definidos na skill `redacao-playbook`).
-6. O arquivo `BANCO_EVIDENCIAS_{ESP}.md` é a autoridade clínica do projeto — nenhuma afirmação no playbook existe sem rastreamento até ele.
+4. **Toda mudanca clinica** requer classificacao M1/M2/M3/M4 e confirmacao antes de aplicar.
+5. **Solicitacoes de Evidencia** sao emitidas quando ha conflito entre fontes (gatilhos G1-G6, definidos na skill `redacao-playbook`).
+6. O arquivo `BANCO_EVIDENCIAS_{ESP}.md` e a autoridade clinica do projeto — nenhuma afirmacao no playbook existe sem rastreamento ate ele.
 
 ---
 
-## INICIAR SESSÃO — ROTINA PADRÃO
+## INICIAR SESSAO — ROTINA PADRAO
 
 ```
-1. Ler /history/session_XXX.md        → onde paramos, o que está aberto
-2. Ler BANCO_EVIDENCIAS_{ESP}.md      → estado atual do banco
-3. Ler sub-skill da fase atual        → o que fazer agora
+1. Ler ESTADO.md                     → onde estamos, o que esta aberto
+2. Ler history/session_XXX.md        → ultima sessao detalhada
+3. Ler sub-skill da fase atual       → o que fazer agora
 4. Executar — registrar em session_YYY.md ao encerrar
 ```
 
 ---
 
-## OPERAÇÃO MULTI-AGENTE — ANTIGRAVITY + CLAUDE CODE
+## OPERACAO MULTI-AGENTE
 
-O projeto opera com dois agentes que compartilham os mesmos artefatos:
+O projeto opera com agentes que compartilham os mesmos artefatos:
 
 | Agente | Interface | Foco |
 |--------|-----------|------|
-| **Antigravity** | Chat Claude (contexto longo) | Geração de conteúdo clínico, auditoria de evidências, redação de playbook, raciocínio longo |
-| **Claude Code** | CLI / worktree | Git, scripts, validação JSON, refatoração estrutural, QA automatizado, operações de arquivo |
+| **Antigravity** | Chat Claude (contexto longo) | Geracao de conteudo clinico, auditoria de evidencias, redacao de playbook, raciocinio longo |
+| **Claude Code** | CLI / terminal | Git, scripts, validacao JSON, refatoracao estrutural, QA automatizado, operacoes de arquivo |
 
-### Regras de convivência
+### Regras de convivencia
 
-1. **Ponto de encontro:** `history/session_XXX.md` — ambos os agentes leem o log mais recente ao iniciar.
-2. **Qualquer agente que mude o estado do projeto** registra em session log para que o outro saiba.
-3. **Kickstart específico:** Antigravity usa `tools/KICKSTART_PSIQUIATRIA.md`; Claude Code usa `tools/CLAUDECODE_KICKSTART.md`.
-4. **Conflito de edição:** se ambos editaram o mesmo arquivo, prevalece a versão com session log mais recente.
-5. **Delegação:** Dan decide qual agente executa cada tarefa. Na dúvida, perguntar.
+1. **Ponto de encontro:** `ESTADO.md` + `history/session_XXX.md` — todo agente le ao iniciar.
+2. **Qualquer agente que mude o estado do projeto** registra em session log.
+3. **Conflito de edicao:** prevalece a versao com session log mais recente.
+4. **Delegacao:** Dan decide qual agente executa cada tarefa. Na duvida, perguntar.
 
 ---
 
-## RETROALIMENTAÇÃO — COMO A SKILL MELHORA COM O TEMPO
+## RETROALIMENTACAO — COMO A SKILL MELHORA COM O TEMPO
 
-Ao final de cada projeto, identificar padrões não cobertos pelas skills e emitir:
+Ao final de cada projeto, identificar padroes nao cobertos pelas skills e emitir:
 
 ```
-🔧 MELHORIA DE SKILL #N
+MELHORIA DE SKILL #N
 Skill: [nome da sub-skill]
-Situação não coberta: [descrição]
+Situacao nao coberta: [descricao]
 Comportamento atual do agente: [o que fez]
 Comportamento esperado: [o que deveria fazer]
-Proposta de adição: [texto sugerido para a skill]
+Proposta de adicao: [texto sugerido para a skill]
 ```
 
-Versionar a pasta `/tools/skills/` no Git. Cada projeto deixa a skill melhor para o próximo.
+Versionar a pasta `/tools/skills/` no Git. Cada projeto deixa a skill melhor para o proximo.

@@ -754,4 +754,34 @@ Aguardando briefing.
 
 ---
 
-*Fim das instruções do agente. Versão 1.0 — gerada em 2026-02-27.*
+## APENDICE A — TERMINOLOGIA E PRINCIPIOS DE DESIGN
+
+*(Conteudo consolidado de BRIEFING_ARQUITETURA_NOS_DAKTUS.md)*
+
+### Correcao conceitual critica
+
+**Um no NAO e um modulo clinico tematico** (ex: "modulo de humor", "modulo de psicose").
+**Um no E uma tela** — uma unica tela de formulario que um profissional de saude preenche na plataforma Daktus.
+
+Cada tela tem perguntas. As respostas geram variaveis. As variaveis controlam o que aparece na tela de saida. Isso e o produto inteiro. O produto tipico e uma sequencia de 4-6 telas, culminando em uma tela de saida inteligente.
+
+### Principios de design — aprendizados dos projetos anteriores
+
+**Fazer:**
+- Poucas telas, muitas perguntas por tela quando necessario
+- Perguntas condicionais dentro da mesma tela (`"condicional": "condicional"` + `"expressao"`) para evitar telas extras
+- Opcao com `"preselected": true` para o estado mais comum
+- Alertas na conduta curtos, acionaveis, com conduta especifica
+- Exames na conduta com codigo TUSS e periodicidade explicita
+- Logica de conduta conservadora: melhor mostrar algo extra do que esconder algo necessario
+
+**Nao fazer:**
+- Um no por diagnostico (seria N+ telas — inviavel na pratica)
+- Perguntas abertas (`string`) onde multiChoice funciona
+- Conduta generica sem condicional (mostra o mesmo para todos)
+- Exames sem codigo TUSS
+- Alertas com texto academico — deve ser texto de conduta, imperativo, com verbo no infinitivo
+
+---
+
+*Fim das instrucoes do agente. Versao 1.1 — consolidada em 2026-03-04.*
