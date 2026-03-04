@@ -16,4 +16,8 @@ Bancos de evidencias, playbooks e relatorios de sesssao **especificos de uma esp
 
 | Arquivo | Descricao | Status |
 |---------|-----------|--------|
-| `AUDITORIA_JSON_GINECOLOGIA.md` | Auditoria de qualidade do JSON de ginecologia (vdraft2) | Sessao 008 — aguardando feedback Dan |
+| (vazio) | Auditorias de especialidades em desenvolvimento ficam em `especialidades/{nome}/research/` | — |
+
+## Historico
+
+- `AUDITORIA_JSON_GINECOLOGIA.md` movida para `especialidades/ginecologia/research/` (sessao 009)

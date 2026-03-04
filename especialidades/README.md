@@ -12,7 +12,17 @@ Cada subpasta e uma especialidade com seus proprios:
 
 | Especialidade | Status | Playbook | JSON |
 |--------------|--------|---------|------|
+| ginecologia | Auditoria JSON (sessao 008) — aguardando Dan aplicar C1-C4 | v1.0 auditado | vdraft2 em revisao |
 | psiquiatria | Fase 3 — aguardando revisao clinica de Dan | v1.0 | nao iniciado |
+
+## Especialidades entregues (referencia — ficam na raiz)
+
+Fichas ja entregues na plataforma. JSONs e playbooks ficam em `jsons/` e `playbooks/` na raiz como referencia transversal.
+
+| Especialidade | JSON | Playbook |
+|--------------|------|---------|
+| cardiologia | `jsons/amil-ficha_cardiologia-v2.0.9.json` | `playbooks/Playbook Clinico — Ficha de Cardiologia...` |
+| reumatologia | `jsons/inclua-ficha_reumatologia-v1.1.0.json` | `playbooks/playbook_reumatologia.md` |
 
 ## Para iniciar nova especialidade
 
