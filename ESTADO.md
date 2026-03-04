@@ -1,5 +1,5 @@
 # ESTADO — agente-daktus-content
-*Atualizado: 2026-03-04 (sessao 010) | Ferramenta: Claude Code (Opus 4.6)*
+*Atualizado: 2026-03-04 (sessao 011) | Ferramenta: Claude Code (Opus 4.6)*
 
 ---
 
@@ -7,7 +7,7 @@
 
 **Pipeline agnostico de especialidade** para producao de fichas clinicas Daktus/Amil. Stage 1: gera playbook clinico + JSON da ficha. Stage 2 (validacao automatizada): repositorio `agente-daktus-qa`.
 
-Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desenvolvimento: Ginecologia (auditoria JSON), Psiquiatria (Fase 3). Especialidades em andamento ficam em `especialidades/{nome}/`.
+Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desenvolvimento: Ginecologia (auditoria v1.0.0), Psiquiatria (Fase 3). Especialidades em andamento ficam em `especialidades/{nome}/`.
 
 ---
 
@@ -15,11 +15,13 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 
 **Duas frentes paralelas:**
 
-**[Ginecologia — Auditoria JSON]** Sessao 008 concluida | Status: Aguardando Dan aplicar correcoes
-- Auditoria em `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
-- 4 criticos pendentes (C1: formula espessamento OR quebrada; C2-C4: expressoes sem `is True`)
-- 4 importantes pendentes (I1: LSIL; I2: citologia preselected; I3: hpv_resultado_nd; I4: diu_contraindicacao)
-- 1 sugestao de nova pergunta: `historia_familiar_ca`
+**[Ginecologia — Auditoria v1.0.0]** Sessao 011 concluida | Status: 8 correcoes criticas pendentes
+- Auditoria atualizada em `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
+- JSON v1.0.0 versionado em `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json`
+- **Resolvidos (v1.0.0):** C1 (espessamento formula), I1 (LSIL conservador), I2 (preselected removido), hemograma ampliado, creatinina adicionada
+- **Criticos pendentes:** 7 usos bare de clinicalExpressions (is True), 1 typo `seletec_any` na DXA
+- **Moderados pendentes:** 3 bare na orientacao cervical, CID creatinina incorreto
+- **Feedback Gabriel:** ficha aprovada no geral; teste final pendente
 
 **[Psiquiatria]** Fase 3 — Revisao Clinica Humana | Status: Aguardando Dan
 - Playbook v1.0 em `especialidades/psiquiatria/playbooks/playbook_psiquiatria.md`
@@ -44,9 +46,10 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 ### Ginecologia
 | Artefato | Arquivo | Status |
 |----------|---------|--------|
-| Auditoria JSON | `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md` | Aguarda Dan aplicar C1-C4 |
+| Auditoria JSON | `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md` | v1.0.0 — 8 criticos + 3 moderados pendentes |
 | Playbook | `especialidades/ginecologia/playbooks/playbook_ginecologia_auditado.md` | v1.0 auditado |
-| JSON | `especialidades/ginecologia/jsons/amil-ficha_ginecologia-vdraft.json` | vdraft1 no repo; vdraft2 nao versionado |
+| JSON v1.0.0 | `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json` | Atualizado por Gabriel + Dan |
+| JSON vdraft | `especialidades/ginecologia/jsons/amil-ficha_ginecologia-vdraft.json` | Versao anterior (referencia) |
 
 ### Psiquiatria
 | Artefato | Arquivo | Status |
@@ -69,30 +72,37 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 
 ## Ultimas sessoes
 
-**2026-03-04 | Claude Code Opus (sessao 010):** Reestruturacao lean — centralizou history/ (10 sessions sequenciais), criou referencia/ (4 projetos entregues), removeu 520KB bloat (transcripts), consolidou INFRAESTRUTURA→SKILL.md e BRIEFING→AGENT_PROMPT, deletou 4 docs obsoletos (CLAUDECODE_KICKSTART, PROMPT_ALINHAMENTO, READMEs internos), limpou 5 pastas vazias. Repo: 51→42 arquivos.
+**2026-03-04 | Claude Code Opus (sessao 011):** Auditoria v1.0.0 ginecologia — analisou JSON atualizado pelo Gabriel, extraiu feedback da 1:1, encontrou typo `seletec_any` e bare clinicalExpressions residuais. 5 achados resolvidos na v1.0.0 (C1 formula, I1 LSIL, I2 preselected, hemograma, creatinina). 8 criticos + 3 moderados pendentes. Scripts QA corrigidos (validate_json.py + audit_logic.py).
+
+**2026-03-04 | Claude Code Opus (sessao 010):** Reestruturacao lean — centralizou history/ (10 sessions sequenciais), criou referencia/ (4 projetos entregues), removeu 520KB bloat (transcripts), consolidou INFRAESTRUTURA→SKILL.md e BRIEFING→AGENT_PROMPT, deletou 4 docs obsoletos.
 
 **2026-03-03 | Claude Code Opus (sessao 009):** Consolidacao infra — diagnosticou divergencia worktree/main, resgatou audit_logic.py, criou especialidades/ginecologia/, criou session_008 retroativo.
 
-**2026-03-03 | Claude Code Sonnet (sessao 008):** Auditoria vdraft2 — 8 resolucoes, 4 criticos novos (espessamento + is True), sugestao historia_familiar_ca. Refatoracao: psiquiatria em especialidades/, tools renomeados.
-
-**2026-03-03 | Claude Code Sonnet (sessao 007):** Auditoria inicial vdraft1 — 6 criticos, 8 moderados.
+**2026-03-03 | Claude Code Sonnet (sessao 008):** Auditoria vdraft2 — 8 resolucoes, 4 criticos novos (espessamento + is True), sugestao historia_familiar_ca.
 
 ---
 
 ## Proximos passos
 
-**[Ginecologia JSON]**
-1. **[Dan]** Aplicar C1: restaurar formula `espessamento_endometrial_significativo` com menopausa gate
-2. **[Dan]** Aplicar C2-C4: adicionar `is True` em expressoes bare
-3. **[Dan]** Decidir I1: LSIL → colposcopia imediata ou repetir citologia em 1 ano
-4. **[Dan]** Adicionar pergunta `historia_familiar_ca`
+**[Ginecologia — Correcoes v1.0.1]**
+1. **[Gabriel]** Ultima rodada de testes → salvar rascunho → avisar Dan
+2. **[Dan]** Aplicar 8 correcoes criticas no Spider (7x `is True` + 1x `seletec_any → selected_any`)
+3. **[Dan]** Aplicar 3 correcoes moderadas (orientacao cervical bare + CID creatinina)
+4. **[Dan/Gabriel]** Gravar Loom videos (cenarios clinicos) para modelador Paulo
+5. **[Dan]** Decidir I3 (`hpv_resultado_nd`) e I4 (`diu_contraindicacao`)
+6. **[Futuro]** Adicionar `historia_familiar_ca` em N1 + expandir `alto_risco_mama`
 
 **[Psiquiatria]**
-5. **[Dan]** Revisar playbook em `especialidades/psiquiatria/playbooks/`
-6. **[Agente]** Fase 4 — codificacao JSON: `tools/skills/codificacao-json/SKILL.md`
+7. **[Dan]** Revisar playbook em `especialidades/psiquiatria/playbooks/`
+8. **[Agente]** Fase 4 — codificacao JSON: `tools/skills/codificacao-json/SKILL.md`
+
+**[Skills Environment]**
+9. **[Dan]** Reunir com Humberto para alinhar adocao do skills environment
+10. **[Dan/Gabriel/Humberto]** Deadline: fim de Abril para empresa usar
+11. **[Dan]** Avaliar Antigravity + Claude Code vs Adapta
 
 **[Infraestrutura]**
-7. **[Dan]** Remover worktrees stale apos encerrar sessao:
+12. **[Dan]** Remover worktrees stale apos encerrar sessao:
    ```bash
    cd C:\Users\daanm\Daktus\agente-daktus-content
    git worktree remove .claude/worktrees/thirsty-chatelet --force
@@ -110,6 +120,8 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 - **Sessions numeradas globalmente** em `history/` (sequenciais, 001+)
 - **Expressoes do summary sempre com `is True`** nas condicionais de conduta
 - **referencia/** para projetos entregues (read-only), **especialidades/** para ativos
+- **LSIL → colposcopia imediata** — abordagem conservadora (decisao Gabriel+Dan, sessao 011)
+- **Hemograma amplo** — rastreamento universal sem restricao de queixa (decisao Gabriel, sessao 011)
 
 ---
 
@@ -118,9 +130,9 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 1. **Este arquivo** (ESTADO.md) — onde estamos
 2. `SKILL.md` — pipeline geral e regras
 3. `tools/skills/{fase-atual}/SKILL.md` — instrucao da fase
-4. Sessao mais recente: `history/session_010.md`
-5. Auditoria ativa (se gine): `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
-6. Banco evidencias (se psy): `especialidades/psiquiatria/research/BANCO_EVIDENCIAS_PSIQUIATRIA.md`
+4. Sessao mais recente: `history/session_011.md`
+5. Auditoria ativa (gineco): `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
+6. Banco evidencias (psy): `especialidades/psiquiatria/research/BANCO_EVIDENCIAS_PSIQUIATRIA.md`
 
 ---
 

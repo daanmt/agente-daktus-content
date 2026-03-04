@@ -1,14 +1,15 @@
 # Auditoria de Qualidade — Ficha de Ginecologia (Amil)
-**Versao analisada:** `amil-ficha_ginecologia-vdraft (2).json` (vdraft2)
-**Versao anterior:** `amil-ficha_ginecologia-vdraft.json` (vdraft1)
-**Playbook de referencia:** `playbooks/playbook_ginecologia_auditado.md`
-**Sessao 007:** 2026-03-03 — analise inicial (vdraft1) por Claude Code
-**Sessao 008:** 2026-03-03 — atualizacao (vdraft2) + DOCX + feedback Dan
-**Status:** Aguardando aplicacao das correcoes pendentes na plataforma Daktus
+**Versao analisada:** `amil-ficha-ginecologia-v1.0.0.json`
+**Versoes anteriores:** vdraft1, vdraft2
+**Playbook de referencia:** `especialidades/ginecologia/playbooks/playbook_ginecologia_auditado.md`
+**Sessao 007:** 2026-03-03 — analise inicial (vdraft1)
+**Sessao 008:** 2026-03-03 — atualizacao (vdraft2)
+**Sessao 011:** 2026-03-04 — auditoria v1.0.0 + feedback Gabriel
+**Status:** Correcoes criticas pendentes (is True + typo DXA)
 
 ---
 
-## Estrutura do JSON (8 nos — identica entre vdraft1 e vdraft2)
+## Estrutura do JSON (8 nos — identica desde vdraft1)
 
 | No | Tipo | Questoes | Descricao |
 |----|------|----------|-----------|
@@ -25,7 +26,7 @@
 
 ---
 
-## Summary — clinicalExpressions (vdraft2)
+## Summary — clinicalExpressions (v1.0.0)
 
 | Nome | Formula |
 |------|---------|
@@ -34,25 +35,28 @@
 | `rastreio_cervical_intensificado` | `(age >= 25) and (not 'hpv_menos_1a' in hpv) and ((imunocomprometimento is True) or ('nic2_mais' in hist_oncologico)) and (histerectomia_previa is False)` |
 | `co_teste_papanicolau` | `((imunocomprometimento is True) and (age >= 25) and (not 'papa_menos_1a' in papa)) or (('nic2_mais' in hist_oncologico) and (histerectomia_previa is True) and (not 'papa_menos_1a' in papa))` |
 | `trh_indicada` | `('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)` |
-| `espessamento_endometrial_significativo` | `('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados) and ((espessura_endometrial > 4) and (not 'trh' in muc)) or ((espessura_endometrial > 8) and ('trh' in muc))` — **VER C1** |
+| `espessamento_endometrial_significativo` | `(('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados)) or (((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual))` |
 | `poi_suspeita` | `('trouxe_lab' in exames_recentes) and (fsh_resultado > 25) and (age < 45)` |
 
 ---
 
-## Resolucoes de vdraft1 → vdraft2
+## Resolucoes vdraft1 → vdraft2 → v1.0.0
 
-Os achados abaixo foram corrigidos entre versoes. Confirmados por comparacao direta dos JSONs.
-
-| Achado (sessao 007) | Status | O que mudou |
-|--------------------|--------|------------|
-| C2: `pos_coital` → colposcopia direta | **RESOLVIDO** | `pos_coital` removido da condicao de colposcopia; agora aciona citopatologia (fluxo correto: citologia → se ASC-US+ → colpo) |
-| C3: BI-RADS 3 → encaminhamento mastologia | **RESOLVIDO** | Encaminhamento mastologia BI-RADS 3 removido; BI-RADS 3 tratado so por USG + orientacao |
-| C4: VitD para toda menopausa | **RESOLVIDO** | `'menopausa' in status_menstrual` removido da condicao de VitD |
-| C6: DXA sem FR adicionais para menopausada <65 | **RESOLVIDO (parcial)** | `tabagismo` e `etilismo_pesado` adicionados ao gate <65; parenteses corrigidos |
-| M1: HIV/HCV sem trigger de uma vez na vida | **RESOLVIDO** | HIV: `age >= 15 and age <= 65`; HCV: `age >= 18 and age <= 79` adicionados |
-| M2: Lipidograma sem trigger por idade | **RESOLVIDO** | `age >= 40` adicionado como criterio standalone |
-| M3: Galactorreia sem entry point isolado | **RESOLVIDO** | Expressao de galactorreia inclui agora `queixa_mamaria` |
-| C1: Biopsia + CAF condicoes identicas | **PARCIALMENTE RESOLVIDO** | CAF/Conizacao agora so para NIC3; biopsia ainda NIC2 + NIC3 — aceitavel (biopsia confirma NIC2 antes de tratar) |
+| Achado | Status | O que mudou |
+|--------|--------|------------|
+| C1-antigo: `pos_coital` → colposcopia direta | **RESOLVIDO (vdraft2)** | Movido para citopatologia |
+| C3-antigo: BI-RADS 3 → encaminhamento mastologia | **RESOLVIDO (vdraft2)** | Removido; BI-RADS 3 tratado por USG |
+| C4-antigo: VitD para toda menopausa | **RESOLVIDO (vdraft2)** | Removido gate universal |
+| C6-antigo: DXA sem FR <65 | **RESOLVIDO (vdraft2)** | tabagismo + etilismo adicionados |
+| M1: HIV/HCV sem trigger por idade | **RESOLVIDO (vdraft2)** | Age gates adicionados |
+| M2: Lipidograma sem trigger por idade | **RESOLVIDO (vdraft2)** | `age >= 40` adicionado |
+| M3: Galactorreia sem entry point | **RESOLVIDO (vdraft2)** | queixa_mamaria incluido |
+| C1-biopsia: Biopsia + CAF iguais | **RESOLVIDO (vdraft2)** | CAF so NIC3; biopsia NIC2+NIC3 |
+| **C1** — espessamento formula OR quebrada | **RESOLVIDO (v1.0.0)** | Parenteses e menopausa gate restaurados |
+| **I1** — LSIL → colposcopia imediata | **RESOLVIDO (v1.0.0, decisao clinica)** | Manter conservador — Gabriel+Dan |
+| **I2** — `cito_nao_realizada` preselected | **RESOLVIDO (v1.0.0)** | Gabriel removeu preselected |
+| Hemograma restritivo (feedback Gabriel) | **RESOLVIDO (v1.0.0)** | Ampliado: `not 'trouxe_lab' in exames_recentes` |
+| Creatinina ausente (feedback Gabriel) | **RESOLVIDO (v1.0.0)** | Adicionada: `selected_any(comorbidades, 'has', 'dm')` |
 
 ---
 
@@ -60,79 +64,79 @@ Os achados abaixo foram corrigidos entre versoes. Confirmados por comparacao dir
 
 ---
 
-### C1 — `espessamento_endometrial_significativo`: regressao de parenteses
+### C2 — `espessamento_endometrial_significativo`: usos sem `is True` (PARCIAL)
 
-**Formula atual (vdraft2):**
-```
-('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados)
-and ((espessura_endometrial > 4) and (not 'trh' in muc))
-or ((espessura_endometrial > 8) and ('trh' in muc))
-```
+**Corrigido:**
+- Histeroscopia (L3050): `espessamento_endometrial_significativo is True` ✓
 
-**Problema:** Devido a precedencia de operadores (AND > OR), o segundo branch avalia sem o gate de menopausa e sem o gate de USGTV. A expressao efetiva e:
-```
-(trouxe_usgtv AND usgtv_espessamento AND espessura>4 AND not_trh)
-OR
-(espessura>8 AND trh)   ← dispara para QUALQUER paciente com TRH e espessura>8, mesmo pre-menopausada
-```
+**Ainda bare:**
+- Encaminhamento GO Oncologico (L5297): `('pos_menopausa' in sua_padrao) and espessamento_endometrial_significativo`
+- Mensagem alerta espessura (L5700): `espessamento_endometrial_significativo`
 
-O gate `('menopausa' in status_menstrual)` presente no vdraft1 foi perdido.
+**Correcao:** Adicionar `is True` nos dois usos bare.
 
-**Impacto clinico:** Qualquer paciente usando TRH (incluindo pre-menopausada com SOP em uso de TRH ou ACO) com espessura > 8mm dispararia "espessamento significativo" → encaminhamento GO Oncologico + alerta de sangramento pos-menopausa.
-
-**Formula correta:**
-```
-(('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados))
-or
-(('menopausa' in status_menstrual) and
- (((espessura_endometrial > 4) and (not 'trh' in muc))
-  or ((espessura_endometrial > 8) and ('trh' in muc))))
-```
-
-**Feedback Dan:** ___
+**Feedback Dan (sessao 011):** Identificado e reportado ao Gabriel na 1:1. Gabriel confirmou que vai corrigir.
 
 ---
 
-### C2 — `espessamento_endometrial_significativo`: usos sem `is True`
+### C3 — `trh_indicada`: usos sem `is True` (PARCIAL)
 
-**Contexto:** `espessamento_endometrial_significativo` e uma clinicalExpression (variavel booleana derivada do summary). Deve ser referenciada como `espessamento_endometrial_significativo is True` nas condicionais de conduta.
+**Corrigido:**
+- Progesterona micronizada (L5087): `(trh_indicada is True) and (histerectomia_previa is False)` ✓
 
-**Usos bare (sem `is True`) no vdraft2:**
-- Encaminhamento "GO Oncologico — sangramento pos-menopausa": `... and espessamento_endometrial_significativo`
-- Mensagem "Alerta: espessura endometrial aumentada": `espessamento_endometrial_significativo`
+**Ainda bare (4 usos):**
+- Estradiol 1mg (L5056): `trh_indicada`
+- Estradiol adesivo (L5118): `trh_indicada and ('obesidade' in comorbidades or ...)`
+- Tibolona (L5180): `trh_indicada\nand (not 'ca_mama_pessoal' in ...)`
+- Mensagem TRH janela (L5710): `trh_indicada`
 
-**Usos corretos (`is True`) — ja corretos:**
-- Histeroscopia: `espessamento_endometrial_significativo is True` ✓
+**Correcao:** Substituir `trh_indicada` por `trh_indicada is True` em todos. Remover `\n` da condicao da tibolona.
 
-**Correcao:** substituir `espessamento_endometrial_significativo` por `espessamento_endometrial_significativo is True` em todos os usos bare.
-
-**Feedback Dan:** ___
-
----
-
-### C3 — `trh_indicada`: usos sem `is True`
-
-**Usos bare (sem `is True`) no vdraft2:**
-- Estradiol 1mg: `trh_indicada`
-- Estradiol adesivo transdermico: `trh_indicada and (...)`
-- Tibolona 2,5mg: `trh_indicada and (...)`
-- Mensagem "TRH: janela de oportunidade": `trh_indicada`
-
-**Nenhum uso usa `is True`.** Todos devem ser `trh_indicada is True`.
-
-**Feedback Dan:** ___
+**Feedback Dan (sessao 011):** Identificado na 1:1 com Gabriel. Pendente correcao.
 
 ---
 
-### C4 — `alto_risco_mama`: usos sem `is True`
+### C4 — `alto_risco_mama`: usos sem `is True` (PARCIAL)
 
-**Usos bare no vdraft2:**
-- Mamografia: `... or alto_risco_mama` (no final da condicao)
-- RM Mama: `alto_risco_mama or ('birads_4_5' in mamo_resultado)`
+**Corrigido:**
+- Mamografia (L2842): `alto_risco_mama is True` ✓
+- USG mama (L2894): `alto_risco_mama is True` ✓
+- RM mama (L2946): `(alto_risco_mama is True)` ✓
 
-**Correcao:** `alto_risco_mama is True`.
+**Ainda bare (1 uso):**
+- Orientacao rastreamento mama (L2438): `(age >= 40 and age <= 74) or 'queixa_mamaria' in queixa_principal or alto_risco_mama`
 
-**Feedback Dan:** ___
+**Correcao:** `alto_risco_mama is True`
+
+**Feedback Dan (sessao 011):** Gabriel ja corrigiu os exames; falta a orientacao.
+
+---
+
+### NEW-C1 — TYPO: `seletec_any` na condicao de DXA
+
+**Linha 3154 — Densitometria ossea:**
+```
+...or seletec_any(historia_social, 'tabagismo', 'etilismo_pesado')
+```
+
+**Impacto:** `seletec_any` nao e funcao valida. Mulher pos-menopausada <65 com tabagismo ou etilismo pesado NAO tera DXA solicitada. O playbook lista ambos como fatores de risco.
+
+**Correcao:** `selected_any(historia_social, 'tabagismo', 'etilismo_pesado')`
+
+**Feedback Dan (sessao 011):** Bug novo descoberto na v1.0.0. Prioridade critica.
+
+---
+
+### NEW-C2 — clinicalExpressions bare na orientacao cervical
+
+**Linha 2429 — Orientacao "Rastreamento cervical (HPV)":**
+```
+(rastreio_cervical_habitual) or (rastreio_cervical_intensificado) or ('nic2_mais' in hist_oncologico and ...) or (co_teste_papanicolau)
+```
+
+Tres clinicalExpressions bare (sem `is True`). Os exames correspondentes (HPV DNA, Citopatologia) usam `is True` corretamente — problema isolado na orientacao.
+
+**Correcao:** Adicionar `is True` nas tres.
 
 ---
 
@@ -140,61 +144,51 @@ or
 
 ---
 
-### I1 — LSIL dispara colposcopia imediata
-
-**Condicao colposcopia (vdraft2):**
-```
-('hpv_16_18' in hpv_resultado) or
-(selected_any(citologia_reflexa_resultado, 'cito_asc_us', 'cito_lsil', 'cito_hsil_mais'))
-```
-
-**Problema:** `cito_lsil` aciona colposcopia imediata. O protocolo ASCCP/FEBRASGO 2024 para hrHPV nao-16/18 + LSIL na **primeira ocorrencia**: seguimento com DNA-HPV em 1 ano, nao colposcopia direta. Colposcopia imediata por LSIL so se persistente (≥2 resultados LSIL) em ≥30 anos com HPV positivo.
-
-**Limitacao da ficha:** O campo unico `citologia_reflexa_resultado` nao diferencia "primeiro LSIL" de "LSIL persistente". Ha dois caminhos:
-1. **Manter como esta** — opcao conservadora (nao perde lesao); gera alguma sobrerreferencia
-2. **Separar por colpo imediata vs seguimento** — mais preciso, mais complexo
-
-**Decisao do usuario (Dan):** Manter ou bifurcar?
-
-**Feedback Dan:** ___
-
----
-
-### I2 — `citologia_reflexa_resultado`: opcao padrao pode disparar falsos alertas
-
-**Questao em N5:** `citologia_reflexa_resultado` com opcoes `['cito_negativa', 'cito_asc_us', 'cito_lsil', 'cito_hsil_mais', 'cito_nao_realizada']`.
-
-Se `cito_nao_realizada` e a opcao preselected (padrao), toda paciente com hrHPV nao-16/18 que nao responder ativamente a questao tera a mensagem "citologia reflexa nao realizada — pendente" disparada automaticamente.
-
-**Verificar:** qual e o `preselected` atual desta questao no JSON? O correto e que nao haja preselected, ou que seja uma opcao neutra.
-
-**Citopatologia tambem dispara**: `or ('cito_nao_realizada' in citologia_reflexa_resultado)` — isso significa que o exame de Papanicolau vai aparecer na conduta quando a citologia nao foi realizada, que e intencional (lembrar o medico de pedila). Esse comportamento e correto.
-
-**Ponto de atencao apenas:** confirmar que `preselected` da questao nao e `cito_nao_realizada`.
-
-**Feedback Dan:** ___
-
----
-
 ### I3 — `hpv_resultado_nd` sem conduta definida
 
-**Cenario:** paciente traz resultado de HPV mas o laudo nao especifica tipo ("resultado nao discriminado").
+A opcao `hpv_resultado_nd` ("Nao disponivel / nao lembra") existe em `hpv_resultado` mas nenhuma mensagem, conduta ou encaminhamento e gateada por ela. Medico sem orientacao.
 
-**Opcao:** `hpv_resultado_nd` existe em `hpv_resultado` mas nao ha mensagem, conduta ou encaminhamento para este caso. O medico fica sem orientacao.
+**Sugestao:** Mensagem: "HPV positivo — resultado sem discriminacao de subtipo. Solicitar novo exame com genotipagem parcial para conduta especifica."
 
-**Sugestao:** adicionar mensagem: "HPV positivo — resultado nao discrimina subtipo. Solicitar novo exame com genotipagem parcial para conduta especifica."
-
-**Feedback Dan:** ___
+**Feedback Dan (sessao 011):** Pendente — nao discutido na 1:1.
 
 ---
 
-### I4 — `diu_contraindicacao` coletado mas sem uso em conduta
+### I4 — `diu_contraindicacao` coletado sem uso
 
-Da sessao 007, ainda pendente. A questao coleta contraindicacoes ao DIU (gestacao, DIP ativa, distorcao cavitaria...) mas nenhum item de conduta e gateado por ela. O sistema pode orientar insercao mesmo com gestacao ou DIP ativa declarada.
+A questao coleta CI ao DIU (gestacao, DIP ativa, distorcao cavitaria) mas nenhum item de conduta e gateado por ela. Sistema pode orientar insercao mesmo com gestacao declarada.
 
-**Sugestao:** mensagem de alerta condicional: `selected_any(diu_contraindicacao, 'gestacao', 'dip_ativa') → "Insercao contraindicada no momento presente."`.
+**Sugestao:** Mensagem de alerta: `selected_any(diu_contraindicacao, 'gestacao', 'dip_ativa') → "Insercao de DIU contraindicada no momento."`.
 
-**Feedback Dan:** ___
+**Feedback Dan (sessao 011):** Pendente — nao discutido na 1:1.
+
+---
+
+### NEW-I1 — Hemograma com condicao excessivamente ampla (DECISAO CONSCIENTE)
+
+**Condicao:** `(not 'trouxe_lab' in exames_recentes)` — aparece para toda paciente que nao trouxe exames.
+
+**Playbook:** Hemograma como "rastreamento anual" (evidencia C).
+
+**Decisao:** Gabriel optou por ampliar: "essa ficha ja vai mudar, galera vai chiar... melhor deixar mais aberta" (1:1, min 06:19).
+
+**Acao:** Nenhuma correcao. Decisao documentada.
+
+---
+
+### NEW-I2 — Creatinina com CID incorreto
+
+**Linha 4151:** CID `E78.5` (hiperlipidemia) para exame de creatinina. Deveria ser CID de avaliacao renal (ex: `N18.9` DRC ou `Z13.6` rastreio nefropatia).
+
+**Impacto:** Administrativo — pode causar glosa. Nao afeta clinica.
+
+---
+
+### NEW-I3 — Variaveis `anemia_laboratorial` e `alt_tsh` no script mas nao no JSON
+
+O script `audit_logic.py` espera `anemia_laboratorial` e `alt_tsh` como clinicalExpressions, mas elas nao existem na ficha de ginecologia. O script tem lista hardcoded que pode nao se aplicar a todas as fichas.
+
+**Acao:** Verificar se essas variaveis sao necessarias para ginecologia. Se nao, remover da lista expected do script.
 
 ---
 
@@ -206,32 +200,26 @@ Da sessao 007, ainda pendente. A questao coleta contraindicacoes ao DIU (gestaca
 
 **Formula atual:** `selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama')`
 
-**Playbook lista como alto risco tambem:** lesoes proliferativas (HLA, HDA, CLIS, CDIS) e familiar de 1o grau com CA mama/ovario.
+**Playbook lista alto risco tambem:** lesoes proliferativas (HLA, HDA, CLIS, CDIS), familiar 1o grau CA mama/ovario, risco >=20% Tyrer-Cuzick/IBIS.
 
-Esses criterios nao estao capturados. Mulheres com essas historias nao teriam RM mama anual solicitada.
-
-Ver tambem **Sugestao de Nova Pergunta (historia_familiar_ca)** abaixo — a adicao de `historia_familiar_ca` permite expandir `alto_risco_mama`.
-
-**Feedback Dan:** ___
+Implementacao depende da adicao de `historia_familiar_ca` (ver sugestao abaixo).
 
 ---
 
-### F2 — Testosterona / DHEA / 17-OHP: comportamento esperado mas nao documentado
+### F2 — Testosterona / DHEA / 17-OHP: comportamento documentado
 
-Os tres exames disparam com `not 'sem_sinais' in hiperandrogenismo_sinais`. A questao `hiperandrogenismo_sinais` so aparece em N4 quando ha `amenorreia_irregularidade` ou `sop` em comorbidades. Fora do N4, a variavel e nula e os exames nao disparam — comportamento correto.
-
-**Ponto:** nao e um bug; e um padrao intencional. Apenas documentar para referencia futura.
+Disparam com `not 'sem_sinais' in hiperandrogenismo_sinais`. A questao so aparece em N4 quando ha queixa relevante. Fora do N4, variavel nula = exames nao disparam. Comportamento correto e intencional.
 
 ---
 
 ## Sugestao de Nova Pergunta — `historia_familiar_ca`
 
-**Justificativa (usuario Dan):** Canceres tem padroes hereditarios distintos. A ausencia de historia familiar na triagem de enfermagem e uma lacuna real:
+**Justificativa:** Canceres tem padroes hereditarios distintos. Ausencia de historia familiar na triagem e uma lacuna:
 - CA mama/ovario: BRCA1/2, familiar 1o grau
-- CA endometrio/coloretal: Sindrome de Lynch
-- CA colo do utero: HPV-dependente, pouca hereditariedade direta
+- CA endometrio/colorretal: Sindrome de Lynch
+- CA colo do utero: HPV-dependente, pouca hereditariedade
 
-**Localizacao sugerida:** N1 (triagem/enfermagem), sempre visivel
+**Localizacao:** N1 (triagem/enfermagem), sempre visivel
 
 **Proposta:**
 ```
@@ -245,94 +233,78 @@ options:
   - fam_ca_endometrio       [Cancer de endometrio / suspeita de Lynch]
   - fam_ca_coloretal        [Cancer colorretal (Lynch)]
   - fam_brca_conhecido      [Mutacao BRCA confirmada na familia]
-expressao: (nenhuma — sempre visivel)
 ```
 
 **Impacto nas clinicalExpressions:**
 
-`alto_risco_mama` deve expandir para:
+`alto_risco_mama` expandiria para:
 ```
 (selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama'))
 or (selected_any(historia_familiar_ca, 'fam_ca_mama', 'fam_ca_ovario', 'fam_brca_conhecido'))
 ```
 
-Nova expression `lynch_suspeita` (para USGTV anual e encaminhamento Lynch):
+Nova expression `lynch_suspeita`:
 ```
 selected_any(historia_familiar_ca, 'fam_ca_endometrio', 'fam_ca_coloretal')
 ```
 
-`lynch_suspeita` permitiria: ativar USGTV anual para vigilancia endometrial, criar encaminhamento GO Oncologico para Lynch, sem depender apenas de `hist_oncologico` (que e a historia da propria paciente, nao familiar).
-
-**Feedback Dan:** ___
+**Status:** NAO implementada na v1.0.0. Nao discutida na 1:1. Melhoria futura.
 
 ---
 
-## Achados que PASSARAM — verificados como conformes ao protocolo
+## Resultado de Scripts de Validacao (sessao 011)
 
-| Topico | Verificacao | vdraft2 |
-|--------|------------|---------|
-| HPV primario, 25-64 anos | `rastreio_cervical_habitual is True` | OK ✓ |
-| Imunossuprimida sem limite 64 | `rastreio_cervical_intensificado is True` sem age <= 64 | OK ✓ |
-| HPV 16/18 → colposcopia direta | Sem citologia intermediaria | OK ✓ |
-| pos_coital → citologia (nao colposcopia) | Movido da colposcopia para citopatologia | OK ✓ |
-| hrHPV outros → citologia reflexa | `'hpv_outros_hr' in hpv_resultado` | OK ✓ |
-| co_teste_papanicolau | `is True` + cobre imuno e NIC2+histerectomia | OK ✓ |
-| LSIL + cito_lsil → colpo | ver I1 (adaptacao conservadora, discutivel) | ± |
-| Mamografia 40-74 bienal | `age >= 40 and age <= 74 and mamo_nunca/mais_2a` | OK ✓ |
-| BI-RADS 3 → USG + seguimento (sem mastologia) | Encaminhamento BI-RADS 3 removido | OK ✓ |
-| USGTV nao universal | Sem trigger universal; apenas sintomas/indicacoes | OK ✓ |
-| Histeroscopia por espessamento | `espessamento_endometrial_significativo is True` | OK ✓ |
-| SUA refrataria → histeroscopia | `sua_refrataria is True and usgtv_polipos/espessamento` | OK ✓ |
-| TSH so com indicacao clinica | Nao universal; exige queixa/comorbidade | OK ✓ |
-| T4L so com TSH alterado | `tsh > 4.5 or tsh < 0.3` | OK ✓ |
-| TRH com SVM + sem CI | `trh_indicada is True` nos cervicais; bare nas meds (ver C3) | ± |
-| TRH: progesterona + histerectomia | `histerectomia_previa is False` na progesterona | OK ✓ |
-| Estradiol vaginal: atrofia + sem CI | Condicao separada de TRH sistemica | OK ✓ |
-| POI: FSH>25 + idade<45 | `poi_suspeita is True` | OK ✓ |
-| DIP: alerta imediato | `suspeita_dip is True` | OK ✓ |
-| HIV age 15-65 | Adicionado no vdraft2 | OK ✓ |
-| HCV age 18-79 | Adicionado no vdraft2 | OK ✓ |
-| Lipidograma age >= 40 | Adicionado no vdraft2 | OK ✓ |
-| Alendronato T-score <= -2.5 | Condicao presente | OK ✓ |
-| Encaminhamento GO Oncologico: NIC2+/NIC3/carcinoma | Presente | OK ✓ |
-| Endometriose profunda → GO Cirurgico | `aine_refrataria or rm_endometriose ou endo_dor_refrataria` | OK ✓ |
-| Lynch → encaminhamento especifico | `'lynch' in hist_oncologico` | OK ✓ |
-| Perda de peso → encaminhamento Nutricao | `perda_peso_intensa is True` | OK ✓ |
+**validate_json.py:** ✓ JSON valido — 8 nodes, 7 edges
+**audit_logic.py:** 0 criticos, 0 altos, 5 medios (2 variaveis esperadas nao definidas + 3 numeric guards)
 
 ---
 
-## Resumo de Prioridades para Correcao (vdraft2 → vdraft3)
+## Resumo de Prioridades para Correcao (v1.0.0 → v1.0.1)
 
-| # | Achado | Severidade | Acao necessaria |
-|---|--------|-----------|-----------------|
-| C1 | `espessamento_endometrial_significativo` formula OR quebrada (menopausa gate perdido) | CRITICO | Restaurar formula com parenteses e menopausa gate |
-| C2 | `espessamento_endometrial_significativo` bare (sem `is True`) em encaminhamento e mensagem | CRITICO | Adicionar `is True` |
-| C3 | `trh_indicada` bare em 4 condutas | CRITICO | Adicionar `is True` |
-| C4 | `alto_risco_mama` bare em 2 condutas | CRITICO | Adicionar `is True` |
-| I1 | LSIL → colposcopia imediata vs repetir citologia | IMPORTANTE | Decisao clinica de Dan |
-| I2 | `citologia_reflexa_resultado`: verificar preselected | IMPORTANTE | Verificar na plataforma |
-| I3 | `hpv_resultado_nd` sem conduta | IMPORTANTE | Adicionar mensagem fallback |
-| I4 | `diu_contraindicacao` sem uso em conduta | MODERADO | Adicionar alerta de CI absoluta |
-| F1 | `alto_risco_mama` sem lesoes proliferativas | INFORMACIONAL | Expandir com `historia_familiar_ca` |
-| — | Adicionar questao `historia_familiar_ca` em N1 | SUGESTAO | Implementar em N1; expandir summary |
+| # | Achado | Severidade | Acao |
+|---|--------|-----------|------|
+| NEW-C1 | `seletec_any` typo na DXA | CRITICO | Corrigir para `selected_any` |
+| C2 | `espessamento_endometrial_significativo` bare (2 usos) | CRITICO | Adicionar `is True` |
+| C3 | `trh_indicada` bare (4 usos) | CRITICO | Adicionar `is True` |
+| C4 | `alto_risco_mama` bare (1 uso — orientacao) | CRITICO | Adicionar `is True` |
+| NEW-C2 | 3 clinicalExpressions bare na orientacao cervical | MODERADO | Adicionar `is True` |
+| NEW-I2 | CID creatinina incorreto (E78.5) | MODERADO | Alterar para CID renal |
+| I3 | `hpv_resultado_nd` sem conduta | MODERADO | Adicionar mensagem |
+| I4 | `diu_contraindicacao` sem uso | BAIXO | Adicionar alerta CI absoluta |
+| — | `historia_familiar_ca` em N1 | SUGESTAO | Implementar + expandir summary |
+
+**Total: 8 criticos (is True + typo), 3 moderados, 2 baixos/sugestao**
 
 ---
 
-## Log de Feedback do Dan
+## Log de Feedback — 1:1 Gabriel Paes (2026-03-04)
 
-*Preencher os campos `Feedback Dan:` inline em cada achado acima.*
+### Decisoes tomadas:
+- **I1 (LSIL):** Manter colposcopia para LSIL — abordagem conservadora
+- **I2 (preselected):** Gabriel removeu preselected de `cito_nao_realizada`
+- **Hemograma:** Ampliado para rastreamento universal (sem trouxe_lab)
+- **Creatinina:** Adicionada para HAS/DM
+- **HPV condicional:** Gabriel sugere tirar condicional da pergunta de resultado HPV (nao pre-marcada)
 
-**Data revisao:** ___
-**Ferramenta de revisao:** ___
+### Proximos passos acordados:
+1. Gabriel faz ultima rodada de testes → salva rascunho → avisa Dan
+2. Dan aplica correcoes is True + typo DXA + CID
+3. Dan e Gabriel gravam Loom videos (cenarios clinicos) para modelador Paulo
+4. Proximas especialidades: Pediatria, depois Psiquiatria
+5. Skills environment: alinhar com Humberto, deadline fim de Abril
 
-### Escopo excluido desta auditoria (decisoes ja tomadas)
+---
+
+## Escopo excluido desta auditoria (decisoes ja tomadas)
 - `trouxe_exames` / `age` como campos base
 - Formato geral de queixa_principal com `nenhuma_queixa`
 - Histerectomia_previa como proxy de menopausa cirurgica (conservador, intencional)
-- Biópsia para NIC2 + NIC3 (biopsia confirma antes de CAF) — aceitavel como esta
+- Biopsia para NIC2 + NIC3 (biopsia confirma antes de CAF) — aceitavel
+- Hemograma amplo — decisao consciente do Gabriel
 
 ---
 
 *Sessao 007: analise inicial vdraft1 — Claude Code 2026-03-03*
-*Sessao 008: atualizacao vdraft2 + DOCX + feedback usuario — Claude Code 2026-03-03*
-*Proxima acao: Dan aplica C1-C4 na plataforma; decide I1; adiciona historia_familiar_ca em N1*
+*Sessao 008: atualizacao vdraft2 + DOCX + feedback Dan — Claude Code 2026-03-03*
+*Sessao 011: auditoria v1.0.0 + feedback 1:1 Gabriel — Claude Code 2026-03-04*
+*Proxima acao: Dan aplica 8 correcoes criticas + 3 moderadas na plataforma Daktus*

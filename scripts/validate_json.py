@@ -25,9 +25,10 @@ def validate(filepath):
     # Verificar unicidade de iid no catálogo de condutas
     iids = []
     for node in d['nodes']:
-        if node['id'].startswith('conduta-'):
-            for section in ['exames', 'orientacao', 'encaminhamentos']:
-                for item in node['data'].get('conduta', {}).get(section, []):
+        if node.get('type') == 'conduct':
+            cnd = node['data'].get('condutaDataNode') or {}
+            for section in ['exame', 'medicamento', 'encaminhamento', 'mensagem', 'orientacao']:
+                for item in cnd.get(section, []):
                     iid = item.get('iid') or item.get('id', '')
                     if iid:
                         iids.append(iid)

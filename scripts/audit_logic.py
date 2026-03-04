@@ -53,6 +53,22 @@ class ProtocolAuditor:
                         opts = {o["id"] for o in q.get("options", []) if o.get("id")}
                         self.all_options[uid] = opts
 
+        # Registrar clinicalExpressions do summary como UIDs validos (tipo boolean)
+        for snode in self.summary_nodes:
+            exprs = snode.get("data", {}).get("clinicalExpressions", [])
+            for expr in exprs:
+                if not isinstance(expr, dict):
+                    continue
+                name = expr.get("name", "") or expr.get("uid", "")
+                if name and name not in self.all_questions:
+                    self.all_questions[name] = {
+                        "q": expr,
+                        "node_id": snode["id"],
+                        "node_label": snode["data"].get("label", "Summary"),
+                        "expressao": expr.get("formula", ""),
+                        "select": "clinicalExpression",
+                    }
+
     def _add(self, sev, loc, problem, impact, fix):
         self.issues.append((sev, loc, problem, impact, fix))
 
@@ -158,6 +174,8 @@ class ProtocolAuditor:
                     # Encontrar comparações numéricas
                     num_uids = re.findall(r"(\w+)\s*[><=!]+\s*[\d.]+", cond)
                     for nuid in num_uids:
+                        if nuid in {"age", "sex"}:
+                            continue  # Campos sistema — sempre disponiveis
                         if nuid not in self.all_questions:
                             continue
                         if self.all_questions[nuid]["select"] != "number":
@@ -267,7 +285,7 @@ class ProtocolAuditor:
         ]
         for snode in self.summary_nodes:
             exprs = snode.get("data", {}).get("clinicalExpressions", [])
-            defined = {e.get("uid","") for e in exprs if isinstance(e, dict)}
+            defined = {e.get("name","") or e.get("uid","") for e in exprs if isinstance(e, dict)}
             for v in expected_vars:
                 if v not in defined:
                     self._add("MEDIO", f"Summary/{snode['id'][:20]}",
