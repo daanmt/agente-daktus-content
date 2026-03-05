@@ -5,7 +5,8 @@
 **Sessao 007:** 2026-03-03 — analise inicial (vdraft1)
 **Sessao 008:** 2026-03-03 — atualizacao (vdraft2)
 **Sessao 011:** 2026-03-04 — auditoria v1.0.0 + feedback Gabriel
-**Status:** Correcoes criticas pendentes (is True + typo DXA)
+**Sessao 012:** 2026-03-04 — varredura end-to-end + 5 orientacoes adicionadas
+**Status:** Criticos e moderados resolvidos. I3 e I4 aguardam decisao clinica.
 
 ---
 
@@ -20,7 +21,7 @@
 | N4 | custom | 22 | Fluxo sintomatic |
 | N5 | custom | 17 | Fluxo seguimento (resultados) |
 | Summary | summary | 7 exprs | Processamento silencioso |
-| C-MED | conduct | 38 ex / 23 med / 17 enc / 20 msg | Conduta medica |
+| C-MED | conduct | 39 ex / 23 med / 16 enc / 20 msg / **16 ori** | Conduta medica |
 
 **Roteamento:** pacientes com queixa cursam N4 E N5; sem queixa vao direto a N5.
 
@@ -30,13 +31,13 @@
 
 | Nome | Formula |
 |------|---------|
-| `alto_risco_mama` | `selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama')` |
+| `alto_risco_mama` | `selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama', 'hfam_ca')` |
 | `rastreio_cervical_habitual` | `(age >= 25) and (age <= 64) and ('hpv_nunca' in hpv or 'hpv_mais_5a' in hpv) and (histerectomia_previa is False)` |
 | `rastreio_cervical_intensificado` | `(age >= 25) and (not 'hpv_menos_1a' in hpv) and ((imunocomprometimento is True) or ('nic2_mais' in hist_oncologico)) and (histerectomia_previa is False)` |
 | `co_teste_papanicolau` | `((imunocomprometimento is True) and (age >= 25) and (not 'papa_menos_1a' in papa)) or (('nic2_mais' in hist_oncologico) and (histerectomia_previa is True) and (not 'papa_menos_1a' in papa))` |
 | `trh_indicada` | `('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)` |
 | `espessamento_endometrial_significativo` | `(('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados)) or (((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual))` |
-| `poi_suspeita` | `('trouxe_lab' in exames_recentes) and (fsh_resultado > 25) and (age < 45)` |
+| `poi_suspeita` | `(fsh_resultado > 25) and (age < 45)` |
 
 ---
 
@@ -60,87 +61,22 @@
 
 ---
 
-## Achados Pendentes — CRITICOS
+## Achados — RESOLVIDOS EM v1.0.0 (verificados na sessao 012)
+
+Varredura end-to-end linha a linha confirmou que TODOS os criticos e moderados estao corrigidos:
+
+| Achado | Sessao identificada | Status v1.0.0 |
+|--------|--------------------|--------------:|
+| C2 — `espessamento_endometrial_significativo` bare (2 usos) | 011 | **RESOLVIDO** — busca retornou vazio |
+| C3 — `trh_indicada` bare (4 usos) | 011 | **RESOLVIDO** — busca retornou vazio |
+| C4 — `alto_risco_mama` bare (orientacao mama) | 011 | **RESOLVIDO** — `is True` confirmado |
+| NEW-C1 — typo `seletec_any` na DXA | 011 | **RESOLVIDO** — `selected_any` correto |
+| NEW-C2 — 3 clinicalExpressions bare na orientacao cervical | 011 | **RESOLVIDO** — `is True` confirmado |
+| NEW-I2 — CID creatinina incorreto (E78.5) | 011 | **RESOLVIDO** — CID Z13.6 confirmado |
 
 ---
 
-### C2 — `espessamento_endometrial_significativo`: usos sem `is True` (PARCIAL)
-
-**Corrigido:**
-- Histeroscopia (L3050): `espessamento_endometrial_significativo is True` ✓
-
-**Ainda bare:**
-- Encaminhamento GO Oncologico (L5297): `('pos_menopausa' in sua_padrao) and espessamento_endometrial_significativo`
-- Mensagem alerta espessura (L5700): `espessamento_endometrial_significativo`
-
-**Correcao:** Adicionar `is True` nos dois usos bare.
-
-**Feedback Dan (sessao 011):** Identificado e reportado ao Gabriel na 1:1. Gabriel confirmou que vai corrigir.
-
----
-
-### C3 — `trh_indicada`: usos sem `is True` (PARCIAL)
-
-**Corrigido:**
-- Progesterona micronizada (L5087): `(trh_indicada is True) and (histerectomia_previa is False)` ✓
-
-**Ainda bare (4 usos):**
-- Estradiol 1mg (L5056): `trh_indicada`
-- Estradiol adesivo (L5118): `trh_indicada and ('obesidade' in comorbidades or ...)`
-- Tibolona (L5180): `trh_indicada\nand (not 'ca_mama_pessoal' in ...)`
-- Mensagem TRH janela (L5710): `trh_indicada`
-
-**Correcao:** Substituir `trh_indicada` por `trh_indicada is True` em todos. Remover `\n` da condicao da tibolona.
-
-**Feedback Dan (sessao 011):** Identificado na 1:1 com Gabriel. Pendente correcao.
-
----
-
-### C4 — `alto_risco_mama`: usos sem `is True` (PARCIAL)
-
-**Corrigido:**
-- Mamografia (L2842): `alto_risco_mama is True` ✓
-- USG mama (L2894): `alto_risco_mama is True` ✓
-- RM mama (L2946): `(alto_risco_mama is True)` ✓
-
-**Ainda bare (1 uso):**
-- Orientacao rastreamento mama (L2438): `(age >= 40 and age <= 74) or 'queixa_mamaria' in queixa_principal or alto_risco_mama`
-
-**Correcao:** `alto_risco_mama is True`
-
-**Feedback Dan (sessao 011):** Gabriel ja corrigiu os exames; falta a orientacao.
-
----
-
-### NEW-C1 — TYPO: `seletec_any` na condicao de DXA
-
-**Linha 3154 — Densitometria ossea:**
-```
-...or seletec_any(historia_social, 'tabagismo', 'etilismo_pesado')
-```
-
-**Impacto:** `seletec_any` nao e funcao valida. Mulher pos-menopausada <65 com tabagismo ou etilismo pesado NAO tera DXA solicitada. O playbook lista ambos como fatores de risco.
-
-**Correcao:** `selected_any(historia_social, 'tabagismo', 'etilismo_pesado')`
-
-**Feedback Dan (sessao 011):** Bug novo descoberto na v1.0.0. Prioridade critica.
-
----
-
-### NEW-C2 — clinicalExpressions bare na orientacao cervical
-
-**Linha 2429 — Orientacao "Rastreamento cervical (HPV)":**
-```
-(rastreio_cervical_habitual) or (rastreio_cervical_intensificado) or ('nic2_mais' in hist_oncologico and ...) or (co_teste_papanicolau)
-```
-
-Tres clinicalExpressions bare (sem `is True`). Os exames correspondentes (HPV DNA, Citopatologia) usam `is True` corretamente — problema isolado na orientacao.
-
-**Correcao:** Adicionar `is True` nas tres.
-
----
-
-## Achados Pendentes — IMPORTANTES
+## Achados Pendentes — DECISAO CLINICA NECESSARIA
 
 ---
 
@@ -252,28 +188,45 @@ selected_any(historia_familiar_ca, 'fam_ca_endometrio', 'fam_ca_coloretal')
 
 ---
 
-## Resultado de Scripts de Validacao (sessao 011)
+## Novas Orientacoes — Adicionadas na Sessao 012
 
-**validate_json.py:** ✓ JSON valido — 8 nodes, 7 edges
-**audit_logic.py:** 0 criticos, 0 altos, 5 medios (2 variaveis esperadas nao definidas + 3 numeric guards)
+5 orientacoes clinicas faltantes foram adicionadas ao C-MED (total: 11 → 16):
+
+| # | Nome | Condicao |
+|---|------|----------|
+| 12 | Infertilidade e investigacao da fertilidade | `infertilidade_associada is True` |
+| 13 | Incontinencia urinaria | `incontinencia_urinaria is True` |
+| 14 | Insuficiencia ovariana prematura (POI) | `poi_suspeita is True` |
+| 15 | Hepatites virais e HIV: sorologias alteradas | `('hiv_reagente' in hiv_resultado) or (...)` |
+| 16 | Hiperandrogenismo e virilizacao | `not 'sem_sinais' in hiperandrogenismo_sinais` |
+
+Cada orientacao tem narrativa (texto paciente) preenchida. `conteudo` mantido vazio (padrao das demais).
 
 ---
 
-## Resumo de Prioridades para Correcao (v1.0.0 → v1.0.1)
+## Resultado de Scripts de Validacao (sessao 012)
 
-| # | Achado | Severidade | Acao |
-|---|--------|-----------|------|
-| NEW-C1 | `seletec_any` typo na DXA | CRITICO | Corrigir para `selected_any` |
-| C2 | `espessamento_endometrial_significativo` bare (2 usos) | CRITICO | Adicionar `is True` |
-| C3 | `trh_indicada` bare (4 usos) | CRITICO | Adicionar `is True` |
-| C4 | `alto_risco_mama` bare (1 uso — orientacao) | CRITICO | Adicionar `is True` |
-| NEW-C2 | 3 clinicalExpressions bare na orientacao cervical | MODERADO | Adicionar `is True` |
-| NEW-I2 | CID creatinina incorreto (E78.5) | MODERADO | Alterar para CID renal |
-| I3 | `hpv_resultado_nd` sem conduta | MODERADO | Adicionar mensagem |
-| I4 | `diu_contraindicacao` sem uso | BAIXO | Adicionar alerta CI absoluta |
+**validate_json.py:** JSON valido — 8 nodes, 7 edges, 16 orientacoes
+**audit_logic.py (sessao 011):** 0 criticos, 0 altos — medios confirmados como falsos positivos na sessao 012
+
+---
+
+## Resumo de Status (pos-sessao 012)
+
+| # | Achado | Status | Acao pendente |
+|---|--------|--------|--------------|
+| C2 | `espessamento_endometrial_significativo` bare | **RESOLVIDO** | — |
+| C3 | `trh_indicada` bare | **RESOLVIDO** | — |
+| C4 | `alto_risco_mama` bare | **RESOLVIDO** | — |
+| NEW-C1 | typo `seletec_any` DXA | **RESOLVIDO** | — |
+| NEW-C2 | 3 bare orientacao cervical | **RESOLVIDO** | — |
+| NEW-I2 | CID creatinina incorreto | **RESOLVIDO** | — |
+| Orientacoes (5 topics) | Infertilidade, IU, POI, Hepatites, Hiperandrogenismo | **ADICIONADAS (s012)** | — |
+| I3 | `hpv_resultado_nd` sem conduta | PENDENTE | Decisao clinica Dan |
+| I4 | `diu_contraindicacao` sem uso | PENDENTE | Decisao clinica Dan |
 | — | `historia_familiar_ca` em N1 | SUGESTAO | Implementar + expandir summary |
 
-**Total: 8 criticos (is True + typo), 3 moderados, 2 baixos/sugestao**
+**Status atual: ZERO criticos, ZERO moderados tecnicos. Pendencias sao decisao clinica.**
 
 ---
 
@@ -307,4 +260,5 @@ selected_any(historia_familiar_ca, 'fam_ca_endometrio', 'fam_ca_coloretal')
 *Sessao 007: analise inicial vdraft1 — Claude Code 2026-03-03*
 *Sessao 008: atualizacao vdraft2 + DOCX + feedback Dan — Claude Code 2026-03-03*
 *Sessao 011: auditoria v1.0.0 + feedback 1:1 Gabriel — Claude Code 2026-03-04*
-*Proxima acao: Dan aplica 8 correcoes criticas + 3 moderadas na plataforma Daktus*
+*Sessao 012: varredura end-to-end, confirmacao correcoes, +5 orientacoes — Claude Code 2026-03-04*
+*Proxima acao: Dan decide I3 (hpv_resultado_nd) e I4 (diu_contraindicacao)*

@@ -1,5 +1,5 @@
 # ESTADO — agente-daktus-content
-*Atualizado: 2026-03-04 (sessao 011) | Ferramenta: Claude Code (Opus 4.6)*
+*Atualizado: 2026-03-04 (sessao 012) | Ferramenta: Claude Code (Opus 4.6)*
 
 ---
 
@@ -15,13 +15,12 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 
 **Duas frentes paralelas:**
 
-**[Ginecologia — Auditoria v1.0.0]** Sessao 011 concluida | Status: 8 correcoes criticas pendentes
-- Auditoria atualizada em `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
-- JSON v1.0.0 versionado em `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json`
-- **Resolvidos (v1.0.0):** C1 (espessamento formula), I1 (LSIL conservador), I2 (preselected removido), hemograma ampliado, creatinina adicionada
-- **Criticos pendentes:** 7 usos bare de clinicalExpressions (is True), 1 typo `seletec_any` na DXA
-- **Moderados pendentes:** 3 bare na orientacao cervical, CID creatinina incorreto
-- **Feedback Gabriel:** ficha aprovada no geral; teste final pendente
+**[Ginecologia — Ficha ZERO criticos pendentes]** Sessao 012 concluida
+- Varredura end-to-end confirmou: TODOS os 8 criticos e 3 moderados foram corrigidos no JSON exportado
+- 5 orientacoes clinicas adicionadas: Infertilidade, Incontinencia urinaria, POI, Hepatites/HIV, Hiperandrogenismo
+- JSON agora tem 16 orientacoes (11 originais + 5 novas)
+- **Pendentes (decisao clinica):** I3 (`hpv_resultado_nd` sem conduta), I4 (`diu_contraindicacao` sem uso)
+- **Sugestao futura:** `historia_familiar_ca` em N1 + expansao `lynch_suspeita`
 
 **[Psiquiatria]** Fase 3 — Revisao Clinica Humana | Status: Aguardando Dan
 - Playbook v1.0 em `especialidades/psiquiatria/playbooks/playbook_psiquiatria.md`
@@ -46,7 +45,7 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 ### Ginecologia
 | Artefato | Arquivo | Status |
 |----------|---------|--------|
-| Auditoria JSON | `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md` | v1.0.0 — 8 criticos + 3 moderados pendentes |
+| Auditoria JSON | `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md` | v1.0.0 — zero criticos, 16 orientacoes (s012) |
 | Playbook | `especialidades/ginecologia/playbooks/playbook_ginecologia_auditado.md` | v1.0 auditado |
 | JSON v1.0.0 | `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json` | Atualizado por Gabriel + Dan |
 | JSON vdraft | `especialidades/ginecologia/jsons/amil-ficha_ginecologia-vdraft.json` | Versao anterior (referencia) |
@@ -72,6 +71,8 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 
 ## Ultimas sessoes
 
+**2026-03-04 | Claude Code Opus (sessao 012):** Varredura end-to-end do JSON v1.0.0 — confirmou que todos os 6 achados abertos da sessao 011 foram corrigidos por Dan. Falsos positivos (trouxe_lab em exames) descartados. Adicionadas 5 orientacoes clinicas faltantes (Infertilidade, IU, POI, Hepatites/HIV, Hiperandrogenismo). JSON agora com 16 orientacoes. I3 e I4 pendentes por decisao clinica.
+
 **2026-03-04 | Claude Code Opus (sessao 011):** Auditoria v1.0.0 ginecologia — analisou JSON atualizado pelo Gabriel, extraiu feedback da 1:1, encontrou typo `seletec_any` e bare clinicalExpressions residuais. 5 achados resolvidos na v1.0.0 (C1 formula, I1 LSIL, I2 preselected, hemograma, creatinina). 8 criticos + 3 moderados pendentes. Scripts QA corrigidos (validate_json.py + audit_logic.py).
 
 **2026-03-04 | Claude Code Opus (sessao 010):** Reestruturacao lean — centralizou history/ (10 sessions sequenciais), criou referencia/ (4 projetos entregues), removeu 520KB bloat (transcripts), consolidou INFRAESTRUTURA→SKILL.md e BRIEFING→AGENT_PROMPT, deletou 4 docs obsoletos.
@@ -84,13 +85,11 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 
 ## Proximos passos
 
-**[Ginecologia — Correcoes v1.0.1]**
-1. **[Gabriel]** Ultima rodada de testes → salvar rascunho → avisar Dan
-2. **[Dan]** Aplicar 8 correcoes criticas no Spider (7x `is True` + 1x `seletec_any → selected_any`)
-3. **[Dan]** Aplicar 3 correcoes moderadas (orientacao cervical bare + CID creatinina)
-4. **[Dan/Gabriel]** Gravar Loom videos (cenarios clinicos) para modelador Paulo
-5. **[Dan]** Decidir I3 (`hpv_resultado_nd`) e I4 (`diu_contraindicacao`)
-6. **[Futuro]** Adicionar `historia_familiar_ca` em N1 + expandir `alto_risco_mama`
+**[Ginecologia — Finalizacao]**
+1. **[Dan]** Decidir I3 (`hpv_resultado_nd` sem conduta) — sugestao: mensagem "solicitar novo exame com genotipagem"
+2. **[Dan]** Decidir I4 (`diu_contraindicacao` sem uso) — sugestao: alerta CI absoluta (gestacao, DIP ativa)
+3. **[Dan/Gabriel]** Gravar Loom videos (cenarios clinicos) para modelador Paulo
+4. **[Futuro]** Adicionar `historia_familiar_ca` em N1 + expandir `alto_risco_mama` + criar `lynch_suspeita`
 
 **[Psiquiatria]**
 7. **[Dan]** Revisar playbook em `especialidades/psiquiatria/playbooks/`
@@ -130,7 +129,7 @@ Especialidades entregues: Reumatologia, Cardiologia (em `referencia/`). Em desen
 1. **Este arquivo** (ESTADO.md) — onde estamos
 2. `SKILL.md` — pipeline geral e regras
 3. `tools/skills/{fase-atual}/SKILL.md` — instrucao da fase
-4. Sessao mais recente: `history/session_011.md`
+4. Sessao mais recente: `history/session_012.md`
 5. Auditoria ativa (gineco): `especialidades/ginecologia/research/AUDITORIA_JSON_GINECOLOGIA.md`
 6. Banco evidencias (psy): `especialidades/psiquiatria/research/BANCO_EVIDENCIAS_PSIQUIATRIA.md`
 

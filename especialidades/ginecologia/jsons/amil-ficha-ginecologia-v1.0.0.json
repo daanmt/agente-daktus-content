@@ -4,7 +4,7 @@
     "company": "amil",
     "name": "ficha_ginecologia",
     "version": "draft",
-    "createdAt": "2026-03-03T22:31:16.377Z",
+    "createdAt": "2026-03-04T20:16:04.732Z",
     "description": ""
   },
   "nodes": [
@@ -275,7 +275,7 @@
                 "id": "hpv_1_3a",
                 "label": "1–3 anos",
                 "preselected": false,
-                "exclusive": false
+                "exclusive": true
               },
               {
                 "iid": "5b38f9b8-bdda-470b-a235-cef301baee72",
@@ -1060,10 +1060,51 @@
       }
     },
     {
+      "id": "conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
+      "type": "conduct",
+      "position": {
+        "x": 3600,
+        "y": 100
+      },
+      "data": {
+        "label": "Enfermeiro - Conduta (pausa)",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
+            "condicao": "not ('nenhuma_queixa' in queixa_principal)"
+          },
+          {
+            "linkId": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
+            "condicao": ""
+          }
+        ],
+        "conduta": "conclusao",
+        "condutaDataNode": {
+          "orientacao": [],
+          "exame": [],
+          "medicamento": [],
+          "encaminhamento": [],
+          "mensagem": [
+            {
+              "id": "78f0161a-d9e0-4a02-bc86-804c5843716c",
+              "nome": "Passagem ao médico",
+              "descricao": "<p>Dados da triagem, anamnese e exames anteriores coletados pelo enfermeiro. Prosseguir com avaliação médica.</p>",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "",
+              "conteudo": "",
+              "observacao": ""
+            }
+          ]
+        }
+      }
+    },
+    {
       "id": "node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
       "type": "custom",
       "position": {
-        "x": 3600,
+        "x": 4500,
         "y": 100
       },
       "data": {
@@ -1662,7 +1703,7 @@
       "id": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
       "type": "custom",
       "position": {
-        "x": 4500,
+        "x": 5400,
         "y": 100
       },
       "data": {
@@ -1745,6 +1786,13 @@
                 "label": "Câncer de endométrio prévio",
                 "preselected": false,
                 "exclusive": false
+              },
+              {
+                "iid": "92c23193-b4b4-4273-b00a-c305af1c4114",
+                "id": "hfam_ca",
+                "label": "História familiar de CA de mama ou de ovário",
+                "preselected": false,
+                "exclusive": false
               }
             ]
           },
@@ -1763,28 +1811,28 @@
                 "id": "hpv_negativo",
                 "label": "HPV negativo",
                 "preselected": false,
-                "exclusive": false
+                "exclusive": true
               },
               {
                 "iid": "4b8ca2b9-29f4-4df0-97fe-e62c794bce44",
                 "id": "hpv_16_18",
                 "label": "HPV 16 e/ou 18 positivo",
                 "preselected": false,
-                "exclusive": false
+                "exclusive": true
               },
               {
                 "iid": "302be835-7c21-4fe3-8528-acf05d5f2b3f",
                 "id": "hpv_outros_hr",
                 "label": "Outros hrHPV positivos (não 16/18)",
                 "preselected": false,
-                "exclusive": false
+                "exclusive": true
               },
               {
                 "iid": "9bc635f9-78e6-47c8-985b-9306c36191ec",
                 "id": "hpv_resultado_nd",
                 "label": "Não disponível / não lembra",
-                "preselected": false,
-                "exclusive": false
+                "preselected": true,
+                "exclusive": true
               }
             ]
           },
@@ -2356,7 +2404,7 @@
       "id": "summary-ginecoamil-v1",
       "type": "summary",
       "position": {
-        "x": 5400,
+        "x": 6300,
         "y": 100
       },
       "data": {
@@ -2372,7 +2420,7 @@
           {
             "id": "expr-e6389774-45f9-4f9d-98fd-5e02499308d3",
             "name": "alto_risco_mama",
-            "formula": "selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama')"
+            "formula": "selected_any(hist_oncologico, 'brca', 'rt_toracica', 'ca_mama', 'hfam_ca')"
           },
           {
             "id": "expr-8761cc9a-b1d4-4048-86be-97ba070b1765",
@@ -2392,17 +2440,17 @@
           {
             "id": "expr-7f0dde20-ce1e-41a5-bba5-8b3b230a8937",
             "name": "trh_indicada",
-            "formula": "('svm_moderado' in svm_intensidade or 'svm_grave' in svm_intensidade) and ('sem_ci_trh' in contraindicacao_trh)"
+            "formula": "(selected_any(svm_intensidade, 'svm_moderado', 'svm_grave')) and ('sem_ci_trh' in contraindicacao_trh)"
           },
           {
             "id": "expr-56fbc568-2daa-42bc-9c01-3fc127b343fd",
             "name": "espessamento_endometrial_significativo",
-            "formula": "(('trouxe_usgtv' in exames_recentes) and ('usgtv_espessamento' in usgtv_achados)) or (((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual))"
+            "formula": "('usgtv_espessamento' in usgtv_achados) or (((espessura_endometrial > 4 and not 'trh' in muc) or (espessura_endometrial > 8 and 'trh' in muc)) and ('menopausa' in status_menstrual))"
           },
           {
             "id": "expr-b6b46fb6-4367-417c-8d0e-fab469aef15a",
             "name": "poi_suspeita",
-            "formula": "('trouxe_lab' in exames_recentes) and (fsh_resultado > 25) and (age < 45)"
+            "formula": "(fsh_resultado > 25) and (age < 45)"
           }
         ]
       }
@@ -2411,7 +2459,7 @@
       "id": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
       "type": "conduct",
       "position": {
-        "x": 6300,
+        "x": 7200,
         "y": 100
       },
       "data": {
@@ -2426,7 +2474,7 @@
               "nome": "Rastreamento cervical (HPV)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(rastreio_cervical_habitual) or (rastreio_cervical_intensificado) or ('nic2_mais' in hist_oncologico and (histerectomia_previa is False)) or (co_teste_papanicolau)",
+              "condicao": "(rastreio_cervical_habitual is True) or (rastreio_cervical_intensificado is True) or ('nic2_mais' in hist_oncologico and (histerectomia_previa is False)) or (co_teste_papanicolau is True)",
               "narrativa": "<p>O rastreamento do colo do útero hoje é feito com o <strong>teste de DNA-HPV</strong>, que detecta o vírus antes de qualquer alteração aparecer nas células. Ele substituiu o Papanicolau como exame principal e é mais preciso.</p><p><strong>📅 Com que frequência?</strong></p><ul><li><p>Se o resultado for negativo: repetir a cada <strong>5 anos</strong>.</p></li><li><p>Se você tiver imunidade baixa (HIV, uso de corticoide): repetir todo ano.</p></li><li><p>Se já teve lesão de alto grau (NIC2+) ou câncer tratado: acompanhamento anual por 25 anos.</p></li></ul><p><strong>🔬 O que significa HPV positivo?</strong></p><p>HPV positivo não significa câncer. A maioria das infecções desaparece sozinha. O protocolo indica qual exame fazer a seguir dependendo do tipo de vírus encontrado — siga as orientações do seu médico.</p><p>Não interrompa o acompanhamento mesmo que não tenha sintomas. A detecção precoce salva vidas.</p>",
               "categorias": []
             },
@@ -2435,7 +2483,7 @@
               "nome": "Rastreamento de mama",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 40 and age <= 74) or 'queixa_mamaria' in queixa_principal or alto_risco_mama",
+              "condicao": "(age >= 40 and age <= 74) or ('queixa_mamaria' in queixa_principal) or (alto_risco_mama is True)",
               "narrativa": "<p>O exame das mamas é feito em duas frentes: o que você observa no dia a dia e os exames de imagem indicados pelo médico.</p><p><strong>👀 O que observar?</strong></p><ul><li><p>Nódulos ou caroços novos, mesmo sem dor</p></li><li><p>Mudança no formato ou tamanho da mama</p></li><li><p>Descarga pelo mamilo (especialmente transparente, sanguinolenta ou em um só lado)</p></li><li><p>Alteração na pele (vermelhidão, aspecto de casca de laranja)</p></li></ul><p><strong>📅 Mamografia</strong></p><p>Indicada anualmente a partir dos <strong>40 anos</strong>. O resultado usa uma escala chamada BI-RADS: valores 1 e 2 são normais; BI-RADS 3 pede retorno em 6 meses; BI-RADS 4 ou 5 requer investigação especializada — não é diagnóstico de câncer, é indicação de biópsia.</p><p>Mamas densas (frequentes em mulheres mais jovens) podem precisar de ultrassom complementar. Seu médico irá informar se for o seu caso.</p>",
               "categorias": []
             },
@@ -2453,7 +2501,7 @@
               "nome": "Sangramento fora do padrão",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "'sua' in queixa_principal",
+              "condicao": "('sua' in queixa_principal)",
               "narrativa": "<p>Sangramento em quantidade, frequência ou momento diferente do habitual merece investigação — mas na grande maioria das vezes tem causa benigna e tratamento eficaz.</p><p><strong>Quando buscar avaliação imediata:</strong></p><ul><li><p>Qualquer sangramento após a menopausa</p></li><li><p>Sangramento muito intenso (mais de um absorvente por hora por várias horas)</p></li><li><p>Sangramento com tontura, fraqueza ou dor forte</p></li></ul><p><strong>O que o médico pode investigar:</strong> mioma, pólipo endometrial, alteração hormonal, problema da coagulação ou, mais raramente, alteração do endométrio. O ultrassom transvaginal e, quando necessário, a histeroscopia são os exames que esclarecem a causa.</p><p>O tratamento depende da causa encontrada — pode ser medicamentoso, hormonal ou, em alguns casos, um pequeno procedimento.</p>",
               "categorias": []
             },
@@ -2510,6 +2558,51 @@
               "condicao": "'diu_planejamento' in queixa_principal",
               "narrativa": "<p>O DIU (Dispositivo Intrauterino) é um dos métodos contraceptivos mais eficazes e duradouros disponíveis. Existem dois tipos principais:</p><ul><li><p><strong>DIU hormonal (SIU-LNG):</strong> libera pequena quantidade de progesterona local. Reduz ou elimina a menstruação, alivia cólicas e pode tratar sangramento excessivo. Eficaz por 5–8 anos.</p></li><li><p><strong>DIU de cobre:</strong> não hormonal, opção para quem não pode ou não quer usar hormônios. Pode aumentar o fluxo menstrual nos primeiros meses. Eficaz por até 10 anos.</p></li></ul><p><strong>Após a inserção:</strong></p><ul><li><p>Cólicas leves e sangramento irregular nas primeiras semanas são esperados e passam</p></li><li><p>Verifique os fios mensalmente — se não os sentir, consulte o médico</p></li><li><p>Procure atendimento se tiver febre, dor intensa ou corrimento com odor forte</p></li></ul><p>O DIU não protege contra ISTs. Continue usando preservativo se houver risco.</p>",
               "categorias": []
+            },
+            {
+              "id": "1538f488-00ea-49a1-a0f0-dafd25b977ec",
+              "nome": "Hiperandrogenismo e virilização",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "not 'sem_sinais' in hiperandrogenismo_sinais",
+              "narrativa": "<p>O <strong>hiperandrogenismo</strong> é o excesso de hormônios masculinos (androgênios) na mulher. Pode se manifestar como acne persistente, pelos em excesso (hirsutismo), queda de cabelo com padrão masculino ou, em casos mais intensos, engrossamento da voz e aumento do clitóris.</p><p><strong>Causas mais comuns:</strong> Síndrome dos Ovários Policísticos (SOP) — a mais frequente. Hiperplasia adrenal congênita de início tardio. Em casos raros, tumor produtor de androgênios (suspeitar quando os sintomas surgem de forma rápida e intensa).</p><p><strong>Quando é urgente:</strong> Virilização de início rápido (semanas a poucos meses) é um sinal de alerta que requer investigação imediata. Nesse caso, o encaminhamento ao especialista deve ser prioritário.</p><p><strong>Tratamento:</strong> depende da causa. SOP responde bem a anticoncepcionais hormonais, metformina e mudanças no estilo de vida. Para hirsutismo, antiandrógenos (como espironolactona) reduzem os pelos ao longo de meses. Métodos cosméticos (laser, cera) podem ser usados em conjunto com o tratamento médico.</p><p>Os exames solicitados nessa consulta (testosterona, DHEA-S, 17-OHP) ajudarão o especialista a identificar a origem do problema.</p>",
+              "conteudo": ""
+            },
+            {
+              "id": "d57bef31-cb76-4c65-9b39-89d5b3f4bf4a",
+              "nome": "Hepatites virais e HIV: sorologias alteradas",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('hiv_reagente' in hiv_resultado) or ('hbsag_reagente' in hbsag_resultado) or ('hcv_reagente' in hcv_resultado)",
+              "narrativa": "<p>Um resultado <strong>reagente ou positivo</strong> nas sorologias para hepatite B, hepatite C ou HIV não é um diagnóstico definitivo — é um sinal que precisa de investigação complementar. Na maioria dos casos, o resultado é confirmado por exames adicionais antes de qualquer conduta.</p><p><strong>Hepatite B (HBsAg reagente):</strong> a hepatite B tem vacina e tratamento eficaz. Muitas pessoas convivem com o vírus por anos sem sintomas. O acompanhamento com especialista define se o vírus está ativo e se o tratamento é necessário. Familiares próximos devem ser vacinados.</p><p><strong>Hepatite C (HCV reagente):</strong> hoje existe cura para a hepatite C — em mais de 95% dos casos, com medicamentos orais de curta duração (8–12 semanas). O tratamento impede a progressão para cirrose e câncer de fígado.</p><p><strong>HIV reagente:</strong> o HIV é uma infecção crônica controlável. Com tratamento (TARV), as pessoas vivem décadas com qualidade de vida normal e não transmitem o vírus. O tratamento é gratuito pelo SUS. Quanto antes iniciado, melhor o prognóstico.</p><p>O encaminhamento ao especialista será feito ainda nessa consulta. Não adie — o diagnóstico precoce muda completamente o curso dessas doenças.</p>",
+              "conteudo": ""
+            },
+            {
+              "id": "786fe125-0271-4cd5-82c8-d50ca75f10d7",
+              "nome": "Insuficiência ovariana prematura (POI)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "poi_suspeita is True",
+              "narrativa": "<p>A <strong>insuficiência ovariana prematura (POI)</strong> — também chamada de menopausa precoce — é quando os ovários param de funcionar normalmente antes dos 40 anos. Pode causar menstruação irregular ou ausente, fogachos e dificuldade para engravidar.</p><p><strong>Por que investigar com urgência?</strong><br>Sem estrogênio, os ossos perdem densidade rapidamente e o risco cardiovascular aumenta. O diagnóstico e o tratamento precoces protegem a saúde óssea, cardíaca e a qualidade de vida.</p><p><strong>Fertilidade:</strong> o diagnóstico de POI não significa infertilidade absoluta. Em algumas mulheres, os ovários voltam a funcionar esporadicamente. Se há desejo de gestação, o encaminhamento para reprodução assistida deve ser feito rapidamente.</p><p><strong>Terapia hormonal:</strong> diferente da menopausa natural, na POI a reposição hormonal é fortemente recomendada até pelo menos os 50 anos — não apenas para sintomas, mas para proteção de ossos e coração. Os riscos da TH nesse contexto são muito menores do que os riscos de não tratar.</p><p>O acompanhamento com endocrinologista vai confirmar o diagnóstico, descartar outras causas e definir o tratamento ideal para você.</p>",
+              "conteudo": ""
+            },
+            {
+              "id": "3c8161e7-c619-4123-957b-c3257ef9792a",
+              "nome": "Incontinência urinária",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "incontinencia_urinaria is True",
+              "narrativa": "<p>A <strong>incontinência urinária</strong> — perda involuntária de urina — é muito mais comum do que as mulheres falam. Afeta até 1 em cada 3 mulheres em algum momento da vida e tem tratamento eficaz.</p><p><strong>Dois tipos principais:</strong></p><ul><li><strong>Esforço:</strong> perda de urina ao tossir, espirrar, pular, rir. Causa: fraqueza do assoalho pélvico (músculos que sustentam a bexiga).</li><li><strong>Urgência:</strong> vontade súbita e intensa de urinar, às vezes sem conseguir chegar ao banheiro a tempo. Causa: bexiga hiperativa.</li></ul><p><strong>Fisioterapia pélvica:</strong> é o tratamento de primeira escolha para incontinência de esforço. Exercícios específicos (Kegel) fortalecem o assoalho pélvico e resolvem ou melhoram significativamente os sintomas em 60–70% dos casos. Resultados aparecem em 6–12 semanas de prática regular.</p><p><strong>Como fazer o exercício de Kegel:</strong> contraia os músculos que você usaria para interromper o xixi no meio. Segure por 5 segundos, relaxe por 5. Repita 10–15 vezes, 3 vezes ao dia. Não retenha a respiração.</p><p>Para incontinência de urgência, existem medicamentos e técnicas de reeducação vesical. Converse com seu médico sobre a melhor opção para o seu caso.</p>",
+              "conteudo": ""
+            },
+            {
+              "id": "2130cb40-af9d-4083-aa72-a4714e62a4f6",
+              "nome": "Infertilidade e investigação da fertilidade",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "infertilidade_associada is True",
+              "narrativa": "<p>A <strong>dificuldade para engravidar</strong> é definida como ausência de gestação após 12 meses de relações sexuais sem proteção (ou 6 meses se você tiver mais de 35 anos). Isso é mais comum do que parece — afeta cerca de 1 em cada 6 casais.</p><p><strong>Por onde começa a investigação?</strong><br>A avaliação da fertilidade envolve os dois parceiros. Na mulher, exames hormonais (FSH, LH, estradiol, progesterona), ultrassom e, quando necessário, histeroscopia para avaliar o útero por dentro. No homem, o espermograma é o primeiro passo.</p><p><strong>O que esperar do encaminhamento?</strong><br>O especialista em reprodução humana vai traçar um plano individualizado. Dependendo da causa, o tratamento pode ser clínico (medicamentos para ovulação), cirúrgico (correção de obstrução) ou por reprodução assistida (inseminação ou FIV). A avaliação não é dolorosa na maioria dos casos.</p><p><strong>Fatores que ajudam:</strong> manter peso saudável, não fumar, controlar o estresse e evitar exposição a substâncias tóxicas. Idade importa — procure avaliação sem demora se tiver mais de 35 anos.</p>",
+              "conteudo": ""
             },
             {
               "id": "61d26f7b-e63e-4a83-a555-be5375a50f42",
@@ -2839,7 +2932,7 @@
               "nome": "Mamografia digital bilateral",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "(age >= 40 and age <= 74 and ('mamo_nunca' in mamografia or 'mamo_mais_2a' in mamografia))or (alto_risco_mama is True and not 'mamo_menos_1a' in mamografia)or (nodulo_palpavel is True and age >= 40)",
+              "condicao": "((age >= 40 and age <= 74) and ('mamo_nunca' in mamografia or 'mamo_mais_2a' in mamografia)) or (alto_risco_mama is True and not 'mamo_menos_1a' in mamografia) or (nodulo_palpavel is True and age >= 40)",
               "codigo": [
                 {
                   "iid": "3333fbe6-f091-4d8d-8f17-87bfb65cf62b",
@@ -3151,7 +3244,7 @@
               "nome": "Densitometria óssea - rotina: coluna e fêmur (ou dois segmentos)",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "((selected_any(dxa, 'dxa_nunca', 'dxa_mais_3a')) and (((age >= 65) or (poi_suspeita is True) or ('corticoide_cronico' in muc)) or \r\n((age < 65) and (('menopausa' in status_menstrual) or (histerectomia_previa is True) or ('osteoporose' in comorbidades) or ('corticoide_cronico' in muc) or seletec_any(historia_social, 'tabagismo', 'etilismo_pesado')))))",
+              "condicao": "((selected_any(dxa, 'dxa_nunca', 'dxa_mais_3a')) and (((age >= 65) or (poi_suspeita is True) or ('corticoide_cronico' in muc)) or \r\n((age < 65) and (('menopausa' in status_menstrual) or (histerectomia_previa is True) or ('osteoporose' in comorbidades) or ('corticoide_cronico' in muc) or selected_any(historia_social, 'tabagismo', 'etilismo_pesado')))))",
               "codigo": [
                 {
                   "iid": "024af8e6-f0a3-48c6-833c-bbfb6936d52d",
@@ -4136,7 +4229,7 @@
             },
             {
               "id": "lboy1poj",
-              "nome": "Creatinina",
+              "nome": "Creatinina - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
               "condicao": "(selected_any(comorbidades, 'has', 'dm'))",
@@ -4148,8 +4241,8 @@
                   "nome": ""
                 }
               ],
-              "cid": "E78.5",
-              "indicacao": "Perfil lipídico — risco cardiovascular",
+              "cid": "Z13.6",
+              "indicacao": "Rastreio nefropatia em HAS/DM",
               "narrativa": "",
               "codigoTexto": "",
               "categorias": [
@@ -4243,7 +4336,7 @@
               "nome": "Vitamina B12 - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('cirurgia_bariatrica' in comorbidades) or ('dm' in comorbidades) or (('trouxe_lab' in exames_recentes) and (hemoglobina < 12))",
+              "condicao": "('cirurgia_bariatrica' in comorbidades) or ('dm' in comorbidades) or (hemoglobina < 12)",
               "codigo": [
                 {
                   "iid": "9a1cca5d-3d03-4488-ba94-0ce7a5c26afe",
@@ -4347,7 +4440,7 @@
               "nome": "Ferro sérico - pesquisa e/ou dosagem",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('trouxe_lab' in exames_recentes) and (hemoglobina < 12)",
+              "condicao": "(hemoglobina < 12)",
               "codigo": [
                 {
                   "iid": "5e0ce58d-66cb-4f79-a294-73c52e3a70d5",
@@ -5053,7 +5146,7 @@
               "nome": "Estradiol 1mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "trh_indicada",
+              "condicao": "(trh_indicada is True)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5115,7 +5208,7 @@
               "nome": "Estradiol adesivo transdérmico 0,025–0,05mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "trh_indicada and ('obesidade' in comorbidades or 'has' in comorbidades or 'tabagismo' in historia_social)",
+              "condicao": "(trh_indicada is True) and ('obesidade' in comorbidades or 'has' in comorbidades or 'tabagismo' in historia_social)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5177,7 +5270,7 @@
               "nome": "Tibolona 2,5mg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "trh_indicada\nand (not 'ca_mama_pessoal' in contraindicacao_trh)\nand (not 'tev_previo' in contraindicacao_trh)",
+              "condicao": "(trh_indicada is True) and (not 'ca_mama_pessoal' in contraindicacao_trh) and (not 'tev_previo' in contraindicacao_trh)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5208,7 +5301,7 @@
               "nome": "Levotiroxina 50mcg",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('hipotireoidismo' in comorbidades)\nor ('hipo_tsh_fora_meta' in controle_hipotireoidismo)\nor ('trouxe_lab' in exames_recentes and tsh > 10)",
+              "condicao": "('hipotireoidismo' in comorbidades) or ('hipo_tsh_fora_meta' in controle_hipotireoidismo) or (tsh > 10)",
               "condicionalMedicamento": "domiciliar",
               "quantidade": 1,
               "codigo": [
@@ -5294,7 +5387,7 @@
               "nome": "GO Oncológico — sangramento pós-menopausa com espessamento endometrial",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('pos_menopausa' in sua_padrao) and espessamento_endometrial_significativo",
+              "condicao": "('pos_menopausa' in sua_padrao) and (espessamento_endometrial_significativo is True)",
               "indicacao": "Investigação de CA endometrial",
               "cid": "N95.0",
               "narrativa": "",
@@ -5687,7 +5780,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "'pos_menopausa' in sua_padrao",
+              "condicao": "('pos_menopausa' in sua_padrao)",
               "conteudo": "<p>Sangramento pós-menopausa é sinal de alerta. Solicitar USGTV nesta consulta. Se espessura endometrial > 4mm: histeroscopia com biópsia obrigatória. Não postergar investigação.</p>",
               "observacao": ""
             },
@@ -5697,7 +5790,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "espessamento_endometrial_significativo",
+              "condicao": "(espessamento_endometrial_significativo is True)",
               "conteudo": "<p>Espessura endometrial acima do limiar (>4mm sem TRH / >8mm com TRH). Indicar histeroscopia diagnóstica com biópsia. Encaminhar para GO Oncológico se biópsia com hiperplasia atípica ou carcinoma.</p>",
               "observacao": ""
             },
@@ -5707,7 +5800,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "trh_indicada",
+              "condicao": "(trh_indicada is True)",
               "conteudo": "<p>Paciente elegível para TRH. Janela de oportunidade: iniciar até 10 anos após menopausa ou antes dos 60 anos. Com útero: estrogênio + progestagênio obrigatório. Histerectomizada: estrogênio isolado. Preferir via transdérmica em obesidade, HAS, tabagismo ou histórico de hipertrigliceridemia (menor risco trombótico vs oral). Não há duração máxima definida — individualizar.</p>",
               "observacao": ""
             },
@@ -5777,7 +5870,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "'trouxe_lab' in exames_recentes and tsh > 4.5 and tsh <= 10",
+              "condicao": "(tsh > 4.5) and (tsh <= 10)",
               "conteudo": "<p><strong>TSH entre 4,5 e 10 µUI/mL — hipotireoidismo subclínico.</strong></p><p>Tratamento não é universal nesta faixa. Indicar levotiroxina se: sintomas presentes, anti-TPO positivo, gestação planejada, TSH progressivamente crescente ou &gt; 7–8 µUI/mL em paciente sintomática. Solicitar T4 livre e anti-TPO. Repetir TSH em 3–6 meses se aguardar conduta. Encaminhar à Endocrinologia se dúvida.</p>",
               "observacao": ""
             },
@@ -5815,47 +5908,6 @@
           ]
         }
       }
-    },
-    {
-      "id": "conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
-      "type": "conduct",
-      "position": {
-        "x": 7200,
-        "y": 100
-      },
-      "data": {
-        "label": "Enfermeiro - Conduta (pausa)",
-        "descricao": "",
-        "condicionais": [
-          {
-            "linkId": "node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
-            "condicao": "not ('nenhuma_queixa' in queixa_principal)"
-          },
-          {
-            "linkId": "node-30532994-2e70-49f1-a55d-d4d5455bac1a",
-            "condicao": ""
-          }
-        ],
-        "conduta": "conclusao",
-        "condutaDataNode": {
-          "orientacao": [],
-          "exame": [],
-          "medicamento": [],
-          "encaminhamento": [],
-          "mensagem": [
-            {
-              "id": "78f0161a-d9e0-4a02-bc86-804c5843716c",
-              "nome": "Passagem ao médico",
-              "descricao": "<p>Dados da triagem, anamnese e exames anteriores coletados pelo enfermeiro. Prosseguir com avaliação médica.</p>",
-              "narrativa": "",
-              "condicional": "visivel",
-              "condicao": "",
-              "conteudo": "",
-              "observacao": ""
-            }
-          ]
-        }
-      }
     }
   ],
   "edges": [
@@ -5872,8 +5924,14 @@
       "data": {}
     },
     {
-      "id": "e-node-9c3fbfda-e411-4a17-a7e2-8bde4e53711f-node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
+      "id": "e-node-9c3fbfda-e411-4a17-a7e2-8bde4e53711f-conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
       "source": "node-9c3fbfda-e411-4a17-a7e2-8bde4e53711f",
+      "target": "conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
+      "data": {}
+    },
+    {
+      "id": "e-conduta-a9b1a09a-9491-49c3-a319-9887b553befe-node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
+      "source": "conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
       "target": "node-860d135b-10e7-474f-82e8-1e98f5e2cc66",
       "data": {}
     },
@@ -5893,12 +5951,6 @@
       "id": "e-summary-ginecoamil-v1-conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
       "source": "summary-ginecoamil-v1",
       "target": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
-      "data": {}
-    },
-    {
-      "id": "e-conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a-conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
-      "source": "conduta-07915c23-9cab-48c0-9619-7b63f7fb2d7a",
-      "target": "conduta-a9b1a09a-9491-49c3-a319-9887b553befe",
       "data": {}
     }
   ]
