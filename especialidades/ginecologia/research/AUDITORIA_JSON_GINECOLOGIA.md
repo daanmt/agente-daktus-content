@@ -1,12 +1,13 @@
 # Auditoria de Qualidade — Ficha de Ginecologia (Amil)
-**Versao analisada:** `amil-ficha-ginecologia-v1.0.0.json`
-**Versoes anteriores:** vdraft1, vdraft2
+**Versao analisada:** `amil-ficha_ginecologia-v1.0.0-final.json`
+**Versoes anteriores:** vdraft1, vdraft2, amil-ficha-ginecologia-v1.0.0.json
 **Playbook de referencia:** `especialidades/ginecologia/playbooks/playbook_ginecologia_auditado.md`
 **Sessao 007:** 2026-03-03 — analise inicial (vdraft1)
 **Sessao 008:** 2026-03-03 — atualizacao (vdraft2)
 **Sessao 011:** 2026-03-04 — auditoria v1.0.0 + feedback Gabriel
 **Sessao 012:** 2026-03-04 — varredura end-to-end + 5 orientacoes adicionadas
-**Status:** Criticos e moderados resolvidos. I3 e I4 aguardam decisao clinica.
+**Sessao 013:** 2026-03-04 — analise final pre-publicacao: 7 fixes + 5 orientacoes reinseridas
+**Status:** PRONTO PARA PUBLICACAO. I3 e I4 aguardam decisao clinica (nao bloqueiam publicacao).
 
 ---
 
@@ -257,8 +258,43 @@ Cada orientacao tem narrativa (texto paciente) preenchida. `conteudo` mantido va
 
 ---
 
+---
+
+## Sessao 013 — Analise Final Pre-Publicacao (2026-03-04)
+
+**Arquivo:** `amil-ficha_ginecologia-v1.0.0-final.json`
+
+### Fixes aplicados (7)
+
+| Fix | Tipo | Item | Descricao |
+|-----|------|------|-----------|
+| FIX-1 | Bug critico | MSG-21 (DIU contraindicado) | HTML duplamente escapado -> HTML correto |
+| FIX-2 | Conteudo ausente | MSG-18 (hrHPV nao-16/18 + cito negativa) | Adicionado conteudo clinico |
+| FIX-3 | Conteudo ausente | MSG-19 (NIC1 em colposcopia) | Adicionado conteudo clinico |
+| FIX-4 | Conteudo ausente | MSG-20 (cito reflexa nao realizada) | Adicionado conteudo clinico |
+| FIX-5 | Formatacao | ORI-1 (Rastreamento cervical) | Removidos emojis dos cabecalhos |
+| FIX-6 | Formatacao | ORI-2 (Rastreamento de mama) | Removidos emojis dos cabecalhos |
+| FIX-7 | Formatacao | ORI-3 (Climaterio e TH) | Removido emoji do cabecalho |
+
+### Orientacoes reinseridas (5 da sessao 012 ausentes do JSON final)
+
+O JSON final exportado pelo Gabriel tinha apenas 11 orientacoes — as 5 da sessao 012 nao estavam presentes. Reinseridas com os mesmos ids e conteudos:
+
+| # | Nome | Condicao |
+|---|------|----------|
+| 11 | Hiperandrogenismo e virilizacao | `not 'sem_sinais' in hiperandrogenismo_sinais` |
+| 12 | Hepatites virais e HIV: sorologias alteradas | `('hiv_reagente' in hiv_resultado) or (...)` |
+| 13 | Insuficiencia ovariana prematura (POI) | `poi_suspeita is True` |
+| 14 | Incontinencia urinaria | `incontinencia_urinaria is True` |
+| 15 | Infertilidade e investigacao da fertilidade | `infertilidade_associada is True` |
+
+**Total final: 21 mensagens, 16 orientacoes. validate_json.py: 8 nodes, 7 edges. OK.**
+
+---
+
 *Sessao 007: analise inicial vdraft1 — Claude Code 2026-03-03*
 *Sessao 008: atualizacao vdraft2 + DOCX + feedback Dan — Claude Code 2026-03-03*
 *Sessao 011: auditoria v1.0.0 + feedback 1:1 Gabriel — Claude Code 2026-03-04*
 *Sessao 012: varredura end-to-end, confirmacao correcoes, +5 orientacoes — Claude Code 2026-03-04*
+*Sessao 013: analise final, 7 fixes, 5 orientacoes reinseridas, publicacao — Claude Code 2026-03-04*
 *Proxima acao: Dan decide I3 (hpv_resultado_nd) e I4 (diu_contraindicacao)*
