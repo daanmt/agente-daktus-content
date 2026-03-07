@@ -1,0 +1,795 @@
+{
+  "metadata": {
+    "id": "amil-ficha_psiquiatria",
+    "company": "amil",
+    "name": "ficha_psiquiatria",
+    "version": "1.0.0-draft",
+    "createdAt": "2026-03-07T00:00:00.000Z",
+    "description": "Sessão A: Nós 1 (Triagem) e 2 (Gate P0 C-SSRS) completos. Nós 3–6: stubs pendentes de sessões B–H."
+  },
+  "nodes": [
+    {
+      "id": "node-psiq-01-triagem",
+      "type": "custom",
+      "position": {
+        "x": 900,
+        "y": 100
+      },
+      "data": {
+        "label": "Triagem — Enfermagem",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-02-gate-p0",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "P52001800-e0ba-4103-a537-3b0dd65a4cbe",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "sex",
+            "titulo": "<p><strong>Sexo biológico</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "bba2a72a-bfa4-4e2f-ba08-61cb46e7b750",
+                "id": "male",
+                "label": "Masculino",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "e331f95c-6e95-49ac-af7e-e4b509379584",
+                "id": "female",
+                "label": "Feminino",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pf80a05f6-edd2-4982-b069-53c789d327f5",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "age",
+            "titulo": "<p><strong>Idade (anos)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": []
+          },
+          {
+            "id": "P7956afe2-fd0a-4946-b864-a898c7544c97",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "tipo_consulta",
+            "titulo": "<p><strong>Tipo de consulta</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "092b63ad-0566-4f45-8e84-3a43ccf9d9d8",
+                "id": "primeira_consulta",
+                "label": "Primeira consulta",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "f35a1e68-8cfa-40d3-a779-57d2c7cf1a5b",
+                "id": "retorno",
+                "label": "Retorno",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pbc12d260-6be8-44bb-8a46-f2abb88cd36e",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "motivo_consulta",
+            "titulo": "<p><strong>Motivo principal da consulta</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "42a3d835-79b9-498b-bbbc-8e8264f5792a",
+                "id": "sem_queixa_aguda",
+                "label": "Sem queixa aguda / retorno de rotina",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "5c8f1c55-a959-4813-8b59-8a151958c4fc",
+                "id": "humor_deprimido",
+                "label": "Humor deprimido / tristeza",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7147c3e2-f5b5-4b09-a54f-d2974848f6a5",
+                "id": "humor_elevado_agitacao",
+                "label": "Agitação / euforia / humor elevado",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c890e755-8c51-424b-be09-dc219b8f4067",
+                "id": "ansiedade_panico",
+                "label": "Ansiedade / ataques de pânico",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "1d384ec8-b944-40f0-bd2d-b18d6fbb39bc",
+                "id": "sintomas_psicoticos",
+                "label": "Delírios / alucinações / comportamento desorganizado",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "9c738d66-ada1-444f-a15f-dd32978a0b23",
+                "id": "esgotamento_burnout",
+                "label": "Esgotamento / burnout",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8d8387b3-c544-4cc5-9254-eaefd4d2e719",
+                "id": "deficit_atencao",
+                "label": "Dificuldade de atenção / concentração",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "897f6cd5-3e65-4caf-b0d8-945ba7cb9af9",
+                "id": "comportamento_alimentar",
+                "label": "Preocupação excessiva com peso / comportamento alimentar",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "93833a10-869c-4484-847a-745ea6778ed0",
+                "id": "autolesao",
+                "label": "Autolesão / pensamentos de se machucar",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "449a0bc5-9c99-4c77-a6cb-b86addbeea4a",
+                "id": "insomnia_sono",
+                "label": "Insônia / distúrbio do sono",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "64c447bf-9f1c-49c3-b980-fa1f8742fc2c",
+                "id": "outra_queixa",
+                "label": "Outra queixa",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "Pfa5f2805-27f8-4cfc-a0f0-28d7d87a624b",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "pa_sistolica",
+            "titulo": "<p><strong>PA sistólica (mmHg)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P434abc5b-d089-4502-bde2-9a5c44f68acf",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "pa_diastolica",
+            "titulo": "<p><strong>PA diastólica (mmHg)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P0a00512a-6046-4930-886e-8f115a5ef60e",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "fc",
+            "titulo": "<p><strong>FC (bpm)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pb306895d-2737-4a6f-95fc-5a51bb6e66c1",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "peso",
+            "titulo": "<p><strong>Peso (kg)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pbe8ab89c-4d94-4ee7-b18a-f84c4fd8e1a8",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "altura",
+            "titulo": "<p><strong>Altura (cm)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P2aba8f7a-4d6a-41ff-b9fc-70971156af78",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "exames_trazidos",
+            "titulo": "<p><strong>Exames laboratoriais trazidos</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "5e6f25d6-39c7-40d7-a979-0247c2d7cc28",
+                "id": "nenhum_exame",
+                "label": "Nenhum exame",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "7e3bd921-eef4-449c-964e-594b711a2f9f",
+                "id": "exames_lab_gerais",
+                "label": "Hemograma / metabólico / lipídios / glicemia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "1733fc89-5a3b-404d-9fe9-214a02c80604",
+                "id": "litemia",
+                "label": "Litemia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "5fb8b447-0021-49b7-a5b6-99fea31bbc7d",
+                "id": "nivel_vpa",
+                "label": "Nível sérico de valproato",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "37732092-a9fc-454e-b9da-cdfb2bd4a734",
+                "id": "nivel_cbz",
+                "label": "Nível sérico de carbamazepina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "cacbebce-729b-433c-a247-2975d298d635",
+                "id": "anc_hemograma",
+                "label": "ANC / hemograma (clozapina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ec94192d-69fe-460c-93e4-bec0becc88b5",
+                "id": "ecg",
+                "label": "ECG",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "9052e6f9-f756-44f1-93a6-b1774f416bbb",
+                "id": "outros_exames",
+                "label": "Outros exames",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-02-gate-p0",
+      "type": "custom",
+      "position": {
+        "x": 1800,
+        "y": 100
+      },
+      "data": {
+        "label": "Gate P0 — Avaliação de Risco Suicida (C-SSRS)",
+        "descricao": "<p><strong>OBRIGATÓRIO EM TODA CONSULTA.</strong> Aplicar C-SSRS versão breve. Documentação mandatória — ausência equivale a não conformidade com o protocolo.</p>",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-03-anamnese",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "P2c67d4ea-cf5b-4f31-8a64-e3fa11feef15",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_passiva",
+            "titulo": "<p><strong>Q1: Nas últimas 2 semanas, o paciente desejou estar morto ou adormecer e não acordar?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "c923dea9-a695-4c83-ad7c-263c2b0ccb10",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "a2255473-c967-4530-a7cb-cc34bc3fca29",
+                "id": "nao",
+                "label": "Não",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P2a535064-0f6d-426c-b41d-01961fa27214",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_ativa_sem_plano",
+            "titulo": "<p><strong>Q2: Teve pensamentos de se machucar ou se matar?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "9ebd514e-9e11-423d-a374-4d5b20763d94",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "38577c6b-1fb7-4a65-8a8e-da55e9408c8a",
+                "id": "nao",
+                "label": "Não",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pe942e788-29df-48de-9b6b-f7cfd4ca9303",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_metodo",
+            "titulo": "<p><strong>Q3: Pensou em como faria isso?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "ideacao_ativa_sem_plano == 'sim'",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "0b967a72-b6d2-4418-97b4-9d7ac05c918a",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "94d7a10b-4358-4a09-9a81-2fff24858587",
+                "id": "nao",
+                "label": "Não",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P5ff4a889-f090-49e6-94b5-dbd089bc6bce",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_intencao",
+            "titulo": "<p><strong>Q4: Teve intenção de agir sobre esses pensamentos?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "ideacao_ativa_sem_plano == 'sim'",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "9ce1d572-13be-4225-b7f6-7c9f5659f6d2",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "c368a8cf-c8f3-4e6b-a752-40a667ba485b",
+                "id": "nao",
+                "label": "Não",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pa7146b9d-6cb5-4f1b-8d01-119c013a3794",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_plano",
+            "titulo": "<p><strong>Q5: Chegou a planejar como faria?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "ideacao_ativa_sem_plano == 'sim'",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "4976b259-7d1f-478e-a17f-fcc5a4291d9c",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "7d532a3c-0deb-491a-977c-82e0152a9f39",
+                "id": "nao",
+                "label": "Não",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P8c9da24b-e40d-4a2c-aed5-ede37e318936",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "acesso_meios_letais",
+            "titulo": "<p><strong>Q6: Tem acesso ao método mencionado?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "(ideacao_com_metodo == 'sim') or (ideacao_com_intencao == 'sim') or (ideacao_com_plano == 'sim')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "31184f89-5701-4c38-bf03-070cd7228e05",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "6342b266-6359-4647-bf23-06193fc7d709",
+                "id": "nao",
+                "label": "Não",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P7d0f1b67-341f-4114-a081-b7bebd5c007d",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "tentativa_previa",
+            "titulo": "<p><strong>Q7: Já tentou se machucar ou se matar antes?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "2714a2e4-d03b-418d-a772-4a31ac24ca32",
+                "id": "sim",
+                "label": "Sim",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "63a4961b-8e09-4316-b8bd-9c39e46e990a",
+                "id": "nao",
+                "label": "Não",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P1c32b362-41c0-4011-962b-08e570673401",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "suporte_social",
+            "titulo": "<p><strong>Fatores protetores identificados</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "3382044b-714f-4ec1-b90c-a80273138833",
+                "id": "sem_fatores_protetores",
+                "label": "Sem fatores protetores identificáveis",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b3e904a9-d5fd-4c36-8e3e-4445c3947e8a",
+                "id": "vinculo_familiar",
+                "label": "Vínculo familiar estável",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b04f5aec-8963-4517-8926-23f8610d0170",
+                "id": "filhos_dependentes",
+                "label": "Filhos dependentes",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ba0782a6-a2d0-446f-87b9-4f0f853a1cdb",
+                "id": "religiosidade",
+                "label": "Religiosidade / espiritualidade",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "46505fd2-f035-4101-9a15-0edb7315f4ac",
+                "id": "acesso_sm",
+                "label": "Acesso a serviço de saúde mental",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "09536b85-a814-4d40-ab11-10021457387c",
+                "id": "pertencimento_social",
+                "label": "Pertencimento social / rede de apoio",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P6e956670-698f-41b9-8feb-7cd02ff1b847",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "nivel_risco_p0",
+            "titulo": "<p><strong>Classificação de risco C-SSRS (avaliação clínica integrada)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "a0d4f35d-b87d-4d7c-8283-bd8658bac20b",
+                "id": "sem_risco",
+                "label": "Sem risco identificado",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "90ceca53-c772-4fd3-a00a-fe452c18e448",
+                "id": "baixo",
+                "label": "Risco BAIXO — ideação passiva, sem plano, fatores protetores presentes",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "51066700-972d-4eaa-a4d7-58bd9bd6a7d9",
+                "id": "intermediario",
+                "label": "Risco INTERMEDIÁRIO — ideação ativa sem plano / tentativa prévia",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b8bb0141-220e-4982-b854-9408691f86b1",
+                "id": "alto",
+                "label": "Risco ALTO — ideação com plano + meios + intenção / agitação intensa / psicose ativa",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P289f014f-acb9-445b-a0c0-580d2c95927a",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "spi_realizado",
+            "titulo": "<p><strong>SPI (Safety Planning Intervention) realizado nesta consulta?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "nivel_risco_p0 in ('intermediario', 'alto')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "05da5e8a-0ca7-46b9-9255-9f6ef0da072a",
+                "id": "sim",
+                "label": "Sim — SPI realizado e documentado",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1ae13385-fa03-4ed0-b904-f56feb98227a",
+                "id": "nao",
+                "label": "Não — paciente recusou ou tempo insuficiente",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "7800316c-ae7c-44d2-930a-1a34b36889f6",
+                "id": "encaminhado",
+                "label": "Encaminhado para psicologia / CAPS para SPI",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P1270d4d4-30c6-4811-b256-c12f9665df84",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "internacao_indicada_p0",
+            "titulo": "<p><strong>Internação indicada?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "nivel_risco_p0 == 'alto'",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "92be3051-268a-439b-8958-247ebc1fa935",
+                "id": "sim_involuntaria",
+                "label": "Sim — internação involuntária (risco iminente)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "286c74a2-1f02-4022-b79c-98ca319fb5e3",
+                "id": "sim_voluntaria",
+                "label": "Sim — internação voluntária (paciente consente)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "2bab9298-4dbc-4cac-843f-8e067c5e9cb7",
+                "id": "nao_monitoramento_intensivo",
+                "label": "Não — monitoramento intensivo ambulatorial (retorno em 24–72h)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-03-anamnese",
+      "type": "custom",
+      "position": {
+        "x": 2700,
+        "y": 100
+      },
+      "data": {
+        "label": "Anamnese Psiquiátrica",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-04-diagnostico",
+            "condicao": ""
+          }
+        ],
+        "questions": [],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-04-diagnostico",
+      "type": "custom",
+      "position": {
+        "x": 3600,
+        "y": 100
+      },
+      "data": {
+        "label": "Módulo Diagnóstico Ativo",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-05-farmacos",
+            "condicao": ""
+          }
+        ],
+        "questions": [],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-05-farmacos",
+      "type": "custom",
+      "position": {
+        "x": 4500,
+        "y": 100
+      },
+      "data": {
+        "label": "Monitoramento de Fármacos",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-06-conduta",
+            "condicao": ""
+          }
+        ],
+        "questions": [],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-06-conduta",
+      "type": "custom",
+      "position": {
+        "x": 5400,
+        "y": 100
+      },
+      "data": {
+        "label": "Conduta",
+        "descricao": "",
+        "condicionais": [],
+        "questions": [],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-node-psiq-01-triagem-node-psiq-02-gate-p0",
+      "source": "node-psiq-01-triagem",
+      "target": "node-psiq-02-gate-p0",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-02-gate-p0-node-psiq-03-anamnese",
+      "source": "node-psiq-02-gate-p0",
+      "target": "node-psiq-03-anamnese",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-03-anamnese-node-psiq-04-diagnostico",
+      "source": "node-psiq-03-anamnese",
+      "target": "node-psiq-04-diagnostico",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-04-diagnostico-node-psiq-05-farmacos",
+      "source": "node-psiq-04-diagnostico",
+      "target": "node-psiq-05-farmacos",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-05-farmacos-node-psiq-06-conduta",
+      "source": "node-psiq-05-farmacos",
+      "target": "node-psiq-06-conduta",
+      "data": {}
+    }
+  ]
+}
