@@ -38,9 +38,13 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
-- Fase atual consolidada: Fase 4 — codificação JSON
-- Gate clínico: playbook auditado e liberado para início do JSON
-- Próximo passo macro: consolidar paper design e iniciar construção disciplinada do JSON
+- Fase atual consolidada: **Fase 4 CONCLUÍDA — JSON produzido e validado**
+- Gate clínico: playbook auditado e liberado ✅ | JSON completo ✅ | Validação estrutural PASSOU ✅
+- Artefato: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json`
+  - 6 nodes, 5 edges, 83 questões, 260 iids únicos
+  - Nó 6 (Conduta): 9 alertas, 25 exames TUSS, 13 encaminhamentos, 9 medicamentos
+  - 5 clinicalExpressions no Nó 1 (aliases farmacológicos)
+- Próximo passo macro: Fase 5 — QA final com o usuário, revisão de condicionais e aprovação
 
 ### Infraestrutura do ambiente
 - Status macro: refatoração lean inicial integrada
@@ -99,16 +103,17 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: refatoração estrutural lean do ambiente daktus (2026-03-07)
-- Commit: `8f0aa17` | Push: `origin/main` ✅
-- Foco: criação de AGENTE.md/HANDOFF.md, alinhamento de SKILL.md, precondição de boot nas 7 sub-skills, correção de AGENT_PROMPT, branch-base `main`
+- Sessão: session_014 — Fase 4 Psiquiatria concluída (2026-03-07)
+- Commits: `9d33d01` (Nós 4+5) + `459b6b4` (Nó 6 + clinicalExpressions)
+- Foco: injeção dos Nós 4, 5 e 6 no JSON, validação estrutural, QA de 3 perfis clínicos
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. Iniciar Fase 4 de Psiquiatria — paper design + codificação JSON disciplinada.
-2. Registrar sessões já sob o novo modelo operacional em `history/`.
+1. Fase 5 — QA final e revisão clínica do JSON de Psiquiatria com o usuário.
+2. Corrigir eventuais ajustes de condicionais ou conteúdo clínico.
+3. Promover versão de `1.0.0-draft` para `1.0.0` após aprovação.
 
 ---
 
