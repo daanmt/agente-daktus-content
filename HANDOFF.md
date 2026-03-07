@@ -1,76 +1,71 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-07*
+*Atualizado: 2026-03-07 — sessão de refatoração estrutural concluída*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: refatoração inicial dos arquivos-mestre
-- Especialidade/tema ativo: Psiquiatria + consolidação da infraestrutura lean do ambiente
-- Fase atual: Fase 4 — codificação JSON
-- Artefato em produção: arquitetura de transição para JSON de Psiquiatria sob o novo regime de boot e continuidade
+- Última sessão integrada: refatoração estrutural lean do ambiente daktus
+- Especialidade/tema ativo: Psiquiatria
+- Fase atual: **Fase 4 — codificação JSON** (pronta para início)
+- Artefato em produção: nenhum — refatoração encerrada, JSON aguarda início
 
 ---
 
-## O QUE JÁ ESTÁ INTEGRADO
+## O QUE JÁ ESTÁ INTEGRADO (esta sessão)
 
-- `AGENTE.md` definido como ponto único de entrada
-- `HANDOFF.md` instituído como estado operacional curto
-- `ESTADO.md` reposicionado como snapshot canônico
-- `CLAUDE.md` reduzido a bootstrap mínimo
-- `SKILL.md` reposicionado como orchestrator do pipeline
-- decisão de operar o ambiente sob lógica lean, state-driven e multiagente
+- `AGENTE.md` definido como ponto único de entrada — commitado e pushado
+- `HANDOFF.md` instituído como estado operacional curto — commitado e pushado
+- `ESTADO.md` reposicionado como snapshot canônico — commitado e pushado
+- `CLAUDE.md` reduzido a bootstrap mínimo — commitado e pushado
+- `SKILL.md` reposicionado como orchestrator, rotina de sessão lean — commitado e pushado
+- `tools/AGENT_PROMPT_PROTOCOLO_DAKTUS.md` — linguagem de entrada removida, escopo correto
+- 7 sub-skills — precondição de boot adicionada em todas
+- Branch-base corrigido: `integration/agent` → `main`
+- Commit: `8f0aa17` | Push: `origin/main` ✅
 
 ---
 
 ## O QUE ESTÁ ABERTO AGORA
 
-- validar, em uso real, a consistência do novo regime de boot
-- alinhar workflows, sub-skills e documentos auxiliares ainda presos ao fluxo anterior
-- registrar a primeira sessão completa já operando integralmente sob o novo modelo
-- iniciar codificação JSON de Psiquiatria com base no playbook já auditado
-- verificar se os caminhos documentados refletem exatamente a estrutura real do repositório local
+- Nenhum bloqueio ativo.
+- Próxima ação: iniciar **Fase 4 — codificação JSON de Psiquiatria**.
 
 ---
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. confirmar que os arquivos-mestre refatorados já são a fonte operacional vigente;
-2. revisar workflows e documentos auxiliares que ainda possam apontar para o fluxo antigo;
-3. registrar `history/session_NNN.md` desta transição;
-4. abrir a próxima sessão já usando `AGENTE.md` como boot obrigatório;
-5. iniciar a execução disciplinada da Fase 4 de Psiquiatria.
+1. Abrir `tools/skills/codificacao-json/SKILL.md`
+2. Iniciar com **paper design** — topologia de nós antes de qualquer JSON
+3. Consultar benchmark: `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json`
+4. Consultar playbook aprovado: `especialidades/psiquiatria/playbooks/playbook_psiquiatria.md`
 
 ---
 
-## ARQUIVOS A LER NESTA CONTINUIDADE
+## ARQUIVOS A LER NA PRÓXIMA SESSÃO
 
 1. `AGENTE.md`
 2. `HANDOFF.md`
-3. `ESTADO.md`
+3. `ESTADO.md` (se precisar de contexto completo)
 4. `SKILL.md`
 5. `tools/skills/codificacao-json/SKILL.md`
-6. artefatos de Psiquiatria em `especialidades/psiquiatria/`
-7. benchmark de Ginecologia em `especialidades/ginecologia/`
+6. `especialidades/psiquiatria/playbooks/playbook_psiquiatria.md`
+7. `especialidades/ginecologia/jsons/amil-ficha-ginecologia-v1.0.0.json` (referência UX)
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- fase atual de Psiquiatria
-- branch-base oficial
-- decisões críticas vigentes
-- papel de Ginecologia como benchmark estrutural
+- fase atual de Psiquiatria (Fase 4 — JSON)
+- branch-base: `main`
+- papel de Ginecologia como benchmark estrutural (não copiar lógica clínica)
 - separação entre `HANDOFF.md` e `ESTADO.md`
 - centralidade de `AGENTE.md` como ponto de entrada
 
 ---
 
-## DIVERGÊNCIAS TEMPORÁRIAS / OVERRIDES
+## DIVERGÊNCIAS / OVERRIDES
 
-- Alguns snapshots antigos do repositório ainda podem refletir o fluxo anterior do ambiente.
-- O estado operacional vigente é o definido pelos arquivos-mestre refatorados e pela ordem de autoridade descrita em `AGENTE.md`.
-- Para Psiquiatria, seguir o estado operacional mais recente:
-  - playbook auditado;
-  - início do JSON liberado.
+- `especialidades/psiquiatria/RELATORIO_PROCESSO.md` contém referência histórica a "Daktus/Amil" — mantida por contexto de relatório, não é arquivo operacional.
+- Worktrees antigos em `.claude/worktrees/` são diretórios locais ignorados pelo Git (`.gitignore`). Não representam estado de trabalho ativo.

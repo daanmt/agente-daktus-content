@@ -99,17 +99,16 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Última sessão consolidada: refatoração dos arquivos-mestre e estabelecimento do novo boot do ambiente
-- Foco: centralização do boot em `AGENTE.md` e separação clara entre boot, estado canônico, handoff e pipeline
+- Sessão: refatoração estrutural lean do ambiente daktus (2026-03-07)
+- Commit: `8f0aa17` | Push: `origin/main` ✅
+- Foco: criação de AGENTE.md/HANDOFF.md, alinhamento de SKILL.md, precondição de boot nas 7 sub-skills, correção de AGENT_PROMPT, branch-base `main`
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. Consolidar o uso do novo regime de boot em sessões reais.
-2. Alinhar workflows e sub-skills que ainda apontem para fluxos antigos.
-3. Avançar Psiquiatria em Fase 4 com paper design + codificação JSON disciplinada.
-4. Registrar as próximas sessões já sob o novo modelo operacional.
+1. Iniciar Fase 4 de Psiquiatria — paper design + codificação JSON disciplinada.
+2. Registrar sessões já sob o novo modelo operacional em `history/`.
 
 ---
 
