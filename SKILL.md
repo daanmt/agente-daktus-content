@@ -1,158 +1,368 @@
-# SKILL — PIPELINE DE PRODUCAO DAKTUS
-## Orchestrator | Antigravity Content Team
+# SKILL.md — ORCHESTRATOR DO PIPELINE DO AMBIENTE DAKTUS
+
+## PAPEL DESTE ARQUIVO
+
+Este arquivo orquestra o pipeline de produção do ambiente daktus.
+
+Ele não é o ponto de entrada do ambiente.
+O ponto de entrada é `AGENTE.md`.
+
+Este arquivo existe para:
+- explicitar as fases do pipeline;
+- mostrar quais sub-skills existem;
+- indicar quando cada uma deve ser ativada;
+- preservar a lógica de progressive disclosure;
+- impedir que o agente misture fases ou salte gates.
 
 ---
 
-## O QUE ESTA SKILL FAZ
+## PRÉ-REQUISITO DE USO
 
-Esta e a skill mestra do pipeline de producao de fichas clinicas Daktus. Define a arquitetura de pastas, descreve todas as sub-skills e determina quando invocar cada uma. O agente **nunca avanca de fase sem aprovacao explicita do usuario**.
+Antes de usar este arquivo, o agente já deve ter lido:
 
----
+1. `AGENTE.md`
+2. `HANDOFF.md`, se existir
+3. `ESTADO.md`
 
-## ARQUITETURA CANONICA DE PROJETO
-
-```
-agente-daktus-content/
-├── ESTADO.md                 ← fonte de verdade do estado atual
-├── CLAUDE.md                 ← protocolo de inicio de sessao
-├── SKILL.md                  ← este arquivo (orchestrator)
-├── README.md
-│
-├── tools/                    ← metodo agnostico
-│   ├── skills/               ← 7 sub-skills (uma por fase)
-│   ├── AGENT_PROMPT_PROTOCOLO_DAKTUS.md    ← instrucoes tecnicas JSON
-│   ├── CONTEXTO_FERRAMENTAS_E_METODOS.md   ← como usar bash/python/git
-│   ├── GUARDRAIL_EVIDENCIAS.md             ← gatilhos G1-G6
-│   ├── KICKSTART_NOVA_ESPECIALIDADE.md     ← template de onboarding
-│   └── PADROES_ARQUITETURA_JSON.md         ← padroes reutilizaveis
-│
-├── especialidades/
-│   └── {nome}/
-│       ├── research/         ← banco de evidencias, auditorias, relatorios OE
-│       ├── playbooks/        ← playbook clinico (draft → final)
-│       └── jsons/            ← fichas JSON produzidas
-│
-├── referencia/               ← JSONs e playbooks de projetos ja entregues (read-only)
-│
-├── history/                  ← UNICO diretorio de sessions (001, 002, ...)
-│   └── session_{NNN}.md
-│
-└── scripts/                  ← automacao e validacao
-    ├── validate_json.py
-    ├── audit_references.py
-    ├── audit_logic.py
-    └── versionar.py
-```
-
-**Arquivo mais importante por especialidade:** `especialidades/{nome}/research/BANCO_EVIDENCIAS_{ESP}.md`
-E a autoridade clinica. Toda afirmacao do playbook deve rastrear ate uma entrada deste arquivo.
+Este arquivo não substitui o boot operacional do ambiente.
+Ele só deve ser usado depois que o estado atual já tiver sido identificado.
 
 ---
 
-## LOGICA DE ATIVACAO (PROGRESSIVE DISCLOSURE)
+## PRINCÍPIO DE OPERAÇÃO
 
-O agente conhece todas as skills por este orchestrator — que lista apenas nome e descricao de cada sub-skill. O conteudo completo de cada skill so e lido quando a fase e ativada. Isso preserva a janela de contexto para o trabalho real.
+O agente conhece o pipeline completo por meio deste orchestrator, mas só deve abrir a sub-skill correspondente à fase ativa.
 
-| Dimensao | Agente monolitico | Skills (este modelo) |
-|----------|-------------------|---------------------|
-| Janela de contexto | Carrega tudo sempre | Carrega apenas a fase atual |
-| Manutencao | Requer redeploy | Editar o `.md` da sub-skill |
-| Aprendizado | Estatico apos deploy | Retroalimentacao continua via Git |
-| Portabilidade | Acoplado a plataforma | Pasta de arquivos — funciona em qualquer LLM |
-| Foco operacional | Pode misturar fases | Cada sessao = uma fase = uma skill |
-| Reproduzibilidade | Baixa | Alta — mesma pasta para qualquer especialidade |
+Regra:
+- conhecer o todo;
+- ler em profundidade apenas a fase atual;
+- executar apenas o próximo passo coerente.
 
----
-
-## SUB-SKILLS DISPONIVEIS
-
-| Skill | Pasta | Invocar quando |
-|-------|-------|----------------|
-| `briefing-arquitetura` | `/tools/skills/briefing-arquitetura/` | Inicio de projeto — especialidade nova |
-| `ingestao-evidencias` | `/tools/skills/ingestao-evidencias/` | Ao receber relatorio do OpenEvidence |
-| `auditoria-banco` | `/tools/skills/auditoria-banco/` | Antes de iniciar qualquer cluster do playbook |
-| `redacao-playbook` | `/tools/skills/redacao-playbook/` | Apos auditoria do banco aprovada |
-| `auditoria-playbook` | `/tools/skills/auditoria-playbook/` | Apos draft completo de cada cluster |
-| `codificacao-json` | `/tools/skills/codificacao-json/` | Apos playbook aprovado clinicamente |
-| `qa-entrega` | `/tools/skills/qa-entrega/` | Antes de entregar para homologacao |
+Isso preserva:
+- foco;
+- economia de contexto;
+- continuidade entre sessões;
+- portabilidade entre agentes.
 
 ---
 
-## SEQUENCIA INVIOLAVEL DE FASES
+## PIPELINE CANÔNICO
 
-```
-FASE 0  →  briefing-arquitetura      (mapa de nos aprovado)
-        ↓
-        →  ingestao-evidencias        (loop continuo — relatorios OE chegam ao longo do projeto)
-        ↓
-FASE 2* →  auditoria-banco           (pre-auditoria antecipada antes do playbook)
-        ↓
-FASE 1  →  redacao-playbook          (cluster por cluster — ordem definida na skill)
-        ↓
-FASE 2  →  auditoria-playbook        (citation, semantic, coverage scans)
-        ↓
-FASE 3  →  [revisao clinica humana — sem skill]
-        ↓
-FASE 4  →  codificacao-json          (paper design → TUSS → JSON → validacao)
-        ↓
-FASE 5  →  qa-entrega                (28 checks antes da entrega)
-```
+```text
+Fase 1  briefing-arquitetura
+Fase 2  ingestao-evidencias
+Fase 3  auditoria-banco
+Fase 4  redacao-playbook
+Fase 5  auditoria-playbook
+Fase 6  codificacao-json
+Fase 7  qa-entrega
+````
 
-*A Fase 2 de auditoria do banco e antecipada por decisao estrategica — banco inflado contamina o playbook.
+A numeração pode variar historicamente em discussões antigas ou em especialidades específicas, mas a lógica dos gates não muda.
+
+O que importa é:
+
+* não avançar sem artefato anterior consolidado;
+* não executar fase posterior por inferência;
+* não tratar benchmark como autorização para pular etapas.
 
 ---
 
-## REGRAS GERAIS DE COMPORTAMENTO
+## REGRA DE GATE
 
-1. **Sempre ler** `ESTADO.md` e `history/session_XXX.md` (mais recente) antes de qualquer acao.
-2. **Sempre ler** a sub-skill da fase atual antes de produzir qualquer artefato.
-3. **Nunca assumir contexto** — verificar arquivos antes de operar.
-4. **Toda mudanca clinica** requer classificacao M1/M2/M3/M4 e confirmacao antes de aplicar.
-5. **Solicitacoes de Evidencia** sao emitidas quando ha conflito entre fontes (gatilhos G1-G6, definidos na skill `redacao-playbook`).
-6. O arquivo `BANCO_EVIDENCIAS_{ESP}.md` e a autoridade clinica do projeto — nenhuma afirmacao no playbook existe sem rastreamento ate ele.
+A sequência do pipeline é obrigatória.
 
----
+Pode haver:
 
-## INICIAR SESSAO — ROTINA PADRAO
+* refinamento interno dentro da mesma fase;
+* retorno pontual à fase anterior para correção;
+* iteração controlada entre artefatos próximos.
 
-```
-1. Ler ESTADO.md                     → onde estamos, o que esta aberto
-2. Ler history/session_XXX.md        → ultima sessao detalhada
-3. Ler sub-skill da fase atual       → o que fazer agora
-4. Executar — registrar em session_YYY.md ao encerrar
-```
+Não pode haver:
+
+* salto direto de briefing para JSON;
+* playbook sem auditoria correspondente;
+* JSON sem playbook liberado;
+* entrega final sem QA.
 
 ---
 
-## OPERACAO MULTI-AGENTE
+## SUB-SKILLS DISPONÍVEIS
 
-O projeto opera com agentes que compartilham os mesmos artefatos:
+### 1. `briefing-arquitetura`
 
-| Agente | Interface | Foco |
-|--------|-----------|------|
-| **Antigravity** | Chat Claude (contexto longo) | Geracao de conteudo clinico, auditoria de evidencias, redacao de playbook, raciocinio longo |
-| **Claude Code** | CLI / terminal | Git, scripts, validacao JSON, refatoracao estrutural, QA automatizado, operacoes de arquivo |
+**Pasta:** `tools/skills/briefing-arquitetura/`
 
-### Regras de convivencia
+Ativar quando:
 
-1. **Ponto de encontro:** `ESTADO.md` + `history/session_XXX.md` — todo agente le ao iniciar.
-2. **Qualquer agente que mude o estado do projeto** registra em session log.
-3. **Conflito de edicao:** prevalece a versao com session log mais recente.
-4. **Delegacao:** Dan decide qual agente executa cada tarefa. Na duvida, perguntar.
+* uma nova especialidade estiver começando;
+* o problema ainda estiver sendo enquadrado;
+* for necessário estruturar escopo, objetivos, arquitetura clínica e direção inicial.
+
+Entrega esperada:
+
+* mapa inicial da especialidade;
+* enquadramento do problema;
+* estrutura-base para as próximas fases.
 
 ---
 
-## RETROALIMENTACAO — COMO A SKILL MELHORA COM O TEMPO
+### 2. `ingestao-evidencias`
 
-Ao final de cada projeto, identificar padroes nao cobertos pelas skills e emitir:
+**Pasta:** `tools/skills/ingestao-evidencias/`
 
-```
-MELHORIA DE SKILL #N
-Skill: [nome da sub-skill]
-Situacao nao coberta: [descricao]
-Comportamento atual do agente: [o que fez]
-Comportamento esperado: [o que deveria fazer]
-Proposta de adicao: [texto sugerido para a skill]
-```
+Ativar quando:
 
-Versionar a pasta `/tools/skills/` no Git. Cada projeto deixa a skill melhor para o proximo.
+* houver material bruto de evidência;
+* relatórios, diretrizes, bancos ou documentos precisarem ser organizados;
+* a base factual ainda não estiver pronta para redação.
+
+Entrega esperada:
+
+* evidências organizadas;
+* material preparado para auditoria e uso posterior.
+
+---
+
+### 3. `auditoria-banco`
+
+**Pasta:** `tools/skills/auditoria-banco/`
+
+Ativar quando:
+
+* as evidências já tiverem sido reunidas;
+* for necessário depurar, validar ou classificar o banco;
+* a base ainda não estiver segura para sustentar playbook.
+
+Entrega esperada:
+
+* banco auditado;
+* evidências classificadas e depuradas;
+* base apta para redação estruturada.
+
+---
+
+### 4. `redacao-playbook`
+
+**Pasta:** `tools/skills/redacao-playbook/`
+
+Ativar quando:
+
+* a base de evidências já estiver suficiente;
+* a especialidade precisar ser convertida em lógica clínica estruturada;
+* o artefato alvo for o playbook.
+
+Entrega esperada:
+
+* playbook clínico estruturado;
+* fluxo clínico legível e rastreável;
+* base pronta para auditoria do playbook.
+
+---
+
+### 5. `auditoria-playbook`
+
+**Pasta:** `tools/skills/auditoria-playbook/`
+
+Ativar quando:
+
+* o playbook já existir em draft ou versão inicial;
+* for necessário revisar consistência clínica, rastreabilidade e completude;
+* o objetivo for liberar o playbook para codificação.
+
+Entrega esperada:
+
+* playbook auditado;
+* problemas críticos apontados ou corrigidos;
+* gate clínico explícito para seguir ou não para JSON.
+
+---
+
+### 6. `codificacao-json`
+
+**Pasta:** `tools/skills/codificacao-json/`
+
+Ativar quando:
+
+* o playbook tiver sido auditado e liberado;
+* a fase clínica anterior estiver encerrada;
+* o objetivo passar a ser arquitetura de nós, paper design, TUSS, clinicalExpressions e JSON.
+
+Entrega esperada:
+
+* paper design consolidado;
+* estrutura de nós e condicionais;
+* mapeamento técnico;
+* JSON validável.
+
+---
+
+### 7. `qa-entrega`
+
+**Pasta:** `tools/skills/qa-entrega/`
+
+Ativar quando:
+
+* o JSON já estiver consolidado;
+* o artefato precisar de checagem final;
+* a especialidade estiver próxima da entrega ou homologação.
+
+Entrega esperada:
+
+* checklist final;
+* pendências residuais;
+* artefato pronto para validação ou entrega.
+
+---
+
+## COMO ESCOLHER A SUB-SKILL CERTA
+
+Depois de ler `AGENTE.md`, `HANDOFF.md` e `ESTADO.md`, o agente deve responder:
+
+* Qual é a fase atual?
+* Qual é o artefato de entrada?
+* Qual é o artefato de saída esperado nesta sessão?
+* O gate da fase atual já foi liberado?
+* Existe algum bloqueio documental ou clínico?
+
+Só depois disso a sub-skill correta deve ser aberta.
+
+---
+
+## REGRA DE LEITURA MÍNIMA
+
+Este orchestrator não autoriza leitura indiscriminada do repositório.
+
+O fluxo correto é:
+
+1. identificar a fase;
+2. abrir apenas a sub-skill da fase ativa;
+3. consultar documentos auxiliares só quando necessários;
+4. usar benchmarks apenas como referência estrutural.
+
+---
+
+## DOCUMENTOS AUXILIARES
+
+Dependendo da fase, o agente pode consultar documentos de apoio, como:
+
+* `tools/AGENT_PROMPT_PROTOCOLO_DAKTUS.md`
+* `tools/PADROES_ARQUITETURA_JSON.md`
+* `tools/GUARDRAIL_EVIDENCIAS.md`
+* `tools/CONTEXTO_FERRAMENTAS_E_METODOS.md`
+* `tools/KICKSTART_NOVA_ESPECIALIDADE.md`
+
+Esses documentos não substituem a sub-skill da fase ativa.
+Eles apenas complementam a execução quando necessário.
+
+---
+
+## REGRA DE BENCHMARK
+
+Artefatos maduros podem ser usados como benchmark para:
+
+* padrões de arquitetura;
+* organização estrutural;
+* estilo de modelagem;
+* estratégias de auditoria;
+* desenho de nós e conduta;
+* decisões de QA.
+
+Eles não podem ser usados para:
+
+* copiar lógica clínica entre especialidades;
+* presumir perguntas, mensagens ou condutas sem ancoragem documental;
+* justificar salto de fase;
+* importar decisões clínicas automaticamente.
+
+---
+
+## REGRA DE RASTREABILIDADE
+
+Toda decisão relevante deve ser rastreável a pelo menos uma destas fontes:
+
+* instrução explícita do usuário;
+* estado atual do ambiente (`HANDOFF.md` / `ESTADO.md`);
+* sub-skill da fase ativa;
+* documento técnico auxiliar aplicável;
+* artefato válido da especialidade em produção.
+
+Quando houver conflito, vale a ordem de autoridade definida em `AGENTE.md`.
+
+---
+
+## ENTRADAS E SAÍDAS POR FASE
+
+### briefing-arquitetura
+
+**Entrada:** briefing inicial, escopo ou pedido de nova frente
+**Saída:** enquadramento e arquitetura inicial da especialidade
+
+### ingestao-evidencias
+
+**Entrada:** materiais brutos de evidência
+**Saída:** base organizada para auditoria
+
+### auditoria-banco
+
+**Entrada:** banco ou base de evidências
+**Saída:** base auditada para sustentar playbook
+
+### redacao-playbook
+
+**Entrada:** base auditada
+**Saída:** playbook clínico estruturado
+
+### auditoria-playbook
+
+**Entrada:** playbook draftado
+**Saída:** playbook auditado e decisão de gate
+
+### codificacao-json
+
+**Entrada:** playbook liberado
+**Saída:** paper design, mapeamento técnico e JSON
+
+### qa-entrega
+
+**Entrada:** JSON consolidado
+**Saída:** artefato final revisado para entrega
+
+---
+
+## REGRAS TRANSVERSAIS DO AMBIENTE
+
+* O agente nunca deve pular fase por conveniência.
+* O agente nunca deve produzir artefato final sem gate explícito.
+* O agente deve preferir leitura mínima com máxima precisão.
+* O agente deve tratar `HANDOFF.md` como estado operacional curto.
+* O agente deve tratar `ESTADO.md` como snapshot canônico.
+* O agente deve tratar `history/` como registro arquivístico, não como ponto de entrada primário.
+* Frentes ativas devem operar em seus diretórios próprios.
+* Referências maduras devem ser tratadas como read-only, salvo instrução contrária.
+
+---
+
+## REGRA FINAL
+
+Este orchestrator responde a três perguntas:
+
+1. quais fases existem;
+2. quando ativar cada fase;
+3. como as fases se conectam.
+
+Ele não responde sozinho:
+
+* onde estamos agora;
+* qual sessão está em curso;
+* qual override recente o usuário forneceu.
+
+Essas respostas vêm de:
+
+* `AGENTE.md`
+* `HANDOFF.md`
+* `ESTADO.md`
+* instrução explícita do usuário
+
+Use este arquivo para navegar o pipeline.
+Use o estado do ambiente para decidir o próximo passo real.

@@ -1,7 +1,7 @@
-# INSTRUÇÕES DO AGENTE — DESENVOLVIMENTO DE PROTOCOLOS CLÍNICOS (DAKTUS/AMIL)
+# REFERÊNCIA TÉCNICA — PROTOCOLO CLÍNICO E ARQUITETURA JSON DAKTUS
 
-> **Versão:** 1.0 | **Autor:** Dan (via Claude Sonnet 4.6) | **Data:** 2026-02-27  
-> Este documento é o **sistema de instruções completo** para o agente local responsável pelo desenvolvimento de fichas clínicas e playbooks para a plataforma Daktus / Plano Amil.
+> **Versão:** 1.0 | **Autor:** Dan (via Claude Sonnet 4.6) | **Data:** 2026-02-27
+> Referência técnica de protocolo clínico e arquitetura JSON para o ambiente daktus. Consultar durante Fase 4 (Codificação JSON) e revisão de conduta. **Não é ponto de entrada do ambiente** — boot via `AGENTE.md`.
 
 ---
 

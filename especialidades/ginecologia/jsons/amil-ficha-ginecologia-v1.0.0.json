@@ -2475,7 +2475,7 @@
               "descricao": "",
               "condicional": "visivel",
               "condicao": "(rastreio_cervical_habitual is True) or (rastreio_cervical_intensificado is True) or ('nic2_mais' in hist_oncologico and (histerectomia_previa is False)) or (co_teste_papanicolau is True)",
-              "narrativa": "<p>O rastreamento do colo do útero hoje é feito com o <strong>teste de DNA-HPV</strong>, que detecta o vírus antes de qualquer alteração aparecer nas células. Ele substituiu o Papanicolau como exame principal e é mais preciso.</p><p><strong>📅 Com que frequência?</strong></p><ul><li><p>Se o resultado for negativo: repetir a cada <strong>5 anos</strong>.</p></li><li><p>Se você tiver imunidade baixa (HIV, uso de corticoide): repetir todo ano.</p></li><li><p>Se já teve lesão de alto grau (NIC2+) ou câncer tratado: acompanhamento anual por 25 anos.</p></li></ul><p><strong>🔬 O que significa HPV positivo?</strong></p><p>HPV positivo não significa câncer. A maioria das infecções desaparece sozinha. O protocolo indica qual exame fazer a seguir dependendo do tipo de vírus encontrado — siga as orientações do seu médico.</p><p>Não interrompa o acompanhamento mesmo que não tenha sintomas. A detecção precoce salva vidas.</p>",
+              "narrativa": "<p>O rastreamento do colo do útero hoje é feito com o <strong>teste de DNA-HPV</strong>, que detecta o vírus antes de qualquer alteração aparecer nas células. Ele substituiu o Papanicolau como exame principal e é mais preciso.</p><p><strong>Com que frequência?</strong></p><ul><li><p>Se o resultado for negativo: repetir a cada <strong>5 anos</strong>.</p></li><li><p>Se você tiver imunidade baixa (HIV, uso de corticoide): repetir todo ano.</p></li><li><p>Se já teve lesão de alto grau (NIC2+) ou câncer tratado: acompanhamento anual por 25 anos.</p></li></ul><p><strong>O que significa HPV positivo?</strong></p><p>HPV positivo não significa câncer. A maioria das infecções desaparece sozinha. O protocolo indica qual exame fazer a seguir dependendo do tipo de vírus encontrado — siga as orientações do seu médico.</p><p>Não interrompa o acompanhamento mesmo que não tenha sintomas. A detecção precoce salva vidas.</p>",
               "categorias": []
             },
             {
@@ -2484,7 +2484,7 @@
               "descricao": "",
               "condicional": "visivel",
               "condicao": "(age >= 40 and age <= 74) or ('queixa_mamaria' in queixa_principal) or (alto_risco_mama is True)",
-              "narrativa": "<p>O exame das mamas é feito em duas frentes: o que você observa no dia a dia e os exames de imagem indicados pelo médico.</p><p><strong>👀 O que observar?</strong></p><ul><li><p>Nódulos ou caroços novos, mesmo sem dor</p></li><li><p>Mudança no formato ou tamanho da mama</p></li><li><p>Descarga pelo mamilo (especialmente transparente, sanguinolenta ou em um só lado)</p></li><li><p>Alteração na pele (vermelhidão, aspecto de casca de laranja)</p></li></ul><p><strong>📅 Mamografia</strong></p><p>Indicada anualmente a partir dos <strong>40 anos</strong>. O resultado usa uma escala chamada BI-RADS: valores 1 e 2 são normais; BI-RADS 3 pede retorno em 6 meses; BI-RADS 4 ou 5 requer investigação especializada — não é diagnóstico de câncer, é indicação de biópsia.</p><p>Mamas densas (frequentes em mulheres mais jovens) podem precisar de ultrassom complementar. Seu médico irá informar se for o seu caso.</p>",
+              "narrativa": "<p>O exame das mamas é feito em duas frentes: o que você observa no dia a dia e os exames de imagem indicados pelo médico.</p><p><strong>O que observar?</strong></p><ul><li><p>Nódulos ou caroços novos, mesmo sem dor</p></li><li><p>Mudança no formato ou tamanho da mama</p></li><li><p>Descarga pelo mamilo (especialmente transparente, sanguinolenta ou em um só lado)</p></li><li><p>Alteração na pele (vermelhidão, aspecto de casca de laranja)</p></li></ul><p><strong>Mamografia</strong></p><p>Indicada anualmente a partir dos <strong>40 anos</strong>. O resultado usa uma escala chamada BI-RADS: valores 1 e 2 são normais; BI-RADS 3 pede retorno em 6 meses; BI-RADS 4 ou 5 requer investigação especializada — não é diagnóstico de câncer, é indicação de biópsia.</p><p>Mamas densas (frequentes em mulheres mais jovens) podem precisar de ultrassom complementar. Seu médico irá informar se for o seu caso.</p>",
               "categorias": []
             },
             {
@@ -2493,7 +2493,7 @@
               "descricao": "",
               "condicional": "visivel",
               "condicao": "'climaterio' in queixa_principal",
-              "narrativa": "<p>O <strong>climatério</strong> é a fase de transição hormonal que antecede a menopausa. É natural, não é uma doença — mas pode trazer sintomas que afetam muito a qualidade de vida.</p><p><strong>Sintomas mais comuns:</strong> fogachos, suores noturnos, alterações do sono, ressecamento vaginal, oscilações de humor e dificuldade de concentração.</p><p><strong>💊 Terapia Hormonal (TH)</strong></p><p>A TH é segura e eficaz para a maioria das mulheres quando iniciada no momento certo (até 10 anos após a última menstruação ou antes dos 60 anos). Ela reduz fogachos, protege os ossos e melhora o bem-estar geral.</p><ul><li><p>Com útero: estrogênio sempre combinado com progesterona (proteção endometrial)</p></li><li><p>Sem útero: estrogênio isolado é suficiente</p></li><li><p>Não há duração máxima definida — a decisão é individualizada com seu médico</p></li></ul><p>Se você tiver histórico de câncer de mama, trombose ou doença cardíaca, avise seu médico — existem alternativas.</p>",
+              "narrativa": "<p>O <strong>climatério</strong> é a fase de transição hormonal que antecede a menopausa. É natural, não é uma doença — mas pode trazer sintomas que afetam muito a qualidade de vida.</p><p><strong>Sintomas mais comuns:</strong> fogachos, suores noturnos, alterações do sono, ressecamento vaginal, oscilações de humor e dificuldade de concentração.</p><p><strong>Terapia Hormonal (TH)</strong></p><p>A TH é segura e eficaz para a maioria das mulheres quando iniciada no momento certo (até 10 anos após a última menstruação ou antes dos 60 anos). Ela reduz fogachos, protege os ossos e melhora o bem-estar geral.</p><ul><li><p>Com útero: estrogênio sempre combinado com progesterona (proteção endometrial)</p></li><li><p>Sem útero: estrogênio isolado é suficiente</p></li><li><p>Não há duração máxima definida — a decisão é individualizada com seu médico</p></li></ul><p>Se você tiver histórico de câncer de mama, trombose ou doença cardíaca, avise seu médico — existem alternativas.</p>",
               "categorias": []
             },
             {
@@ -5889,21 +5889,34 @@
               "nome": "Conduta: hrHPV não-16/18 com citologia reflexa negativa",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "'hpv_outros_hr' in hpv_resultado and 'cito_negativa' in citologia_reflexa_resultado"
+              "condicao": "'hpv_outros_hr' in hpv_resultado and 'cito_negativa' in citologia_reflexa_resultado",
+              "conteudo": "<p>hrHPV não-16/18 com citologia reflexa negativa. Risco baixo de lesão de alto grau. Co-teste (HPV + citologia) em 1 ano. Não solicitar colposcopia neste momento.</p>"
             },
             {
               "id": "0ae591fa-24b2-424e-80d7-d07e017db569",
               "nome": "Conduta: NIC1 em colposcopia — seguimento sem tratamento imediato",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "'colpo_nic1' in colposcopia_resultado"
+              "condicao": "'colpo_nic1' in colposcopia_resultado",
+              "conteudo": "<p>NIC1 confirmado à biópsia — lesão de baixo grau. Tratamento imediato não indicado: regressão espontânea em 60–80% dos casos. Seguimento: colposcopia em 6 e 12 meses. Tratar apenas se persistência superior a 2 anos ou progressão histológica documentada.</p>"
             },
             {
               "id": "11bbb9f5-25d2-44de-9899-f013c373813d",
               "nome": "Alerta: citologia reflexa não realizada — pendente",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "'cito_nao_realizada' in citologia_reflexa_resultado"
+              "condicao": "'cito_nao_realizada' in citologia_reflexa_resultado",
+              "conteudo": "<p>hrHPV não-16/18 sem citologia reflexa. Pendência ativa: coletar citologia cervical convencional nesta consulta. Não encerrar sem coleta. Registrar resultado para ativar a conduta correta (ver alerta “Conduta: citologia reflexa — resultado”).</p>"
+            },
+            {
+              "id": "365cc93f-3518-41c8-b7b2-4c8eabf16e6f",
+              "nome": "Alerta: DIU contraindicado",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "not 'sem_ci_diu' in diu_contraindicacao",
+              "conteudo": "<p><strong>Inserção de DIU contraindicada no momento.</strong> Revisar antes de agendar procedimento:</p><ul><li><strong>Gestação:</strong> contraindicação absoluta. Confirmar com beta-HCG se dúvida.</li><li><strong>DIP ativa:</strong> tratar infecção e reavaliar após cura clínica (mínimo 3 meses).</li><li><strong>Sangramento não investigado:</strong> investigar causa (ultrassom ± histeroscopia) antes da inserção.</li><li><strong>Distorção da cavidade:</strong> histeroscopia diagnóstica para avaliação e possível correção.</li><li><strong>Câncer de mama atual:</strong> DIU de cobre (não hormonal) pode ser considerado — discutir com oncologista.</li></ul>",
+              "observacao": ""
             }
           ]
         }

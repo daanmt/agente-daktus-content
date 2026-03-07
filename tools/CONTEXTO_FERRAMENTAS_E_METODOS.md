@@ -1,274 +1,324 @@
-# CONTEXTO DE FERRAMENTAS E METODOS — Pipeline Daktus
+# CONTEXTO_FERRAMENTAS_E_METODOS.md — MÉTODOS OPERACIONAIS E APRENDIZADOS DE IMPLEMENTAÇÃO
 
-> **Documento complementar ao AGENT_PROMPT_PROTOCOLO_DAKTUS.md**
-> Documenta ferramentas, padroes de codigo e metodologia aplicaveis a qualquer especialidade.
-> Agnóstico de especialidade — exemplos usam ginecologia/reumatologia como referencia generica.
+## PAPEL DESTE DOCUMENTO
 
----
+Este documento reúne práticas operacionais, heurísticas de trabalho e aprendizados de implementação acumulados no ambiente daktus.
 
-## PARTE I — FERRAMENTAS E MÉTODOS UTILIZADOS NA CONSTRUÇÃO DOS PROTOCOLOS
+Ele não é o ponto de entrada do ambiente.
+O ponto de entrada é `AGENTE.md`.
 
-Esta seção documenta, com exemplos reais, as ferramentas, padrões de código e decisões de design que foram usadas na produção das fichas existentes. O agente deve internalizar esses padrões como sua forma padrão de trabalhar.
+Ele também não substitui:
+- `HANDOFF.md` como estado operacional curto;
+- `ESTADO.md` como snapshot canônico;
+- `SKILL.md` como orchestrator do pipeline;
+- a sub-skill específica da fase ativa.
 
----
-
-### 1.1 Bash Tool — Inspeção e Auditoria de Arquivos
-
-O `bash_tool` foi a ferramenta mais usada no ciclo de auditoria. Ele roda comandos em Ubuntu 24 e é ideal para:
-
-**Extração de citações com grep/regex:**
-
-```bash
-# Contar todas as citações numéricas no corpo do playbook
-grep -oP '\[\d+\]' playbook_ginecologia_auditado.md | sort -t'[' -k2 -n | uniq -c
-
-# Listar números únicos de citações no corpo (exclui seção de referências)
-grep -oP '(?<=\[)\d+(?=\])' <(sed '/^## Referências/,$d' playbook.md) | sort -n | uniq
-
-# Listar números das referências listadas
-grep -oP '^\d+(?=\.)' <(sed -n '/^## Referências/,$p' playbook.md) | sort -n
-```
-
-**Validação estrutural do JSON:**
-
-```bash
-# Validar JSON (parse básico)
-python3 -c "import json; json.load(open('ficha.json')); print('JSON válido')"
-
-# Contar nodes e edges
-python3 -c "
-import json
-d = json.load(open('ficha.json'))
-print(f'Nodes: {len(d[\"nodes\"])}')
-print(f'Edges: {len(d[\"edges\"])}')
-"
-
-# Listar IDs de todos os nodes
-python3 -c "
-import json
-d = json.load(open('ficha.json'))
-for n in d['nodes']:
-    print(n['id'], '|', n['data']['label'])
-"
-```
-
-**Busca de padrões específicos no JSON:**
-
-```bash
-# Encontrar todos os UIDs de perguntas
-python3 -c "
-import json
-d = json.load(open('ficha.json'))
-for node in d['nodes']:
-    for q in node['data'].get('questions', []):
-        print(node['data']['label'], '->', q.get('uid',''))
-"
-
-# Verificar se todos os linkIds existem como nodes
-python3 -c "
-import json
-d = json.load(open('ficha.json'))
-node_ids = {n['id'] for n in d['nodes']}
-for node in d['nodes']:
-    for cond in node['data'].get('condicionais', []):
-        lid = cond['linkId']
-        if lid not in node_ids:
-            print(f'QUEBRADO: {node[\"id\"]} -> linkId {lid}')
-"
-```
+Use este documento como apoio quando a sessão exigir método de execução, decisão operacional ou padrão de trabalho refinado.
 
 ---
 
-### 1.2 Python Script Tool — Scripts de Auditoria Sistemática
+## OBJETIVO
 
-Scripts Python foram usados para análises mais complexas que exigem cruzamento de dados.
+O objetivo deste documento é reduzir erro operacional, retrabalho e improviso técnico.
 
-**Script canônico de auditoria de referências (usado em ginecologia):**
-
-```python
-import re
-
-def audit_references(filepath):
-    with open(filepath, 'r', encoding='utf-8') as f:
-        text = f.read()
-    
-    # Separar corpo da seção de referências
-    parts = re.split(r'^#{1,3}\s*Referências', text, flags=re.MULTILINE)
-    body = parts[0]
-    refs_section = parts[1] if len(parts) > 1 else ''
-    
-    # Citações no corpo: [N] onde N é número
-    body_citations = set(int(x) for x in re.findall(r'\[(\d+)\]', body))
-    
-    # Entradas na lista de referências: linhas que começam com N.
-    ref_entries = set(int(x) for x in re.findall(r'^(\d+)\.', refs_section, re.MULTILINE))
-    
-    phantom = body_citations - ref_entries  # citadas sem referência
-    orphaned = ref_entries - body_citations  # listadas sem citação
-    
-    print(f"Citações no corpo: {sorted(body_citations)}")
-    print(f"Referências listadas: {sorted(ref_entries)}")
-    print(f"\nPHANTOM (citadas sem entrada): {sorted(phantom)}")
-    print(f"ORPHANED (listadas sem citação): {sorted(orphaned)}")
-    
-    # Verificar sequência contínua
-    if ref_entries:
-        expected = set(range(1, max(ref_entries)+1))
-        missing_seq = expected - ref_entries
-        if missing_seq:
-            print(f"\nNUMERAÇÃO COM BURACOS: {sorted(missing_seq)}")
-    
-    return phantom, orphaned
-
-audit_references('playbook.md')
-```
-
-**Por que hole-filling e não renumeração:** durante a auditoria da ginecologia, tentamos renumerar em cascata uma vez e introduzimos 3 novas inconsistências. O pattern de "preencher o buraco" é mais seguro porque cada operação é atômica e verificável.
+Ele existe para registrar:
+- como trabalhar melhor dentro do ambiente;
+- como usar referências maduras com disciplina;
+- como modelar artefatos com mais previsibilidade;
+- quais padrões já se mostraram eficazes em casos anteriores;
+- quais erros recorrentes devem ser evitados.
 
 ---
 
-### 1.3 str_replace Tool — Edição Cirúrgica de Arquivos
+## PRINCÍPIO CENTRAL
 
-Usado para correções pontuais no playbook e no JSON sem reescrever o arquivo inteiro.
+Ferramenta importa menos do que capacidade.
 
-**Padrão correto de uso:**
+Este ambiente pode ser operado por diferentes agentes, interfaces e stacks locais.
+Por isso, os métodos aqui descritos devem ser entendidos como capacidades operacionais, não como comandos obrigatórios de uma ferramenta específica.
 
-```
-# NUNCA fazer:
-str_replace(old="[47]", new="[42]")  # muito curto, pode ter false positives
+As capacidades relevantes incluem, por exemplo:
+- leitura de arquivos;
+- comparação entre artefatos;
+- busca contextual;
+- edição cirúrgica de documentos;
+- execução de scripts de validação;
+- versionamento e registro de sessão.
 
-# SEMPRE fazer (contexto suficiente para unicidade):
-str_replace(
-  old="Endocrine Society Guidelines. 2023. [47].",
-  new="Endocrine Society Guidelines. 2023 [42]."
-)
-```
-
-**Para correção de referências fantasma:** o padrão era sempre editar tanto a citação no corpo quanto a entrada na lista de referências na mesma operação, para manter a sincronia.
-
----
-
-### 1.4 view Tool — Leitura de Arquivos do Projeto
-
-Usada para ler os arquivos JSON de referência antes de escrever qualquer código novo.
-
-```
-view('/mnt/project/athena-rotinas_ginecologicas-v2.0.1.json')
-view('/mnt/project/athena-Ficha_Clínica___Ginecologia-v344fbc14.json')
-```
-
-**Hábito crítico:** antes de criar qualquer node, ler pelo menos um JSON existente completo para extrair:
-- Padrões de UIDs (`uid` das questions)
-- Estrutura do node conduta (campos obrigatórios)
-- Estrutura do node summary (clinicalExpressions)
-- Padrão de posicionamento (x em múltiplos de 900)
+Se a interface mudar, o método continua válido.
+O nome da ferramenta pode mudar; a capacidade necessária continua a mesma.
 
 ---
 
-### 1.5 project_knowledge_search — Recuperação de Contexto do Projeto
+## QUANDO USAR ESTE DOCUMENTO
 
-Usada extensamente para recuperar fragmentos de JSONs e playbooks sem precisar ler o arquivo inteiro.
+Consulte este documento quando precisar:
 
-**Padrões de query que funcionam bem:**
+- escolher uma estratégia de trabalho dentro de uma fase;
+- operar com referências maduras sem copiar lógica clínica;
+- decidir como estruturar paper design e JSON;
+- reduzir risco em sessões mais técnicas;
+- reaproveitar aprendizados consolidados de especialidades anteriores;
+- evitar erros já conhecidos do ambiente.
 
-```
-"conduta exames liberação condicional"     → retorna estrutura do nó conduta
-"summary clinicalExpressions formula"      → retorna estrutura do nó summary
-"condicionais linkId condicao"             → retorna exemplos de roteamento
-"referências FEBRASGO INCA rastreamento"   → retorna seções do playbook
-```
-
----
-
-### 1.6 Padrões de Design JSON — O que Aprendemos com Ginecologia
-
-#### O node summary tem um papel que não é óbvio
-
-O `summary` não é apenas uma tela de "revisão". Ele contém **`clinicalExpressions`** — variáveis calculadas que são avaliadas antes de o médico ver a conduta. Essas variáveis funcionam como flags booleanas que outros condicionais referenciam.
-
-Exemplo real da ginecologia:
-
-```json
-{
-  "id": "expr-0a48e6d8-99ca-48c8-b3fb-7cd12d53cb60",
-  "name": "aparece_mamografia",
-  "formula": "selected_any(exames, \"mamografia\")",
-  "description": "",
-  "template": ""
-}
-```
-
-Isso permite que, em nodes posteriores, você use `aparece_mamografia` como condição — ao invés de repetir `selected_any(exames, "mamografia")` em todo lugar.
-
-**Regra derivada:** variáveis frequentemente reutilizadas devem virar `clinicalExpression` no node summary, não ficar inline nos condicionais.
-
-#### O breakpoint não tem questions, mas tem papel de handoff
-
-```json
-{
-  "id": "node-f6a6173f-14f1-4414-a761f",
-  "type": "custom",
-  "data": {
-    "label": "breakpoint.resumo_enfermagem",
-    "descricao": "{{resumo}}",
-    "condicionais": [{ "linkId": "node-proximo", "condicao": "" }],
-    "questions": []
-  }
-}
-```
-
-Ao aparecer `breakpoint.` no label, a plataforma trata aquele node como um ponto de pausa — a sessão de enfermagem termina ali e o médico assume no node seguinte.
-
-#### As condições de saída de um node são avaliadas de cima para baixo
-
-A última entrada em `condicionais` com `"condicao": ""` é o fallback. As anteriores são avaliadas em ordem e a primeira que satisfaz vence. Isso significa que a **ordem importa** — condições mais específicas devem vir antes das mais gerais.
-
-#### O campo `expressao` nas questions controla visibilidade
-
-```json
-{
-  "uid": "detalhe_valproato",
-  "titulo": "Dose atual e data do último nível sérico de valproato:",
-  "condicional": "visivel",
-  "expressao": "'valproato' in medicamentos_em_uso",
-  "select": "string"
-}
-```
-
-Se `expressao` estiver vazio, a pergunta aparece sempre. Se preenchido, aparece condicionalmente. **`condicional` deve estar sempre como `"visivel"`** — é um campo legado que o sistema ainda exige mas não usa para esconder (quem esconde é a `expressao`).
+Não use este documento como bootstrap.
+Não use este documento para decidir fase atual sem antes ler o estado do ambiente.
 
 ---
 
-### 1.7 Mapeamento TUSS — Processo Prático
+## PRÉ-REQUISITO
 
-A tabela TUSS do projeto (`conteúdo_Tabela_TUSS_compartilhada.xlsx`) e a planilha de depara (`Planilha_de_Depara_da_Mevo_UNIVERSAL_DAKTUS_.xlsx`) são o ponto de partida.
+Antes de usar este documento, o agente já deve ter lido:
 
-**Para psiquiatria, os códigos mais prováveis:**
+1. `AGENTE.md`
+2. `HANDOFF.md`, se existir
+3. `ESTADO.md`
+4. `SKILL.md`
+5. a sub-skill da fase ativa, quando aplicável
 
-| Exame | Código TUSS provável | Verificar |
-|---|---|---|
-| ECG / Eletrocardiograma | 40304361 | Confirmar na tabela |
-| TGO (AST) | 40302279 | Confirmar |
-| TGP (ALT) | 40302181 | Confirmar |
-| Dosagem de ácido valproico | 40302733 | Confirmar |
-| Litemia (lítio sérico) | 40302440 | Confirmar |
-| Avaliação neuropsicológica | Código de procedimento | Verificar depara |
-| Hemograma completo | 40302083 | Confirmar |
-| TSH | 40302831 | Confirmar |
-| Creatinina | 40302295 | Confirmar |
-| Glicemia de jejum | 40302148 | Confirmar |
-| Prolactina | 40302660 | Confirmar |
-
-**Processo quando o código não é encontrado nas planilhas:**
-
-1. Busca na tabela TUSS ANS (web, site ANS)
-2. Se ainda não encontrado: `"codigo": []` e flag no relatório de QA como "pendente TUSS"
-3. Nunca inventar código
+Só depois disso este documento deve ser consultado como apoio.
 
 ---
 
+## LÓGICA DE USO DAS FERRAMENTAS
+
+### 1. Ler antes de editar
+Sempre que possível:
+- localizar o artefato correto;
+- entender sua estrutura;
+- identificar o ponto exato de alteração;
+- só então editar.
+
+Evite reescrever arquivos inteiros sem necessidade.
+Prefira alterações cirúrgicas quando o artefato já estiver maduro.
+
+### 2. Validar antes de expandir
+Antes de criar novos blocos de lógica:
+- revisar o que já existe;
+- checar se o padrão já foi resolvido em outro artefato;
+- usar benchmark estrutural quando houver.
+
+Evite inventar estrutura nova se o ambiente já tiver um padrão consolidado.
+
+### 3. Operar por fases, não por impulso
+O método correto é:
+- identificar a fase;
+- abrir a instrução certa;
+- ler apenas os apoios pertinentes;
+- executar o próximo passo coerente.
+
+Evite carregar contexto técnico de fases futuras antes da hora.
+
 ---
 
-## PARA NOVA ESPECIALIDADE
+## USO DE REFERÊNCIAS MADURAS
 
-Ao iniciar um novo projeto, adicione aqui (ou em arquivo separado) o planejamento inicial de clusters da especialidade, analise do briefing e decisoes de design especificas. Consulte  como exemplo de referencia.
+Referências maduras são extremamente úteis, mas precisam ser usadas com disciplina.
+
+Elas servem para:
+- entender padrões de arquitetura;
+- observar desenho de nós;
+- aprender estilo de modelagem;
+- revisar decisões que funcionaram bem;
+- antecipar erros de implementação;
+- acelerar paper design e JSON.
+
+Elas não servem para:
+- copiar lógica clínica entre especialidades;
+- presumir perguntas, mensagens ou condutas;
+- importar critérios clínicos sem ancoragem documental;
+- justificar atalhos de fase.
+
+Sempre separar:
+- padrão estrutural reutilizável;
+- conteúdo clínico específico da especialidade.
+
+---
+
+## HEURÍSTICA GERAL DE IMPLEMENTAÇÃO
+
+Quando estiver produzindo artefatos técnicos, a ordem preferencial é:
+
+1. entender o objetivo clínico do bloco;
+2. localizar benchmark estrutural útil;
+3. mapear a arquitetura antes de codificar;
+4. definir dependências e condicionais;
+5. só então escrever o artefato final;
+6. validar consistência depois.
+
+Essa ordem vale especialmente para:
+- playbook;
+- paper design;
+- clinicalExpressions;
+- condutas;
+- JSON.
+
+---
+
+## APRENDIZADOS CONSOLIDADOS DO AMBIENTE
+
+Os aprendizados abaixo já mostraram valor prático e devem ser preservados.
+
+### 1. Ler JSON de referência antes de modelar nodes novos
+Antes de criar arquitetura nova, observar artefatos maduros ajuda a:
+- evitar inconsistência estrutural;
+- reaproveitar padrões de roteamento;
+- modelar nós com mais previsibilidade;
+- reduzir retrabalho posterior.
+
+### 2. O node `summary` costuma concentrar lógica importante
+Em implementações maduras, o `summary` frequentemente cumpre mais do que uma função de resumo.
+Ele pode:
+- consolidar achados,
+- ativar expressões clínicas,
+- preparar a conduta,
+- servir como ponte entre coleta e decisão.
+
+Por isso, o `summary` deve ser modelado com atenção.
+Não tratá-lo como mero fechamento decorativo.
+
+### 3. `clinicalExpressions` devem nascer de necessidade real
+Essas expressões não devem ser criadas por ornamento técnico.
+Devem surgir quando forem necessárias para:
+- consolidar variáveis clínicas,
+- simplificar condicionais,
+- capturar equivalências semânticas,
+- organizar critérios compostos,
+- sustentar a lógica da conduta ou do roteamento.
+
+### 4. A ordem das condicionais importa
+Quando há múltiplas regras, a ordem de avaliação afeta o comportamento do fluxo.
+Por isso:
+- primeiro mapear os cenários;
+- depois organizar a precedência;
+- só então codificar.
+
+### 5. `expressao` deve simplificar, não obscurecer
+Quando usada corretamente, a camada de expressão reduz duplicação e torna a lógica mais legível.
+Quando usada mal, ela vira opacidade.
+
+Regra prática:
+- usar para consolidar lógica;
+- evitar quando a regra simples puder ser lida diretamente.
+
+### 6. Breakpoint é recurso clínico e técnico
+O breakpoint não é apenas interrupção de fluxo.
+Ele pode funcionar como:
+- ponto de transição decisória;
+- handoff entre blocos clínicos;
+- mecanismo de segurança;
+- limite natural entre coleta e conduta.
+
+### 7. A conduta deve ser pensada cedo
+Mesmo antes do JSON final, é útil pensar:
+- quais saídas clínicas precisam existir;
+- quais condições as ativam;
+- que variáveis sustentam essas saídas.
+
+Isso ajuda a modelar melhor os nós anteriores.
+
+---
+
+## MÉTODO PARA PAPER DESIGN
+
+Quando a fase exigir paper design, trabalhar nesta sequência:
+
+1. identificar os blocos clínicos principais;
+2. definir o objetivo de cada nó;
+3. listar perguntas ou variáveis centrais por nó;
+4. mapear condicionais de navegação;
+5. prever `clinicalExpressions` necessárias;
+6. desenhar a estrutura da conduta;
+7. validar se o fluxo ficou coerente antes de codificar.
+
+O paper design deve reduzir improviso na codificação.
+Se ele estiver mal resolvido, o JSON tende a sair instável.
+
+---
+
+## MÉTODO PARA CODIFICAÇÃO JSON
+
+Quando a fase ativa for codificação JSON:
+
+1. confirmar que o playbook foi liberado;
+2. revisar padrões arquiteturais já consolidados;
+3. verificar benchmark estrutural aplicável;
+4. transformar paper design em estrutura de nós;
+5. modelar variáveis, expressões e edges com disciplina;
+6. revisar consistência da conduta;
+7. validar o JSON com ferramentas disponíveis.
+
+Não começar codificação no escuro.
+Não usar JSON final como lugar de descobrir a arquitetura.
+
+---
+
+## MÉTODO PARA EDIÇÃO DE ARTEFATOS MADUROS
+
+Quando o arquivo já estiver avançado ou consolidado:
+
+- localizar o trecho exato que precisa mudar;
+- entender dependências ao redor;
+- editar o mínimo necessário;
+- revisar efeitos colaterais;
+- validar após a mudança.
+
+Evitar grandes reescritas sem necessidade.
+Quanto mais maduro o artefato, mais importante a edição precisa ser.
+
+---
+
+## MÉTODO PARA SESSÕES COMPLEXAS
+
+Em sessões com muitos documentos, muitas dependências ou muita ambiguidade:
+
+1. localizar o estado primeiro;
+2. definir a fase ativa;
+3. separar documentos centrais de documentos auxiliares;
+4. identificar o entregável exato da sessão;
+5. só então abrir leitura complementar.
+
+Não reagir à complexidade lendo tudo.
+Responder à complexidade com melhor ordenação.
+
+---
+
+## ERROS RECORRENTES A EVITAR
+
+- começar implementação sem arquitetura mínima;
+- abrir leitura indiscriminada do repositório;
+- usar benchmark como cópia clínica;
+- modelar `clinicalExpressions` sem necessidade clara;
+- tratar `summary` como nó trivial;
+- construir conduta tarde demais;
+- misturar decisão clínica com improviso estrutural;
+- editar artefato maduro de forma ampla demais;
+- validar só no fim;
+- esquecer de registrar continuidade ao encerrar a sessão.
+
+---
+
+## COMO ESTE DOCUMENTO SE RELACIONA COM OS DEMAIS
+
+- `AGENTE.md` define o boot e a ordem de autoridade.
+- `HANDOFF.md` informa o estado operacional curto.
+- `ESTADO.md` informa o snapshot canônico.
+- `SKILL.md` informa as fases do pipeline.
+- a sub-skill ativa informa a execução da fase.
+- este documento informa como operar melhor dentro desse contexto.
+
+---
+
+## REGRA FINAL
+
+Use este documento para trabalhar com mais precisão.
+
+Não use este documento para substituir:
+- o estado do ambiente;
+- a fase atual;
+- o gate do pipeline;
+- a instrução principal da sub-skill ativa.
+
+Método vem depois do boot.
+Heurística vem depois do estado.
+Implementação vem depois da fase correta.

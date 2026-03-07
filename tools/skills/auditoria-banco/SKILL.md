@@ -1,6 +1,10 @@
 # SKILL — AUDITORIA DO BANCO DE EVIDÊNCIAS
 ## `auditoria-banco` | Fase 2 (antecipada)
 
+> **Pré-condição de boot:** esta skill é invocada após boot completo via `AGENTE.md`.
+> `HANDOFF.md` deve ter sido lido e a fase atual confirmada antes de executar qualquer ação aqui.
+
+
 ---
 
 ## O QUE ESTA SKILL FAZ
