@@ -307,7 +307,43 @@
           }
         ],
         "condutaDataNode": null,
-        "clinicalExpressions": null,
+        "clinicalExpressions": [
+          {
+            "id": "expr-7b82c67e-217b-49e9-b0bc-e3bed3599fc7",
+            "name": "estabilizadores_humor",
+            "formula": "selected_any(medicamentos_em_uso, 'litio', 'valproato', 'carbamazepina', 'lamotrigina')",
+            "description": "Paciente em uso de estabilizador de humor (litio, VPA, CBZ ou lamotrigina)",
+            "template": ""
+          },
+          {
+            "id": "expr-6032978a-9a29-41ca-85af-ef88a744e14b",
+            "name": "antipsicóticos_atipicos",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol', 'ap_atipico_ziprasidona')",
+            "description": "Paciente em uso de antipsicótico atípico de segunda geração",
+            "template": ""
+          },
+          {
+            "id": "expr-98641c47-f514-4186-bbba-51fcb6f40ae8",
+            "name": "exige_ecg",
+            "formula": "selected_any(medicamentos_em_uso, 'antidepressivo_tca') or (ecg_indicado_psico != 'nao_indicado')",
+            "description": "Condição que exige ECG por risco de QTc prolongado (TCA obrigatório, ISRS alta dose, clozapina 1º mês)",
+            "template": ""
+          },
+          {
+            "id": "expr-a4a71080-9e71-4cae-9fd7-e4a5b25be51a",
+            "name": "sexo_feminino_ie",
+            "formula": "sex == 'female' and age >= 12 and age <= 55",
+            "description": "Mulher em idade fértil (12-55 anos) — relevante para VPA, lítio e teratogenicidade",
+            "template": ""
+          },
+          {
+            "id": "expr-abb1d3f0-6461-4487-8082-3dce20b81843",
+            "name": "monitoramento_metabolico_ap",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol')",
+            "description": "AP atípico de alto risco metabólico — indica monitoramento de glicemia, lipídios e peso",
+            "template": ""
+          }
+        ],
         "templateMarkdown": null
       }
     },
@@ -2938,17 +2974,1601 @@
     },
     {
       "id": "node-psiq-06-conduta",
-      "type": "custom",
+      "type": "conduct",
       "position": {
         "x": 5400,
         "y": 100
       },
       "data": {
-        "label": "Conduta",
-        "descricao": "",
+        "label": "Conduta — Exames, Alertas, Encaminhamentos",
+        "descricao": "<p>Conduta gerada automaticamente com base nas respostas clínicas. Exames, alertas de segurança, encaminhamentos e lembretes de prescrição são exibidos de acordo com os dados coletados.</p>",
         "condicionais": [],
         "questions": [],
-        "condutaDataNode": null,
+        "condutaDataNode": {
+          "orientacao": [],
+          "exame": [
+            {
+              "id": "7e56481b-74f8-4a90-b399-f35885fbc89c",
+              "nome": "Litemia (lítio sérico)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "9ceef061-b287-47e1-babb-45a5200b698c",
+                  "sistema": "TUSS",
+                  "codigo": "40302440",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Monitoramento de lítio — estabilizador do humor. Faixa mania: 0,8–1,2 mEq/L; manutenção: 0,6–1,0 mEq/L.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar 12h após última dose, em jejum. Não tomar comprimido antes da coleta.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "5516ac5b-baeb-471f-9bb4-be3313825400",
+              "nome": "Creatinina sérica + eGFR",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "d8a720dd-5ae0-44d3-9593-fac1479c8599",
+                  "sistema": "TUSS",
+                  "codigo": "40302253",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — monitoramento de função renal. Nefropatia crônica em uso prolongado.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6b56ca3d-1fed-46f2-aefb-1fd282cd3b71",
+              "nome": "TSH (hormônio estimulante da tireoide)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('litio' in medicamentos_em_uso) or selected_any(diagnostico_ativo, 'tdm', 'distimia')",
+              "codigo": [
+                {
+                  "iid": "643c8a62-63db-4471-9459-84e22dca71df",
+                  "sistema": "TUSS",
+                  "codigo": "40320094",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio / depressão refratária — hipotireoidismo subclínico como causa secundária.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "be5f87dc-ad6c-42cc-9537-158f6d5d067c",
+              "nome": "Cálcio total",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "65c28637-0eee-4af1-aaa5-652b0d6fd9f7",
+                  "sistema": "TUSS",
+                  "codigo": "40302130",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — hipercalcemia e hiperparatireoidismo (efeito adverso crônico).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "acfb247d-b4a4-49e3-87a3-7ed2ca16bcf2",
+              "nome": "Ureia sérica",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "a0b159bb-7743-456d-ba27-85f948bde258",
+                  "sistema": "TUSS",
+                  "codigo": "40302415",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — função renal complementar (junto com creatinina).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "2e7b9910-309d-4fed-a605-77239b37753e",
+              "nome": "Nível sérico de ácido valpróico (VPA)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'valproato' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "1cf13068-8138-47dc-b6ed-3cb1737b514c",
+                  "sistema": "TUSS",
+                  "codigo": "40302555",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Valproato — faixa terapêutica: 50–100 µg/mL.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar antes da dose matinal (vale de concentração).",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "40f4273a-1d1a-44c2-802f-3cf166f4c800",
+              "nome": "ALT/TGP (alanina aminotransferase)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'valproato', 'carbamazepina', 'ap_atipico_olanzapina')",
+              "codigo": [
+                {
+                  "iid": "12737c4f-849b-4c21-acd4-bdc8c2328f00",
+                  "sistema": "TUSS",
+                  "codigo": "40302180",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Hepatotoxicidade por VPA / CBZ / olanzapina. Suspender se ALT/TGP >3× LSN com sintomas.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6f6edddb-ea2b-48dc-8b15-66180d74d013",
+              "nome": "AST/TGO (aspartato aminotransferase)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'valproato', 'carbamazepina', 'ap_atipico_olanzapina')",
+              "codigo": [
+                {
+                  "iid": "8314fdba-7495-4333-815c-301cd9e6132c",
+                  "sistema": "TUSS",
+                  "codigo": "40302172",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Hepatotoxicidade por VPA / CBZ / olanzapina.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "8aef2815-1d9b-4e17-8ba4-68b928dd8ff2",
+              "nome": "Amônia sérica",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'valproato' in medicamentos_em_uso and selected_any(sintomas_toxicidade_litio, 'confusao')",
+              "codigo": [
+                {
+                  "iid": "880b171e-1f46-4f93-9cf6-f21833ae01a3",
+                  "sistema": "TUSS",
+                  "codigo": "40302082",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "VPA — hiperamonemia (encefalopatia valproica). Suspeitar se confusão mental em uso de VPA.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "8746141f-bea8-4b77-8977-0c165339a772",
+              "nome": "Nível sérico de carbamazepina (CBZ)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "31ec1ee8-a4bd-4fea-be3e-e58f5ded4100",
+                  "sistema": "TUSS",
+                  "codigo": "40302490",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "CBZ — faixa terapêutica: 4–12 µg/mL.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar antes da dose matinal.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "4e4bbe97-50aa-4fe0-8cda-00270eea6b88",
+              "nome": "Sódio sérico",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "8b66fd22-e472-429b-8df7-2cfaf5e326dd",
+                  "sistema": "TUSS",
+                  "codigo": "40302350",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "CBZ — hiponatremia por SIADH (síndrome de secreção inapropriada de ADH).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "1cca8e5b-bba9-4df8-835a-58e18a328f79",
+              "nome": "HLA-B*1502 (genotipagem)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso and cbz_hla_realizado == 'nao_pendente'",
+              "codigo": [],
+              "cid": "F31",
+              "indicacao": "CBZ — risco de Síndrome de Stevens-Johnson em pacientes de descendência asiática. TUSS a confirmar.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "96235a1c-cc75-4bfc-960e-513725aecf56",
+              "nome": "Hemograma completo com plaquetas",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'carbamazepina', 'valproato')",
+              "codigo": [
+                {
+                  "iid": "9fb3b3e9-3247-4f6f-8a04-310ee8c47e0e",
+                  "sistema": "TUSS",
+                  "codigo": "40302058",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Clozapina / CBZ / VPA — mielossupresso. Anemia aplstica (CBZ), agranulocitose (clozapina), trombocitopenia (VPA).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "bf0a6569-f2f1-469e-a5b1-0d080ffd3a61",
+              "nome": "Glicemia de jejum",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'glicemia_hba1c' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "247b42e8-cedf-4b73-9221-1e209afcc5b7",
+                  "sistema": "TUSS",
+                  "codigo": "40302148",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — síndrome metabólica / DM2. Maior risco: olanzapina, clozapina, quetiapina.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 8h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "70f95f0a-00a0-49f7-a351-534b623c412c",
+              "nome": "Hemoglobina glicada (HbA1c)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'glicemia_hba1c' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "66c9ffdf-2f7c-4e9c-986b-ed413ea882d5",
+                  "sistema": "TUSS",
+                  "codigo": "40307252",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — controle glicêmico e rastreio de DM2.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "39b815bb-67f0-47ac-8e43-7ab70767c356",
+              "nome": "Colesterol total e frações (LDL, HDL, VLDL)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'lipidios' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "9f914e11-5e2c-409a-b872-1a4d7312a2cc",
+                  "sistema": "TUSS",
+                  "codigo": "40302121",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — dislipidemia. Clozapina e olanzapina com maior impacto lipídico.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 12h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "4035719e-8c8a-4794-9e60-032216af4297",
+              "nome": "Triglicerídeos",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'lipidios' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "bb7871f0-28b4-46dc-a52c-5ec498f9e420",
+                  "sistema": "TUSS",
+                  "codigo": "40302407",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — hipertrigliceridemia.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 12h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "f4492ff2-3770-4aa3-a470-0ce97fdbd47c",
+              "nome": "Prolactina",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'ap_atipico_risperidona' in medicamentos_em_uso and prolactina_sintomatic != 'nenhum'",
+              "codigo": [
+                {
+                  "iid": "4f8877a7-0536-4015-b443-578bb7278dcb",
+                  "sistema": "TUSS",
+                  "codigo": "40302326",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "Risperidona — hiperprolactinemia sintomática (galactorreia, amenorreia, disfunção sexual).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "efaf6e84-5304-4eaf-b1d9-a79d4a87bd99",
+              "nome": "Beta-HCG (gonadotrofina coriônica)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "sexo_feminino_ie == 'sim' and selected_any(medicamentos_em_uso, 'litio', 'valproato')",
+              "codigo": [
+                {
+                  "iid": "db04e0af-47ec-4313-9fb1-acfd71b089e8",
+                  "sistema": "TUSS",
+                  "codigo": "40306045",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio/VPA em mulher em idade fértil — excluir gravidez antes de iniciar/manter fármaco teratogênico.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue ou urina"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "d1da83ff-3173-4e58-8ef7-498bd4721d9c",
+              "nome": "ECG convencional 12 derivações",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "ecg_indicado_psico != 'nao_indicado'",
+              "codigo": [
+                {
+                  "iid": "8417a280-e1db-4cb8-93d3-47c148b3217e",
+                  "sistema": "TUSS",
+                  "codigo": "40101010",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Psicofármaco QT-prolongante — rastreio de arritmia / QTc prolongado. TCA: ECG obrigatório.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": ""
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "a1b3e931-a1fd-4025-b87d-eba52377d1eb",
+              "nome": "Hemograma com diferencial (1º episódio)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "bdfc06e5-b9cc-4c4a-8b12-025121020235",
+                  "sistema": "TUSS",
+                  "codigo": "40302058",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio psicótico — exclusão de causa orgânica infecciosa/inflamatória.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "9a4f2983-2eeb-4635-beed-624d33264e2f",
+              "nome": "TSH (1º episódio)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "0df284d1-3406-4d65-9ca6-971a7c86a241",
+                  "sistema": "TUSS",
+                  "codigo": "40320094",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — hipotireoidismo ou hipertireoidismo como causa orgânica.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6cbec494-910d-41fa-9739-de889c98b219",
+              "nome": "VDRL / RPR (sífilis)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "9e373e69-abdf-41da-a184-2b22d8676661",
+                  "sistema": "TUSS",
+                  "codigo": "40314098",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — neurossífilis (treponema pallidum).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "1e350367-a25d-4550-88b0-43e99f381cb1",
+              "nome": "Sorologia HIV (anti-HIV 1 e 2)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "5b41ec06-d687-49ca-87a4-e9e20ee1053a",
+                  "sistema": "TUSS",
+                  "codigo": "40312003",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — encefalite ou complicações neurológicas por HIV.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "3a2c4652-a5b4-442d-b286-6be4e6d48b4d",
+              "nome": "Troponina + Proteína C-reativa (PCR)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "sintomas_miocardite in ('dor_toracica_dispneia_febre', 'taquicardia_inexplicada')",
+              "codigo": [],
+              "cid": "F29",
+              "indicacao": "Clozapina — suspeita de miocardite. TUSS a confirmar com codificação específica da instituição.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            }
+          ],
+          "medicamento": [
+            {
+              "id": "01a4a87a-3119-4e33-af5a-b6b1c40be68c",
+              "nome": "Escitalopram 10mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico') and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Escitalopram 10mg",
+              "posologia": "<p>10 mg/dia pela manhã. Aumentar para 20 mg após 4 semanas se resposta parcial. Máx 20 mg/dia.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "7a0e408c-46e9-4af6-b832-e6f5c741e91a",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "8d7ce91b-427c-4c00-9f63-bb3eb21f9fe1",
+              "nome": "Sertralina 50mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico', 'tept', 'toc') and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Sertralina 50mg",
+              "posologia": "<p>50 mg/dia com alimento. Titular até 100–200 mg/dia. TOC: dose alvo 150–200 mg.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "9668b72a-f3d2-4f5c-9a48-7cdcdd45cb4e",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "4ae7c7fb-0c2f-4ce3-ab8f-544e6a4e3b5a",
+              "nome": "Fluoxetina 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'toc', 'ta_bulimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Fluoxetina 20mg",
+              "posologia": "<p>TDM: 20 mg/dia. TOC: 60–80 mg/dia (titular lentamente). BN: 60 mg/dia alvo.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "3f8e2992-ddce-4175-ae8d-0303af530b4f",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "af56b039-cd51-4206-80e2-fef556856b18",
+              "nome": "Lítio 300mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tab' in diagnostico_ativo) and episodio_atual_humor in ('mania', 'hipomania', 'eutimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lítio 300mg",
+              "posologia": "<p>300 mg 3×/dia (início). Nível-alvo: mania aguda 0,8–1,2 mEq/L; manutenção 0,6–1,0 mEq/L. Coletar litemia 12h após última dose.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "d0735cf9-a3fd-44a1-b9a6-7df8e262cafe",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estabilizador de humor",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "5842d4a2-8b9f-4389-bf7b-63b73035f432",
+              "nome": "Lamotrigina 25mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tab' in diagnostico_ativo) and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'eutimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lamotrigina 25mg",
+              "posologia": "<p>Iniciar 25 mg/dia × 2 semanas → 50 mg/dia × 2 semanas → 100 mg/dia. Titação lenta obrigatória (risco Stevens-Johnson).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "25cd3f2d-2e49-4676-a2e3-4b99e17a05ae",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estabilizador de humor",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "6702db27-686b-4cd8-b1e2-d576b52f9101",
+              "nome": "Metilfenidato LP 18mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tdah' in diagnostico_ativo and tdah_abuso_substancias_ativo != 'sim'",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Metilfenidato LP 18mg",
+              "posologia": "<p>18 mg/dia pela manhã (início). Titular até 36–54 mg/dia. Máx 72 mg/dia.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "7dc351b7-3ecd-4bee-8b0a-6f5a13a1f8ad",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estimulante — TDAH",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "9352ae26-39ac-4c5a-a638-cc0033a09d4a",
+              "nome": "Lisdexanfetamina 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tdah' in diagnostico_ativo) or ('ta_tcap' in diagnostico_ativo)",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lisdexanfetamina 20mg",
+              "posologia": "<p>TDAH: 20–30 mg/dia (início) → 30–70 mg/dia. TCAP: 30–70 mg/dia. Tomar pela manhã.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "8bb1183e-b6d4-4fdf-b5f2-8b8e6b99c7ca",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estimulante — TDAH / TCAP",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "27b2fde3-0730-4e67-978b-971a53c66c40",
+              "nome": "Biperideno 2mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(eps_presente, 'parkinsonismo', 'distonia_aguda')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Biperideno 2mg",
+              "posologia": "<p>EPS/parkinsonismo: 2–4 mg/dia VO. Distonia aguda: 5 mg IM (repetir se necessário em 30 min).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "3dfbc50d-dd9d-4b76-ae3b-526ca6d61e18",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Anticolinergíco — EPS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "c9f99ff6-e453-4ff6-892f-2dd562a693f3",
+              "nome": "Propranolol 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'acatisia' in eps_presente",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Propranolol 20mg",
+              "posologia": "<p>20–40 mg/dia, dividido 2×/dia. Verificar contraindicações (asma, bloqueio AV, bradicardia).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "e9fca6f4-cb34-4d1f-b8b1-b9358af2e498",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "β-bloqueador — Acatisia",
+                  "texto": ""
+                }
+              ]
+            }
+          ],
+          "encaminhamento": [
+            {
+              "id": "49647157-605d-4b3d-a8d7-6a162d805fed",
+              "nome": "Psicólogo — ERP (TOC)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'toc' in diagnostico_ativo",
+              "indicacao": "ERP (Exposição com Prevenção de Resposta) — tratamento obrigatório para TOC. Psicólogo com treinamento específico. Resposta esperada: redução ≥35% no Y-BOCS após 12–20 sessões.",
+              "cid": "F42",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "07afad8b-2f89-4ff0-92ff-e6d0996d8fa1",
+              "nome": "Psicólogo — TF-CBT/EMDR (TEPT)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tept' in diagnostico_ativo and tept_psicoterapia_indicada != 'sim'",
+              "indicacao": "Psicoterapia focada em trauma obrigatória: TF-CBT, CPT, PE ou EMDR. 1ª linha com maior nível de evidência para TEPT (APA/NICE 2024).",
+              "cid": "F43.1",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "4e1b83ae-2495-40c2-bae8-fb1c3ad2d4ba",
+              "nome": "Psicólogo — TCD (TPB)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tpb' in diagnostico_ativo and tpb_em_tcd != 'sim'",
+              "indicacao": "TCD (Terapia Comportamental Dialética) — único tratamento de 1ª linha para TPB com RCT confirmatório. Mínimo 1 ano de tratamento.",
+              "cid": "F60.3",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "eb76b1d5-1d4e-4194-9332-f911be982625",
+              "nome": "Psicólogo — TCC",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico', 'fobia_social', 'burnout')",
+              "indicacao": "TCC como adjuvante à farmacoterapia. 1ª linha em combinação com ISRS para TDM / TAG / Pânico / Fobia Social.",
+              "cid": "F32",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "041a7502-ea52-4f38-9aa2-cfd6b2c13d12",
+              "nome": "Neuropsicólogo",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "neuropsicologica_indicada in ('sim_solicitada', 'sim_pendente')",
+              "indicacao": "Avaliação neuropsicológica: TDAH com diagnóstico incerto / TEA adulto para confirmação. Relatório diagnóstico completo.",
+              "cid": "F90",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Neuropsicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "bb388cc2-7995-44d2-861e-e59107dca613",
+              "nome": "Nutricionista",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'ta_anorexia', 'ta_bulimia', 'ta_tcap') and nutri_encaminhada != 'ja_acompanha'",
+              "indicacao": "Avaliação e acompanhamento nutricional obrigatório em transtornos alimentares. Avaliar risco de síndrome de realimentação (AN).",
+              "cid": "F50",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Nutricionista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "a86867c6-ab7b-44c7-a1c8-b958298c42e8",
+              "nome": "Emergência / SAMU 192",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "nivel_risco_p0 == 'alto'",
+              "indicacao": "SAMU 192. Encaminhamento de urgência por risco suicida alto classificado no C-SSRS. Não deixar paciente sem acompanhante.",
+              "cid": "Z91.5",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Emergência",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "260889e2-fa7b-405f-9e28-3d6c6237bc1a",
+              "nome": "CAPS II",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'esquizofrenia' in diagnostico_ativo",
+              "indicacao": "Acompanhamento psicossocial complementar — esquizofrenia estável. Reabilitação e reinserção social (Lei 10.216/2001).",
+              "cid": "F20",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "CAPS II",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "cd8fa3e9-8df4-424e-a196-a0297df74155",
+              "nome": "CAPS-AD",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'uso_substancias')",
+              "indicacao": "Dependência de substâncias — CAPS-AD. Tratamento especializado em rede pública.",
+              "cid": "F19",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "CAPS-AD",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "af304b1e-9584-43cc-86e2-a2c1236b38c6",
+              "nome": "Neurologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' or selected_any(comorbidades_clinicas, 'epilepsia')",
+              "indicacao": "Primeiro episódio psicótico / epilepsia — exclusão de causa orgânica. Solicitar neuroimagem (TC ou RM de crânio).",
+              "cid": "F29",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Neurologista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "bb168d2f-1ba0-43f5-883b-0d1d5264663c",
+              "nome": "Cardiologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(an_sinais_alarme, 'fc_menor_50') or ecg_indicado_psico in ('estimulante_cardiopatia') or (anc_dentro_limite == 'suspender_menor_1000' and sintomas_miocardite != 'nenhum')",
+              "indicacao": "QTc >500ms / cardiopatia estrutural / miocardite por clozapina. Avaliação urgente.",
+              "cid": "I49",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Cardiologista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "8806bb9f-9057-49a4-ac43-fb9ee7dffb8e",
+              "nome": "Medicina do Trabalho",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'burnout' in diagnostico_ativo",
+              "indicacao": "Burnout grave — análise do ambiente organizacional e afastamento quando indicado.",
+              "cid": "F43.8",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Médico do Trabalho",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "8264f103-532d-4d61-a308-99c6a40bff7a",
+              "nome": "Endocrinologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('litio' in medicamentos_em_uso) and ('hipotireoidismo' in comorbidades_clinicas)",
+              "indicacao": "Hipotireoidismo em uso de lítio. Lítio inibe síntese e liberação de hormônios tireoidianos. Ajuste de levotiroxina.",
+              "cid": "E03",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Endocrinologista",
+              "detalhesPedido": "",
+              "categorias": []
+            }
+          ],
+          "mensagem": [
+            {
+              "id": "264c5116-d50b-4f50-a718-6c7200f5c026",
+              "nome": "⛔ GATE P0 — RISCO ALTO: Internação indicada",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "nivel_risco_p0 == 'alto' and internacao_indicada_p0 in ('sim_involuntaria', 'sim_voluntaria')",
+              "conteudo": "<p><strong>Acionar SAMU 192 / encaminhar UPA imediatamente.</strong><br>Não deixar paciente sozinho. Notificar familiar (CFM Art. 46). Iniciar SPI antes do encaminhamento quando possível. Completar laudo para internação involuntária (Lei 10.216/2001, Art. 6). Notificar MP em 72h (Art. 9).</p>",
+              "observacao": ""
+            },
+            {
+              "id": "3f15ec15-1266-4ae8-82e2-9e7d00f1c2f9",
+              "nome": "⚠️ GATE P0 — RISCO INTERMEDIÁRIO: SPI obrigatório",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "nivel_risco_p0 == 'intermediario' and spi_realizado != 'sim'",
+              "conteudo": "<p><strong>SPI obrigatório antes de encerrar a consulta.</strong><br>Retorno intensificado &lt;2 semanas. Acionar suporte familiar. Documentar nível de risco e conduta no prontuário.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "916afd2e-4e54-41f2-a962-29be04fb2875",
+              "nome": "⛔ CLOZAPINA — ANC &lt;1.000: SUSPENDER IMEDIATAMENTE",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "anc_dentro_limite == 'suspender_menor_1000'",
+              "conteudo": "<p><strong>Suspender clozapina imediatamente.</strong><br>Encaminhar urgência hematológica. Registrar na monitoração do PGRM (ANVISA). Não reiniciar sem avaliação especializada.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "f6bd15ec-4ce1-471b-91f4-312dfaa4d3cd",
+              "nome": "⚠️ VPA + MIE — Aconselhamento pendente",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "vpa_mie_consentimento == 'nao_pendente_hoje'",
+              "conteudo": "<p><strong>Realizar aconselhamento hoje:</strong><br>Risco de malformações maiores ~9% (espinha bífida, cardiopatia). Contracepção eficaz obrigatória. Ácido fólico ≥0,4 mg/dia. Documentar no prontuário. (AAN/AES/SMFM 2024)</p>",
+              "observacao": ""
+            },
+            {
+              "id": "fbcce3f5-c8dc-4f06-a25b-5535cf625b52",
+              "nome": "⚠️ TAB + Antidepressivo sem estabilizador de humor",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "ad_sem_estabilizador == 'confirmado_risco_documentado'",
+              "conteudo": "<p><strong>Antidepressivo sem estabilizador em TAB: contraindicado.</strong><br>Risco de viragem maníaca e ciclagem rápida. Revisar prescrição. Associar estabilizador (lítio, lamotrigina ou VPA) antes de manter AD.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "b8abd765-0f09-47a9-9695-9b01664af464",
+              "nome": "⛔ ANOREXIA NERVOSA — Sinais de alarme: Internação urgente",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(an_sinais_alarme, 'imc_menor_15', 'fc_menor_50', 'pa_menor_90_60', 'eletrólitos_criticos', 'instabilidade_clinica')",
+              "conteudo": "<p><strong>AN com instabilidade clínica — internação urgente.</strong><br>FC &lt;50 bpm, PA &lt;90/60 mmHg ou eletrólitos críticos (K+ &lt;3,0 mEq/L ou Na+ &lt;130 mEq/L): emergência médica. Encaminhar UPA/hospital com suporte nutricional.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "2bf8187a-1198-48f7-b675-e52cd4fd03be",
+              "nome": "⚠️ CLOZAPINA — Sintomas de miocardite",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "sintomas_miocardite in ('dor_toracica_dispneia_febre', 'taquicardia_inexplicada')",
+              "conteudo": "<p><strong>Suspeita de miocardite associada à clozapina.</strong><br>Solicitar troponina + PCR urgente. Encaminhar cardiologia/emergência. Suspender clozapina se confirmada. Monitorar CK-MB e ECG.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "86c5274c-cb2e-44a5-889c-4a8582935e21",
+              "nome": "⚠️ TOXICIDADE DE LÍTIO",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(sintomas_toxicidade_litio, 'ataxia', 'confusao')",
+              "conteudo": "<p><strong>Sintomas de toxicidade ao lítio.</strong><br>Solicitar nível sérico urgente. Suspender AINEs, IECA e diuréticos. Hidratação vigorosa. Hemodiálise indicada se litemia &gt;2,5 mEq/L ou toxicidade grave. Encaminhar urgência.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "233a956f-4b38-47d8-bf80-9e9d835e26fe",
+              "nome": "ℹ️ PRIMEIRO EPÍSODIO PSICÓTICO — Investigação orgânica obrigatória",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "conteudo": "<p><strong>Descartar causa orgânica antes de estabelecer diagnóstico primário.</strong><br>Hemograma, metabólico completo, TSH, B12, VDRL, HIV. Neuroimagem (TC ou RM) obrigatória. Encaminhar neurologia para avaliação.</p>",
+              "observacao": ""
+            }
+          ]
+        },
         "clinicalExpressions": null,
         "templateMarkdown": null
       }
