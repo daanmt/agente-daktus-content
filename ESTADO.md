@@ -40,17 +40,18 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 - Status macro: especialidade ativa
 - Fase atual consolidada: **Fase 5 — QA iterativo (patches de design)**
 - Gate clínico: playbook auditado ✅ | JSON v0.1.1 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
   - 9 nodes, 8 edges, 75 questões
   - Nó summary (Processamento Clínico): 3 expressões de risco C-SSRS corrigidas
   - Nó conduta enfermagem (pausa): handoff enfermagem → médico
-  - Nó 6 (Conduta Medicina): 9 alertas, 25 exames TUSS, 13 encaminhamentos, 9 medicamentos
-  - 0 BLOQUEANTES na auditoria | 44 revisão (escopo v0.1.2–v0.1.4)
+  - Nó 6 (Conduta Medicina): 19 alertas, 25 exames TUSS, 14 encaminhamentos, 9 medicamentos (66 items total)
+  - 0 BLOQUEANTES na auditoria | 31 revisão (contexto clínico + monitoramento farmacológico)
 - Artefatos de suporte:
   - `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado
   - `scripts/audit_design_v01.py` — auditoria estrutural
-  - `scripts/patch_vdraft_to_v011.py` — script de patch aplicado
-- Próximo passo macro: QA clínico do v0.1.1 no preview Daktus, depois patch v0.1.2
+  - `scripts/patch_vdraft_to_v011.py` — patch v0.1.1
+  - `scripts/patch_v011_to_v012.py` — patch v0.1.2
+- Próximo passo macro: QA clínico do v0.1.2 no preview Daktus
 
 ### Infraestrutura do ambiente
 - Status macro: refatoração lean inicial integrada
@@ -109,19 +110,18 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_015 — Fase 5 Psiquiatria — Patch v0.1.1 (2026-03-08)
-- Commit: ver HANDOFF.md
-- Foco: GUIA_DESIGN_UX.md, audit_design_v01.py, patch vdraft→v0.1.1 (25 modificações, 0 BLOQUEANTES)
+- Sessão: session_015 — Fase 5 Psiquiatria — Patches v0.1.1 + v0.1.2 (2026-03-08)
+- Commits: `a83eddd` (v0.1.1 — 25 mod.) + `2a82a68` (v0.1.2 — 23 mod.)
+- Foco: patch estrutural (0 BLOQUEANTES) + expansão da conduta (10 alertas + correções)
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. QA clínico do v0.1.1 no ambiente de preview Daktus.
-2. Patch v0.1.2 — conectar uids de alta prioridade à conduta (A3 prioridade 1).
-3. Patch v0.1.3 — mapear scores diagnósticos a thresholds de conduta.
-4. Patch v0.1.4 — avaliar uids informativos (manter, conectar ou remover).
-5. Aprovar e promover versão para v1.0.0 após QA completo.
+1. QA clínico do v0.1.2 no preview Daktus (3 perfis críticos).
+2. Ajustar conduta e condicionais conforme feedback clínico.
+3. Avaliar 31 uids A3 residuais: manter como contexto ou conectar a conduta.
+4. Aprovar e promover versão para v1.0.0 após QA completo.
 
 ---
 

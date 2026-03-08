@@ -1,5 +1,5 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-08 — Patch v0.1.1 aplicado (vdraft → v0.1.1)*
+*Atualizado: 2026-03-08 — Patch v0.1.2 aplicado (v0.1.1 → v0.1.2)*
 
 ---
 
@@ -9,7 +9,7 @@
 - Última sessão integrada: **Fase 5 — Psiquiatria — Patch v0.1.1** (session_015)
 - Especialidade/tema ativo: Psiquiatria
 - Fase atual: **Fase 5 — QA iterativo (patches de design)**
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
 
 ---
 
@@ -19,11 +19,12 @@
 |--------|--------|----------|-------------|
 | v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` (renomeado) | Primeira versão completa, com falhas estruturais de design |
 | vdraft | base do usuário | `amil-ficha_psiquiatria-vdraft.json` | Modificações manuais do usuário (booleans Gate P0, novo nó summary, pausa enfermagem) |
-| **v0.1.1** | **ativo** | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural — todos os BLOQUEANTES zerados |
+| v0.1.1 | base | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural — todos os BLOQUEANTES zerados |
+| **v0.1.2** | **ativo** | `amil-ficha_psiquiatria-v0.1.2.json` | Conduta expandida — 10 alertas + correções de expressões |
 
 ---
 
-## O QUE FOI FEITO — PATCH v0.1.1 (session_015)
+## O QUE FOI FEITO — PATCH v0.1.2 (session_015, continuação)
 
 ### Artefatos produzidos nesta sessão
 
@@ -60,7 +61,7 @@
 - Nó 3: `sexo_feminino_ie`, `gestante`
 - Nó 4: `burnout_criterios_tdm`, `primeiro_episodio_psicotico`, `esquizofrenia_refrataria`, `comportamento_suicida_recorrente`, `tdah_abuso_substancias_ativo`, `sintomas_cardiacos_tdah`, `tea_irritabilidade_grave`, `tpb_autolesao_ativa`
 
-### Resultado da auditoria final v0.1.1
+### Resultado da auditoria final v0.1.2
 
 ```
 A1 choice→boolean BLOQUEANTE:  0  ✅
@@ -69,7 +70,8 @@ A4 conduta sem condicao BLOQ:   0  ✅
 TOTAL BLOQUEANTES: 0
 
 A1 revisão (choice 2-opções legítimas): 4
-A3 uid sem impacto (revisão): 40  ← escopo dos próximos patches
+A3 uid sem impacto (revisão): 31  (eram 40 em v0.1.1)
+Total conduta items: 66 (eram 56 em v0.1.1)
 ```
 
 ### Estrutura de nós v0.1.1
@@ -92,35 +94,40 @@ A3 uid sem impacto (revisão): 40  ← escopo dos próximos patches
 
 ## O QUE ESTÁ ABERTO AGORA
 
-### Pendências v0.1.2 — Conectar uids de alta prioridade à conduta (A3 prioridade 1)
+### A3 residual: 31 uids informativos (sem conduta direta)
 
-Uids com relevância clínica confirmada que ainda não disparam conduta:
-- `primeiro_episodio_psicotico` → alerta de investigação orgânica já existe na conduta, verificar expressão
-- `esquizofrenia_refrataria` → candidato a conduta de clozapina
-- `comportamento_suicida_recorrente` → candidato a alerta/encaminhamento CAPS-II/TCD
-- `madrs_score`, `ymrs_score`, `ybocs_score`, `pcl5_score` → candidatos a thresholds de conduta
-- `acesso_meios_letais` → candidato a conduta de lethal means counseling
-- `internacao_psiq_previa` — histórico relevante, pode informar conduta
+Classificação dos uids A3 restantes:
 
-### Pendências v0.1.3 — Mapear scores a thresholds de conduta (A3 prioridade 2)
+**Contexto clínico legítimo (manter sem conduta):**
+`tipo_consulta`, `motivo_consulta`, `exames_recentes`, `ideacao_passiva`,
+`outros_medicamentos_relevantes`, `internacao_psiq_previa`, `phq9_score`,
+`mdq_aplicado`, `audit_score`, `primeira_consulta_vida`
 
-- MADRS ≥20 → depressão moderada a grave: considerar conduta diferenciada
-- YMRS ≥20 → mania grave: conduta de urgência
-- Y-BOCS ≥16 → TOC moderado-grave: TCC/ERP
-- PCL-5 ≥33 → TEPT clínico: EMDR
+**Monitoramento farmacológico de referência (valores para o médico):**
+`litio_fase`, `litemia_valor`, `litemia_dentro_faixa`, `vpa_fase`,
+`vpa_nivel`, `vpa_labs_recentes`, `cbz_nivel`, `anc_valor`, `ap_tempo_uso`
 
-### Pendências v0.1.4 — Avaliar uids informativos sem conduta (A3 prioridade 3)
+**Nuances diagnósticas (potencial conduta futura):**
+`tab_fase_diagnostica`, `ciclagem_rapida`, `especificador_misto`,
+`ansiedade_subtipo`, `burnout_criterios_tdm`, `tdah_apresentacao`,
+`sintomas_cardiacos_tdah`, `tea_nivel_suporte`, `tea_irritabilidade_grave`,
+`tea_comorbidades`, `tpb_autolesao_ativa`, `tpb_sintoma_alvo`
 
-- `tipo_consulta`, `motivo_consulta`, `exames_recentes`, `ideacao_passiva`, etc.
-- Decidir: manter como contexto clínico, conectar a conduta ou remover
+### Próximo passo recomendado
+
+**QA clínico no ambiente de preview Daktus com v0.1.2** — percorrer 3 perfis:
+1. Alto risco suicida com acesso a meios → verificar lethal means counseling
+2. Mulher grávida em uso de valproato → verificar alerta gestante+VPA
+3. Esquizofrenia refratária → verificar indicação de clozapina
 
 ---
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. QA clínico do v0.1.1 no ambiente de preview Daktus (percorrer 3 perfis)
-2. Aprovar v0.1.1 clinicamente
-3. Abrir patch v0.1.2 para conectar uids de alta prioridade à conduta
+1. QA clínico do v0.1.2 no ambiente de preview Daktus (percorrer 3 perfis críticos)
+2. Ajustar condicionais ou conteúdo clínico conforme feedback do QA
+3. Avaliar 31 uids A3 residuais: manter, conectar ou remover
+4. Promover para v1.0.0 após aprovação clínica completa
 
 ---
 
@@ -128,7 +135,7 @@ Uids com relevância clínica confirmada que ainda não disparam conduta:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
 
 ---
 
