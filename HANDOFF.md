@@ -1,65 +1,126 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-07 — Fase 4 (JSON Psiquiatria) concluída*
+*Atualizado: 2026-03-08 — Patch v0.1.1 aplicado (vdraft → v0.1.1)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Fase 4 — Psiquiatria — JSON completo** (sessions 009–014)
+- Última sessão integrada: **Fase 5 — Psiquiatria — Patch v0.1.1** (session_015)
 - Especialidade/tema ativo: Psiquiatria
-- Fase atual: **Fase 4 CONCLUÍDA** → pronta para Fase 5 (QA final com usuário)
-- Artefato produzido: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json`
+- Fase atual: **Fase 5 — QA iterativo (patches de design)**
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
 
 ---
 
-## O QUE JÁ ESTÁ INTEGRADO (Fase 4 — sessions 009–014)
+## VERSIONING — PSIQUIATRIA
 
-| Sessão | Conteúdo | Commit | Status |
-|--------|----------|--------|--------|
-| A | Nós 1 + 2 (Triagem + Gate P0 C-SSRS, 21q) | ✅ commitado | ok |
-| B | Nó 3 (Anamnese Psiquiátrica, 15q) | ✅ commitado | ok |
-| C–F | Nós 4 + 5 (Diagnóstico 30q + Farmacológico 17q) | `9d33d01` ✅ | ok |
-| G–H | Nó 6 (Conduta: 9 alertas, 25 exames, 13 encam., 9 meds) + clinicalExpressions | `459b6b4` ✅ | ok |
-
-**Validação estrutural:** PASSOU — 6 nodes, 5 edges, 83 questões, 260 iids únicos, 0 erros
-**QA clínico:** 3 perfis simulados — alto risco suicida, TDM leve, TAB+lítio+VPA — todos corretos
+| Versão | Status | Artefato | Observações |
+|--------|--------|----------|-------------|
+| v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` (renomeado) | Primeira versão completa, com falhas estruturais de design |
+| vdraft | base do usuário | `amil-ficha_psiquiatria-vdraft.json` | Modificações manuais do usuário (booleans Gate P0, novo nó summary, pausa enfermagem) |
+| **v0.1.1** | **ativo** | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural — todos os BLOQUEANTES zerados |
 
 ---
 
-## ARTEFATO DE SAÍDA — PSIQUIATRIA
+## O QUE FOI FEITO — PATCH v0.1.1 (session_015)
+
+### Artefatos produzidos nesta sessão
+
+- `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado ✅
+- `scripts/audit_design_v01.py` — auditoria estrutural (não-destrutiva) ✅
+- `scripts/patch_vdraft_to_v011.py` — script de patch (25 modificações) ✅
+- `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json` — artefato ativo ✅
+
+### Modificações aplicadas no v0.1.1 (25 total)
+
+**Grupo A — Fórmulas do nó summary corrigidas (3):**
+- `risco_suicidio_alto`: critérios C-SSRS completos (plano, intenção, método, tentativa_previa, acesso_meios)
+- `risco_suicidio_intermediario`: ideação ativa + tentativa prévia, sem plano/intenção
+- `risco_suicidio_baixo`: ideação ativa sem fatores de risco, com fatores protetores
+
+**Grupo B — Conduta: nivel_risco_p0 eliminado (3 condições reescritas):**
+- Alertas e encaminhamento de SAMU agora usam `risco_suicidio_alto is True` / `risco_suicidio_intermediario is True`
+
+**Grupo C — Perguntas movidas para Medicina (4 operações):**
+- `spi_realizado` e `internacao_indicada_p0` removidos do nó de enfermagem (gate-p0)
+- Inseridos como primeiras perguntas do nó de diagnóstico médico (nó 4)
+- Expressões atualizadas para referenciar as novas variáveis booleanas do summary
+
+**Grupo D — Referência inexistente corrigida (1):**
+- `ideacao_com_plano.expressao`: `ideacao_suicida is True` → `ideacao_ativa is True`
+
+**Grupo E — Boolean conversões iniciais Nó 4 (2):**
+- `ciclagem_rapida` e `especificador_misto`: choice(sim/nao) → boolean
+
+**Grupo F — Expressão de vpa_mie_consentimento (1):**
+- `sexo_feminino_ie == 'sim'` → `sexo_feminino_ie is True`
+
+**Grupo G — Boolean conversões residuais Nós 3 e 4 (10):**
+- Nó 3: `sexo_feminino_ie`, `gestante`
+- Nó 4: `burnout_criterios_tdm`, `primeiro_episodio_psicotico`, `esquizofrenia_refrataria`, `comportamento_suicida_recorrente`, `tdah_abuso_substancias_ativo`, `sintomas_cardiacos_tdah`, `tea_irritabilidade_grave`, `tpb_autolesao_ativa`
+
+### Resultado da auditoria final v0.1.1
 
 ```
-especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json
+A1 choice→boolean BLOQUEANTE:  0  ✅
+A2 labels enum BLOQUEANTE:      0  ✅
+A4 conduta sem condicao BLOQ:   0  ✅
+TOTAL BLOQUEANTES: 0
+
+A1 revisão (choice 2-opções legítimas): 4
+A3 uid sem impacto (revisão): 40  ← escopo dos próximos patches
 ```
 
-| Nó | ID | Questões | Conteúdo |
-|----|----|----------|---------|
-| 1 | node-psiq-01-triagem | 10q | Triagem Enfermagem + 5 clinicalExpressions |
-| 2 | node-psiq-02-gate-p0 | 11q | Gate C-SSRS (breakpoint) |
-| 3 | node-psiq-03-anamnese | 15q | Anamnese completa |
-| 4 | node-psiq-04-diagnostico | 30q | 6 blocos diagnósticos |
-| 5 | node-psiq-05-farmacos | 17q | Monitoramento farmacológico |
-| 6 | node-psiq-06-conduta | conduta | 9 alertas, 25 exames TUSS, 13 encam., 9 meds |
+### Estrutura de nós v0.1.1
+
+| ID | Tipo | Label | Questões |
+|----|------|-------|----------|
+| `node-psiq-01-triagem` | custom | Identificação — Prontuário | ~2q |
+| `20e05d57-...` | custom | Triagem — Enfermagem | ~4q |
+| `node-psiq-03-anamnese` | custom | Anamnese Psiquiátrica — Enfermagem | ~12q |
+| `node-psiq-02-gate-p0` | custom | Triagem Suicídio — Enfermagem (C-SSRS) | 7q |
+| `summary-6e3e...` | summary | Processamento Clínico | 3 clinicalExpressions |
+| `conduta-a9cc...` | conduct | Conduta — Enfermagem (pausa) | handoff |
+| `node-psiq-04-diagnostico` | custom | Fluxo de seguimento — Medicina | ~11q |
+| `node-psiq-05-farmacos` | custom | Monitoramento Farmacológico — Medicina | ~10q |
+| `node-psiq-06-conduta` | conduct | Conduta — Medicina | 9 alertas, 25 exames, 13 enc., 9 meds |
+
+**Total:** 9 nodes, 8 edges, 75 questões | `nivel_risco_p0` e `ideacao_suicida`: ausentes ✅
 
 ---
 
 ## O QUE ESTÁ ABERTO AGORA
 
-- **Fase 5 — QA final** aguarda revisão do usuário (Dan):
-  - Revisar condicionais e expressões do JSON
-  - Validar conteúdo clínico das condutas
-  - Confirmar TUSS de itens pendentes (HLA-B*1502, troponina+PCR)
-  - Ajustar versão: `1.0.0-draft` → `1.0.0` quando aprovado
+### Pendências v0.1.2 — Conectar uids de alta prioridade à conduta (A3 prioridade 1)
+
+Uids com relevância clínica confirmada que ainda não disparam conduta:
+- `primeiro_episodio_psicotico` → alerta de investigação orgânica já existe na conduta, verificar expressão
+- `esquizofrenia_refrataria` → candidato a conduta de clozapina
+- `comportamento_suicida_recorrente` → candidato a alerta/encaminhamento CAPS-II/TCD
+- `madrs_score`, `ymrs_score`, `ybocs_score`, `pcl5_score` → candidatos a thresholds de conduta
+- `acesso_meios_letais` → candidato a conduta de lethal means counseling
+- `internacao_psiq_previa` — histórico relevante, pode informar conduta
+
+### Pendências v0.1.3 — Mapear scores a thresholds de conduta (A3 prioridade 2)
+
+- MADRS ≥20 → depressão moderada a grave: considerar conduta diferenciada
+- YMRS ≥20 → mania grave: conduta de urgência
+- Y-BOCS ≥16 → TOC moderado-grave: TCC/ERP
+- PCL-5 ≥33 → TEPT clínico: EMDR
+
+### Pendências v0.1.4 — Avaliar uids informativos sem conduta (A3 prioridade 3)
+
+- `tipo_consulta`, `motivo_consulta`, `exames_recentes`, `ideacao_passiva`, etc.
+- Decidir: manter como contexto clínico, conectar a conduta ou remover
 
 ---
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. Revisar `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json`
-2. Executar QA clínico completo no ambiente de preview Daktus
-3. Corrigir eventuais ajustes pontuais de condicionais ou conteúdo
-4. Atualizar metadata.version para `1.0.0` e registrar entrega
+1. QA clínico do v0.1.1 no ambiente de preview Daktus (percorrer 3 perfis)
+2. Aprovar v0.1.1 clinicamente
+3. Abrir patch v0.1.2 para conectar uids de alta prioridade à conduta
 
 ---
 
@@ -67,22 +128,20 @@ especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json`
-4. `history/session_014.md`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- versão `1.0.0-draft` do JSON — não alterar para `1.0.0` sem aprovação explícita
+- v0.1.1 é o artefato ativo — não alterar sem novo patch documentado
+- `amil-ficha_psiquiatria-vdraft.json` mantido como referência de intenção do usuário
 - branch-base: `main`
-- separação entre `HANDOFF.md` e `ESTADO.md`
-- centralidade de `AGENTE.md` como ponto de entrada
+- TUSS pendentes: HLA-B*1502 e Troponina+PCR — `codigo: []` no JSON, sinalizado
 
 ---
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- `especialidades/psiquiatria/RELATORIO_PROCESSO.md` contém referência histórica — arquivo operacional inativo.
-- Worktrees antigos em `.claude/worktrees/` são ignorados pelo Git. Não representam estado ativo.
-- TUSS pendentes: HLA-B*1502 e Troponina+PCR — `codigo: []` no JSON, sinalizado.
+- HANDOFF atualizado em 2026-03-08 (session_015) — sobrescreve estado de 2026-03-07
+- v0.1.0 publicado como legado; vdraft como referência; v0.1.1 como artefato ativo

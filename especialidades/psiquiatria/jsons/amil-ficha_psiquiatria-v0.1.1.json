@@ -1,0 +1,4266 @@
+{
+  "metadata": {
+    "id": "amil-ficha_psiquiatria",
+    "company": "amil",
+    "name": "ficha_psiquiatria",
+    "version": "0.1.1",
+    "createdAt": "2026-03-07T22:38:27.013Z",
+    "description": "- Modifiquei padrões para boolean, quando apenas sim/não.\n- Adicionei nodo de conduta do enfermeiro, para criar pausa entre fluxo enfermeiro e médico\n- Criei os nodos de processamento, para estratificar o risco de suicídio e liberar perguntas ao fluxo do médico, que ainda devem ser transpostas"
+  },
+  "nodes": [
+    {
+      "id": "node-psiq-01-triagem",
+      "type": "custom",
+      "position": {
+        "x": 900,
+        "y": 100
+      },
+      "data": {
+        "label": "Identificação — Prontuário",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-02-gate-p0",
+            "condicao": "(ideacao_passiva is True)"
+          }
+        ],
+        "questions": [
+          {
+            "id": "P52001800-e0ba-4103-a537-3b0dd65a4cbe",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "sex",
+            "titulo": "<p><strong>Sexo biológico</strong></p>",
+            "descricao": "",
+            "condicional": "oculto",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "bba2a72a-bfa4-4e2f-ba08-61cb46e7b750",
+                "id": "male",
+                "label": "Masculino",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "e331f95c-6e95-49ac-af7e-e4b509379584",
+                "id": "female",
+                "label": "Feminino",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pf80a05f6-edd2-4982-b069-53c789d327f5",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "age",
+            "titulo": "<p><strong>Idade (anos)</strong></p>",
+            "descricao": "",
+            "condicional": "oculto",
+            "expressao": "",
+            "select": "number",
+            "options": []
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": [
+          {
+            "id": "expr-7b82c67e-217b-49e9-b0bc-e3bed3599fc7",
+            "name": "estabilizadores_humor",
+            "formula": "selected_any(medicamentos_em_uso, 'litio', 'valproato', 'carbamazepina', 'lamotrigina')",
+            "description": "Paciente em uso de estabilizador de humor (litio, VPA, CBZ ou lamotrigina)",
+            "template": ""
+          },
+          {
+            "id": "expr-6032978a-9a29-41ca-85af-ef88a744e14b",
+            "name": "antipsicóticos_atipicos",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol', 'ap_atipico_ziprasidona')",
+            "description": "Paciente em uso de antipsicótico atípico de segunda geração",
+            "template": ""
+          },
+          {
+            "id": "expr-98641c47-f514-4186-bbba-51fcb6f40ae8",
+            "name": "exige_ecg",
+            "formula": "selected_any(medicamentos_em_uso, 'antidepressivo_tca') or (ecg_indicado_psico != 'nao_indicado')",
+            "description": "Condição que exige ECG por risco de QTc prolongado (TCA obrigatório, ISRS alta dose, clozapina 1º mês)",
+            "template": ""
+          },
+          {
+            "id": "expr-a4a71080-9e71-4cae-9fd7-e4a5b25be51a",
+            "name": "sexo_feminino_ie",
+            "formula": "sex == 'female' and age >= 12 and age <= 55",
+            "description": "Mulher em idade fértil (12-55 anos) — relevante para VPA, lítio e teratogenicidade",
+            "template": ""
+          },
+          {
+            "id": "expr-abb1d3f0-6461-4487-8082-3dce20b81843",
+            "name": "monitoramento_metabolico_ap",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol')",
+            "description": "AP atípico de alto risco metabólico — indica monitoramento de glicemia, lipídios e peso",
+            "template": ""
+          }
+        ],
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "20e05d57-3dfa-43cb-b039-74279162a73a",
+      "type": "custom",
+      "position": {
+        "x": 1800,
+        "y": 100
+      },
+      "data": {
+        "label": "Triagem — Enfermagem",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-02-gate-p0",
+            "condicao": "(ideacao_passiva is True)"
+          },
+          {
+            "linkId": "node-psiq-03-anamnese",
+            "condicao": "(ideacao_passiva is False)"
+          }
+        ],
+        "questions": [
+          {
+            "id": "0ec1f858-90f1-4078-abe7-53a2ad1601c1",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "tipo_consulta",
+            "titulo": "<p><strong>Tipo de consulta</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "363bdde3-4277-403b-9d76-6df317a98562",
+                "id": "primeira_consulta",
+                "label": "Primeira consulta",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "38711c8d-4665-4e9e-8085-ecbdc8d083fd",
+                "id": "retorno",
+                "label": "Retorno",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "25dd6e84-e705-4057-9256-dd0e82f96091",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "motivo_consulta",
+            "titulo": "<p><strong>Motivo principal da consulta</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "86a93001-3d31-444c-9b79-47bd5b7cf2a6",
+                "id": "sem_queixa_aguda",
+                "label": "Sem queixa aguda / retorno de rotina",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "ca2afb9e-c20d-42b0-b1bb-87ca20923718",
+                "id": "humor_deprimido",
+                "label": "Humor deprimido / tristeza",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "5b869ed0-3743-4cc6-b6d5-7fc230b390e9",
+                "id": "humor_elevado_agitacao",
+                "label": "Agitação / euforia / humor elevado",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "4baed5ad-b915-45b6-b724-974abfa169bc",
+                "id": "ansiedade_panico",
+                "label": "Ansiedade / ataques de pânico",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "44b5cf03-47a2-4432-8b39-7a89fe36d7c5",
+                "id": "sintomas_psicoticos",
+                "label": "Delírios / alucinações / comportamento desorganizado",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "e7480d33-073c-44fb-ad0f-f5036f5bcd5e",
+                "id": "esgotamento_burnout",
+                "label": "Esgotamento / burnout",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6e7ca4f8-2d1e-4d0c-9f51-723874f2464c",
+                "id": "deficit_atencao",
+                "label": "Dificuldade de atenção / concentração",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "e61dfe76-d8a9-403d-9559-acc2be133ae3",
+                "id": "comportamento_alimentar",
+                "label": "Preocupação excessiva com peso / comportamento alimentar",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7ba0a50e-6e61-48b7-bbb4-12940e6b2a98",
+                "id": "autolesao",
+                "label": "Autolesão / pensamentos de se machucar",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "45829e5a-afb1-49ca-b23e-d2bbc075244c",
+                "id": "insomnia_sono",
+                "label": "Insônia / distúrbio do sono",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "21dae459-a93b-458c-bf46-11d517349ec4",
+                "id": "outra_queixa",
+                "label": "Outra queixa",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "63c45f46-d0d5-41e4-bd86-3ef0f85f7c57",
+            "nodeId": "node-psiq-01-triagem",
+            "uid": "exames_recentes",
+            "titulo": "<p><strong>Exames laboratoriais recentes:</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "5f256027-5801-4fae-9804-70235ab4d11c",
+                "id": "nenhum_exame",
+                "label": "Nenhum exame recente",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "42b828ce-c81a-4b11-82ff-62c21eb1e678",
+                "id": "exames_lab_gerais",
+                "label": "Hemograma / metabólico / lipídios / glicemia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "15910570-0209-42a1-a9dc-8335b0bb863f",
+                "id": "litemia",
+                "label": "Litemia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "2429161a-fbe6-4bac-9c30-d47de3e9be72",
+                "id": "nivel_vpa",
+                "label": "Nível sérico de valproato",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "853f868e-5d8b-4600-ac07-8fc6790315d6",
+                "id": "nivel_cbz",
+                "label": "Nível sérico de carbamazepina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "f7a28450-e295-4eba-bf52-021979b5be1b",
+                "id": "anc_hemograma",
+                "label": "ANC / hemograma (clozapina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c168082b-ce4a-4dd2-a628-55409911723c",
+                "id": "ecg",
+                "label": "ECG",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c521d3d5-547b-4995-9ce0-259ba0918d57",
+                "id": "outros_exames",
+                "label": "Outros exames",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "Pe53707a3-969c-4dde-991e-bad617488542",
+            "nodeId": "20e05d57-3dfa-43cb-b039-74279162a73a",
+            "uid": "ideacao_passiva",
+            "titulo": "<p><strong>Nas últimas 2 semanas, o paciente desejou estar morto ou adormecer e não acordar?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": [
+          {
+            "id": "expr-4767c657-ddb1-459a-a5ad-64664bce8fe7",
+            "name": "estabilizadores_humor",
+            "formula": "selected_any(medicamentos_em_uso, 'litio', 'valproato', 'carbamazepina', 'lamotrigina')",
+            "description": "Paciente em uso de estabilizador de humor (litio, VPA, CBZ ou lamotrigina)",
+            "template": ""
+          },
+          {
+            "id": "expr-7f89c850-d026-407e-93df-07dec611971c",
+            "name": "antipsicóticos_atipicos",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol', 'ap_atipico_ziprasidona')",
+            "description": "Paciente em uso de antipsicótico atípico de segunda geração",
+            "template": ""
+          },
+          {
+            "id": "expr-52da204a-eb37-417a-b18c-7793f0bcb82c",
+            "name": "exige_ecg",
+            "formula": "selected_any(medicamentos_em_uso, 'antidepressivo_tca') or (ecg_indicado_psico != 'nao_indicado')",
+            "description": "Condição que exige ECG por risco de QTc prolongado (TCA obrigatório, ISRS alta dose, clozapina 1º mês)",
+            "template": ""
+          },
+          {
+            "id": "expr-e41cf3d7-65cd-492c-8794-7ea382041b42",
+            "name": "sexo_feminino_ie",
+            "formula": "sex == 'female' and age >= 12 and age <= 55",
+            "description": "Mulher em idade fértil (12-55 anos) — relevante para VPA, lítio e teratogenicidade",
+            "template": ""
+          },
+          {
+            "id": "expr-f80267ee-07d5-425d-a85d-ea14352dd8b3",
+            "name": "monitoramento_metabolico_ap",
+            "formula": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol')",
+            "description": "AP atípico de alto risco metabólico — indica monitoramento de glicemia, lipídios e peso",
+            "template": ""
+          }
+        ],
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-03-anamnese",
+      "type": "custom",
+      "position": {
+        "x": 2700,
+        "y": 100
+      },
+      "data": {
+        "label": "Anamnese Psiquiátrica — Enfermagem",
+        "descricao": "",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-04-diagnostico",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "Pcdcbde88-e1d4-4a61-8c08-0088773de093",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "diagnostico_ativo",
+            "titulo": "<p><strong>Diagnóstico(s) ativo(s) do paciente (CID-10)</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "4c05ef0c-8be7-4cfb-b5cb-e71c6c905a03",
+                "id": "sem_diagnostico",
+                "label": "Sem diagnóstico definido / avaliação inicial",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b404124a-8417-4bdf-aedd-474b16feb2e8",
+                "id": "tdm",
+                "label": "TDM / Depressão maior (F32–F33)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c6316fe6-97ae-4ad8-91fb-3d69afe92ec4",
+                "id": "distimia",
+                "label": "Distimia / TDP (F34.1)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "5e3dbaf0-4b37-43e5-b287-2ca5d9103f38",
+                "id": "tab",
+                "label": "TAB I ou II (F31)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "76ff2f30-66ec-4ee0-9cb8-2e7abce6bb8d",
+                "id": "tag",
+                "label": "TAG (F41.1)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "3b572347-d5ac-49c6-8fa0-d9bf04517be4",
+                "id": "panico",
+                "label": "Transtorno do pânico (F41.0)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b2d2ea6b-5d74-4ddb-b74b-9b98ac2d4500",
+                "id": "fobia_social",
+                "label": "Fobia social (F40.1)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "407c55f6-af4d-480e-9b8e-7d219758dc3c",
+                "id": "toc",
+                "label": "TOC (F42)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "a09ed6f8-bc7b-45cc-b94f-41fde578c7cc",
+                "id": "tept",
+                "label": "TEPT (F43.1)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "d00f96e5-629b-4583-9115-166a51ae4dc4",
+                "id": "burnout",
+                "label": "Burnout (Z73.0)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8290d80b-4175-495c-a3fa-1b01e10f4486",
+                "id": "esquizofrenia",
+                "label": "Esquizofrenia / esq. afetivo (F20–F25)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "9b54ad92-6709-4140-a1ef-a316ef28021a",
+                "id": "tdah",
+                "label": "TDAH (F90.0)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "44c0b441-21ee-4b19-996a-abca6f201c2d",
+                "id": "tea",
+                "label": "TEA (F84)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7b01836e-5259-4449-bb5b-f3ee2911c834",
+                "id": "tpb",
+                "label": "TPB / Borderline (F60.3)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "eb471af7-665e-42cd-ba75-58735c590dfe",
+                "id": "ta_anorexia",
+                "label": "Anorexia nervosa (F50.0)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7b9c8f9c-bbda-45e8-9f49-253f5ee12060",
+                "id": "ta_bulimia",
+                "label": "Bulimia nervosa (F50.2)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "e0582489-cee3-48c8-b22d-18982a174ad1",
+                "id": "ta_tcap",
+                "label": "TCAP (F50.8)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "5bbaef1a-4506-4893-bdae-d673f99aeabe",
+                "id": "uso_substancias",
+                "label": "Transtorno por uso de substâncias (F10–F19)",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P4f8e8427-8530-49d4-93fe-6efac9115ab8",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "medicamentos_em_uso",
+            "titulo": "<p><strong>Psicofármacos em uso atual</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "011bd37f-86a3-4886-ba71-8839036567e4",
+                "id": "sem_psicofarmacos",
+                "label": "Sem psicofármacos",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "7fd743ce-fbd2-4a9f-bc7f-088dd800d6aa",
+                "id": "litio",
+                "label": "Lítio (carbonato)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7c39ba81-70c2-4a79-ac35-198565d6c08b",
+                "id": "valproato",
+                "label": "Valproato / ácido valpróico",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c67aa1cf-efac-4ec7-a356-02a0e7bd6766",
+                "id": "lamotrigina",
+                "label": "Lamotrigina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ee20eba6-9f12-4c35-aa8e-abaace8351a3",
+                "id": "carbamazepina",
+                "label": "Carbamazepina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b973cc3b-5ffc-482d-bf87-38e1154fdda8",
+                "id": "clozapina",
+                "label": "Clozapina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6fcdda56-936e-4b9e-a9a1-f2d1acfcf824",
+                "id": "ap_atipico_olanzapina",
+                "label": "Olanzapina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "1d049ff8-5edd-42b5-97b7-b855e2ef0aca",
+                "id": "ap_atipico_quetiapina",
+                "label": "Quetiapina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "a63b6089-545f-412f-9e13-de7c9fe991e5",
+                "id": "ap_atipico_risperidona",
+                "label": "Risperidona / Paliperidona",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b61a497c-43c0-47e2-8f1b-5224cddf1c5b",
+                "id": "ap_atipico_aripiprazol",
+                "label": "Aripiprazol",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "554cf279-e822-45e2-9592-a11cf9ec26b1",
+                "id": "ap_atipico_ziprasidona",
+                "label": "Ziprasidona",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "1af4837a-7c86-414c-9cf8-1c9ccafc83ee",
+                "id": "ap_tipico",
+                "label": "Antipsicótico típico (haloperidol, clorpromazina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "804ddf14-b462-4261-8138-a6e7d3c5734e",
+                "id": "isrs",
+                "label": "ISRS (fluoxetina, sertralina, escitalopram, paroxetina, fluvoxamina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "03bb54dd-7179-4eb7-a63c-9fdf56c9e581",
+                "id": "irsn",
+                "label": "IRSN (venlafaxina, duloxetina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "92d1157b-eb47-4f4b-818a-1213f3531086",
+                "id": "bupropiona",
+                "label": "Bupropiona",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "77ac1648-a65a-40eb-a07b-74937d140c4e",
+                "id": "mirtazapina",
+                "label": "Mirtazapina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "43203425-08cc-4644-917c-016271ad98bb",
+                "id": "antidepressivo_tca",
+                "label": "Antidepressivo tricíclico (clomipramina, amitriptilina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "2c6dbc35-6a82-479d-b1de-a8e3de6276da",
+                "id": "estimulante",
+                "label": "Estimulante (metilfenidato, lisdexanfetamina)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6d9bd8a4-26c4-453f-93a5-31cea26c76a8",
+                "id": "atomoxetina",
+                "label": "Atomoxetina / Guanfacina",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7d60b0b2-8a0f-4665-aafb-062876f9d716",
+                "id": "bzd",
+                "label": "Benzodiazepínico (clonazepam, lorazepam)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "905c9b14-57a5-41da-a111-bb83cf527634",
+                "id": "outro_psicofarmacos",
+                "label": "Outro psicofármaco",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P8574364a-3130-4734-88bc-0de237b24da2",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "outros_medicamentos_relevantes",
+            "titulo": "<p><strong>Outros medicamentos em uso com potencial de interação</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "d7ed8aa6-8558-467c-b61f-af232515e370",
+                "id": "nenhum",
+                "label": "Nenhum relevante",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "5ae06a49-d84b-4263-87d5-b7e306728f6b",
+                "id": "aineis",
+                "label": "AINEs (ibuprofeno, naproxeno)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "93386da8-575d-4825-b045-3102be581a2e",
+                "id": "ieca_diuretico",
+                "label": "IECA / Diuréticos",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "df5fb9f3-80a9-43c3-ac6a-6316a31e62f3",
+                "id": "anticonvulsivantes",
+                "label": "Anticonvulsivantes (não psiquiátricos)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6d22bcc2-8171-4766-bf01-fc2cfbdbc193",
+                "id": "contraceptivo_hormonal",
+                "label": "Contraceptivo hormonal",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "02ac6fb7-9c34-462e-b007-b782fc813538",
+                "id": "tramadol",
+                "label": "Tramadol / opioides",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "336da1a7-c494-4327-ab21-1780c5434faa",
+                "id": "ritonavir_ip",
+                "label": "Ritonavir / inibidores de protease (HIV)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "56f0f1ca-3315-4220-831a-b11f9ac50a9a",
+                "id": "amiodarona",
+                "label": "Amiodarona",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "d95a9e8c-7e1d-4c4b-a2a5-50c7e9b79f13",
+                "id": "qt_prolongante",
+                "label": "Outros fármacos QT-prolongantes",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P59a3f99f-e5c5-4c8f-a7a6-e70532e094d8",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "comorbidades_clinicas",
+            "titulo": "<p><strong>Comorbidades clínicas relevantes</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "6fecd64e-cf3e-48ca-890a-a0d237b71d27",
+                "id": "nenhuma",
+                "label": "Nenhuma",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "51832071-6a8c-4b5d-9aab-d8ad36cfc8b3",
+                "id": "hipotireoidismo",
+                "label": "Hipotireoidismo",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "cae2f641-773c-4d27-980b-bb3f7dba1733",
+                "id": "drc",
+                "label": "DRC / insuficiência renal",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "23ff567e-d6b7-4d8c-84e2-c2cebae10bac",
+                "id": "diabetes",
+                "label": "Diabetes mellitus",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "777f63f3-9799-4670-ac41-0c7313a2e1c1",
+                "id": "dislipidemia",
+                "label": "Dislipidemia / síndrome metabólica",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "cb215290-2d77-4cec-82c1-3ed2ef391416",
+                "id": "epilepsia",
+                "label": "Epilepsia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ac15197c-620b-4735-a950-72d6971b7534",
+                "id": "cardiopatia",
+                "label": "Cardiopatia estrutural / arritmia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "d8fd1b3b-54e1-49ed-99cc-6733436970ac",
+                "id": "hiv",
+                "label": "HIV",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "51d325ac-f3fd-4bba-9788-da69fc47f5ab",
+                "id": "obesidade",
+                "label": "Obesidade (IMC ≥30)",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P9379161a-c76c-4ed7-9f90-f21478133524",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "sexo_feminino_ie",
+            "titulo": "<p><strong>Mulher em idade fértil (12–55 anos)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "sex == 'female' and age >= 12 and age <= 55",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P290063fe-e887-4069-afd2-6599965042ad",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "gestante",
+            "titulo": "<p><strong>Gestante atual?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "sexo_feminino_ie == 'sim'",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P04955ba5-dc89-458b-a533-7980a4721d56",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "substancias_uso",
+            "titulo": "<p><strong>Uso de substâncias psicoativas</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "a89be55e-65b1-499e-8796-b362d3e6cd83",
+                "id": "nenhum",
+                "label": "Nenhum",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "1eb03690-eb25-4809-ae02-5dc9fb461862",
+                "id": "alcool_uso_problematico",
+                "label": "Álcool (uso problemático / dependência)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "53b9bb51-164c-4f35-93b3-1adcb5bc56a3",
+                "id": "cannabis",
+                "label": "Cannabis",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "dde8387d-ccdc-40c0-a310-85b7a10826a5",
+                "id": "cocaina_crack",
+                "label": "Cocaína / crack",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "a93b7150-d5d4-4fa6-89f5-d5552919f7ef",
+                "id": "outras_drogas",
+                "label": "Outras drogas",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "165e2978-d176-4049-b745-8f4d6de4a4c1",
+                "id": "tabaco",
+                "label": "Tabagismo",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P2cd97e60-6cd1-4743-8a83-f43c31e1bf05",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "internacao_psiq_previa",
+            "titulo": "<p><strong>Internação psiquiátrica prévia?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": []
+          },
+          {
+            "id": "P7db33f7c-c4d1-4ba1-8391-88819b3e5657",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "phq9_score",
+            "titulo": "<p><strong>PHQ-9 score (se aplicado nesta consulta)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('tdm' in diagnostico_ativo) or ('distimia' in diagnostico_ativo) or ('burnout' in diagnostico_ativo)",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pf48216db-9552-4c5f-8bae-40a4894a6c0e",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "mdq_aplicado",
+            "titulo": "<p><strong>MDQ aplicado?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('tdm' in diagnostico_ativo) or ('distimia' in diagnostico_ativo)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "1853936c-6acc-4068-b9bb-94c9ff9de831",
+                "id": "sim_positivo",
+                "label": "Sim — MDQ positivo (suspeita de TAB)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "e3158cea-d3a2-432b-84f4-37f9e4b36dbe",
+                "id": "sim_negativo",
+                "label": "Sim — MDQ negativo",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "c774044d-a994-4017-9850-0e80ba04bc62",
+                "id": "nao_aplicado",
+                "label": "Não aplicado nesta consulta",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pcd73d00b-8e4a-4085-a3a5-22576db598f7",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "audit_score",
+            "titulo": "<p><strong>AUDIT score (se aplicado)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'alcool_uso_problematico' in substancias_uso",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pa69635de-0d0c-4655-b273-d3fd9c3912d8",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "primeira_consulta_vida",
+            "titulo": "<p><strong>Primeira consulta psiquiátrica em vida?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P72a1098d-416e-46a5-be84-7e2c116ae102",
+            "nodeId": "node-psiq-03-anamnese",
+            "uid": "encaminhamento_urgencia_necessario",
+            "titulo": "<p><strong>Encaminhamento de urgência necessário (além de Gate P0)?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-02-gate-p0",
+      "type": "custom",
+      "position": {
+        "x": 3600,
+        "y": 100
+      },
+      "data": {
+        "label": "Triagem Suicídio — Enfermagem",
+        "descricao": "<p></p>",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-03-anamnese",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "P287d546d-c9ea-40b4-989a-23f49e8436ff",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_ativa",
+            "titulo": "<p><strong>Recentemente, o paciente teve pensamentos de se machucar ou se matar?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P5ff4a889-f090-49e6-94b5-dbd089bc6bce",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_intencao",
+            "titulo": "<p><strong>Teve intenção de agir sobre esses pensamentos suicidas?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "Pa7146b9d-6cb5-4f1b-8d01-119c013a3794",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_plano",
+            "titulo": "<p><strong>Chegou a planejar como cometeria suicídio?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "ideacao_ativa is True",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "Pe942e788-29df-48de-9b6b-f7cfd4ca9303",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "ideacao_com_metodo",
+            "titulo": "<p><strong>Pensou em como cometeria suicídio?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P8c9da24b-e40d-4a2c-aed5-ede37e318936",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "acesso_meios_letais",
+            "titulo": "<p><strong>Tem acesso ao método mencionado?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P7d0f1b67-341f-4114-a081-b7bebd5c007d",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "tentativa_previa",
+            "titulo": "<p><strong>Já tentou se machucar ou se matar antes?</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P1c32b362-41c0-4011-962b-08e570673401",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "suporte_social",
+            "titulo": "<p><strong>Fatores protetores identificados</strong></p>",
+            "descricao": "",
+            "condicional": "visivel",
+            "expressao": "",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "3382044b-714f-4ec1-b90c-a80273138833",
+                "id": "sem_fatores_protetores",
+                "label": "Sem fatores protetores identificáveis",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b3e904a9-d5fd-4c36-8e3e-4445c3947e8a",
+                "id": "vinculo_familiar",
+                "label": "Vínculo familiar estável",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "b04f5aec-8963-4517-8926-23f8610d0170",
+                "id": "filhos_dependentes",
+                "label": "Filhos dependentes",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ba0782a6-a2d0-446f-87b9-4f0f853a1cdb",
+                "id": "religiosidade",
+                "label": "Religiosidade / espiritualidade",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "46505fd2-f035-4101-9a15-0edb7315f4ac",
+                "id": "acesso_sm",
+                "label": "Acesso a serviço de saúde mental",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "09536b85-a814-4d40-ab11-10021457387c",
+                "id": "pertencimento_social",
+                "label": "Pertencimento social / rede de apoio",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "summary-6e3e3703-1337-46f0-8b08-55e814f0f8ef",
+      "type": "summary",
+      "position": {
+        "x": 4500,
+        "y": 100
+      },
+      "data": {
+        "label": "Processamento Clínico",
+        "descricao": "",
+        "condicionais": [],
+        "clinicalExpressions": [
+          {
+            "id": "expr-8cc38fa1-af89-4c04-841c-3a4f6d5017a8",
+            "name": "risco_suicidio_alto",
+            "formula": "(ideacao_ativa is True) and ((ideacao_com_plano is True) or (ideacao_com_intencao is True) or (ideacao_com_metodo is True) or (tentativa_previa is True) or (acesso_meios_letais is True))",
+            "description": "",
+            "template": ""
+          },
+          {
+            "id": "expr-6fec4094-976b-4b23-babf-2db922d614d1",
+            "name": "risco_suicidio_intermediario",
+            "formula": "(ideacao_ativa is True) and (ideacao_com_plano is False) and (ideacao_com_intencao is False) and (tentativa_previa is True)",
+            "description": "",
+            "template": ""
+          },
+          {
+            "id": "expr-9edcd193-55e2-430b-9f20-d327272eff34",
+            "name": "risco_suicidio_baixo",
+            "formula": "(ideacao_ativa is True) and (ideacao_com_plano is False) and (ideacao_com_intencao is False) and (tentativa_previa is False) and (not('sem_fatores_protetores' in suporte_social))",
+            "description": "",
+            "template": ""
+          }
+        ],
+        "templateMarkdown": ""
+      }
+    },
+    {
+      "id": "conduta-a9ccd9ee-4962-4bf2-ae6a-a0f4fef7d7d9",
+      "type": "conduct",
+      "position": {
+        "x": 5400,
+        "y": 100
+      },
+      "data": {
+        "label": "Conduta — Enfermagem",
+        "descricao": "",
+        "condicionais": [],
+        "conduta": "pausa"
+      }
+    },
+    {
+      "id": "node-psiq-04-diagnostico",
+      "type": "custom",
+      "position": {
+        "x": 6300,
+        "y": 100
+      },
+      "data": {
+        "label": "Fluxo de seguimento — Medicina",
+        "descricao": "<p>Perguntas específicas por diagnóstico ativo. Apenas os blocos relevantes para o paciente serão exibidos.</p>",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-05-farmacos",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "P289f014f-acb9-445b-a0c0-580d2c95927a",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "spi_realizado",
+            "titulo": "<p><strong>SPI (Safety Planning Intervention) realizado nesta consulta?</strong></p>",
+            "descricao": "",
+            "condicional": "oculto",
+            "expressao": "(risco_suicidio_alto is True) or (risco_suicidio_intermediario is True)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "05da5e8a-0ca7-46b9-9255-9f6ef0da072a",
+                "id": "sim",
+                "label": "Sim — SPI realizado e documentado",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1ae13385-fa03-4ed0-b904-f56feb98227a",
+                "id": "nao",
+                "label": "Não — paciente recusou ou tempo insuficiente",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "7800316c-ae7c-44d2-930a-1a34b36889f6",
+                "id": "encaminhado",
+                "label": "Encaminhado para psicologia / CAPS para SPI",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P1270d4d4-30c6-4811-b256-c12f9665df84",
+            "nodeId": "node-psiq-02-gate-p0",
+            "uid": "internacao_indicada_p0",
+            "titulo": "<p><strong>Internação indicada?</strong></p>",
+            "descricao": "",
+            "condicional": "oculto",
+            "expressao": "risco_suicidio_alto is True",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "92be3051-268a-439b-8958-247ebc1fa935",
+                "id": "sim_involuntaria",
+                "label": "Sim — internação involuntária (risco iminente)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "286c74a2-1f02-4022-b79c-98ca319fb5e3",
+                "id": "sim_voluntaria",
+                "label": "Sim — internação voluntária (paciente consente)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "2bab9298-4dbc-4cac-843f-8e067c5e9cb7",
+                "id": "nao_monitoramento_intensivo",
+                "label": "Não — monitoramento intensivo ambulatorial (retorno em 24–72h)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P11adb140-07e9-41b8-bd33-4c28b77e3792",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "episodio_atual_humor",
+            "titulo": "<p><strong>Episódio atual de humor</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('tdm' in diagnostico_ativo) or ('distimia' in diagnostico_ativo) or ('tab' in diagnostico_ativo)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "813a924b-f80a-4800-8118-3f32f5fbcbf2",
+                "id": "eutimia",
+                "label": "Eutimia / sem episódio ativo",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "f942e725-6297-4b93-a548-f3f6ac586798",
+                "id": "depressao_leve",
+                "label": "Depressão leve (PHQ-9: 7–13 / MADRS: 7–19)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1724ba15-8581-496b-959a-4949549dff71",
+                "id": "depressao_moderada",
+                "label": "Depressão moderada (PHQ-9: 14–19 / MADRS: 20–34)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "a3c689f9-0a39-48ed-b6fb-cb97b9845290",
+                "id": "depressao_grave",
+                "label": "Depressão grave (PHQ-9 ≥20 / MADRS ≥35)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "66988c2a-9726-4037-ad48-1a886cff641b",
+                "id": "hipomania",
+                "label": "Hipomania (≥4 dias, sem prejuízo marcado)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "ce608a89-b0b3-4653-aca3-cd35cf54934a",
+                "id": "mania",
+                "label": "Mania (≥7 dias + prejuízo / hospitalização)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "fa84f492-ceca-46a4-9485-f7d93bf5c4c1",
+                "id": "misto",
+                "label": "Episódio misto (≥3 sx do polo oposto)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pa277c736-81bc-46ce-9521-313016359fe5",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tab_fase_diagnostica",
+            "titulo": "<p><strong>TAB — confirmação de subtipo</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tab' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "50860646-9627-4648-b816-e76077c10bff",
+                "id": "tab1",
+                "label": "TAB I (mania plena documentada)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b55a4ca2-3a78-4d8a-be35-ffad977e0e83",
+                "id": "tab2",
+                "label": "TAB II (hipomania + depressão, sem mania)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "ab7421ca-afcd-4e7e-8175-2139815e3de9",
+                "id": "ciclotimia",
+                "label": "Ciclotimia",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "6583eac5-4a63-4fe2-b48e-07dec422080f",
+                "id": "nao_definido",
+                "label": "Subtipo ainda não definido",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P10f7ed3a-1659-46e5-afde-50cc49c29ab9",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "ciclagem_rapida",
+            "titulo": "<p><strong>Ciclagem rápida (≥4 episódios / ano)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tab' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P12048b56-647c-412a-8bb8-9553cfff4442",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "especificador_misto",
+            "titulo": "<p><strong>Especificador misto presente (≥3 sx polo oposto)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave', 'mania', 'hipomania')",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P2757245e-4a6e-454e-9b72-561446f896f7",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "sintomas_psicoticos_humor",
+            "titulo": "<p><strong>Sintomas psicóticos durante episódio de humor?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "episodio_atual_humor in ('depressao_grave', 'mania')",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "Pcef76920-e9a2-4a6b-804c-ca2f264faf2f",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "madrs_score",
+            "titulo": "<p><strong>MADRS score (se aplicado)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave')",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P27328300-c9d5-403f-9bbd-be457b0a09f0",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "ymrs_score",
+            "titulo": "<p><strong>YMRS score (se aplicado)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "episodio_atual_humor in ('mania', 'hipomania')",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P5a1aaab5-7d7d-447a-a9af-9b3a457b4a14",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "ad_sem_estabilizador",
+            "titulo": "<p><strong>⚠️ ALERTA: Antidepressivo em uso SEM estabilizador em TAB — confirmar conduta:</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('tab' in diagnostico_ativo) and ('isrs' in medicamentos_em_uso) and not selected_any(medicamentos_em_uso, 'litio', 'valproato', 'lamotrigina', 'carbamazepina')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "f70d9e34-08cc-4070-bef7-606015c92009",
+                "id": "confirmado_risco_documentado",
+                "label": "Risco documentado — manter com monitoramento intensivo",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "35a53817-4136-444e-acdd-dd3250ffbde9",
+                "id": "trocar_conduta",
+                "label": "Suspender AD / adicionar estabilizador",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P7f7ebcca-8e2a-4b5f-81c5-431884cb8923",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "ansiedade_subtipo",
+            "titulo": "<p><strong>Subtipo de transtorno de ansiedade presente</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "selected_any(diagnostico_ativo, 'tag', 'panico', 'fobia_social', 'toc', 'tept', 'burnout')",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "79ffe118-c569-4f20-b90e-5ecf2e8b0286",
+                "id": "tag",
+                "label": "TAG — ansiedade generalizada",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "2d2c7ca1-b707-47b2-ad63-59e48ded79c7",
+                "id": "panico",
+                "label": "Transtorno do pânico",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "f00ac3ce-4a24-47f6-b192-bcc5b5ce8b8e",
+                "id": "fobia_social",
+                "label": "Fobia social / Transtorno de ansiedade social",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "d3409407-9e7b-4ba6-8db2-6cfbca67377b",
+                "id": "toc",
+                "label": "TOC",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8cd21de6-c928-42c1-bbe4-73e0a4a613fa",
+                "id": "tept",
+                "label": "TEPT",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "Pfda7c964-5835-49bf-8de9-d3f5a48c5ceb",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "ybocs_score",
+            "titulo": "<p><strong>Y-BOCS score (se aplicado)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'toc' in diagnostico_ativo",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P87d1604c-3a50-440e-8ddb-577885341aa1",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tept_psicoterapia_indicada",
+            "titulo": "<p><strong>Paciente em psicoterapia focada em trauma (TF-CBT / EMDR / CPT)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tept' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "0d2275c8-b6a8-46cd-a157-2c4d4959fc5c",
+                "id": "sim",
+                "label": "Sim — em andamento",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "83968a5f-abd4-4d6a-b858-d65ae50cb558",
+                "id": "nao_encaminhar",
+                "label": "Não — encaminhar para psicologia (TF-CBT/EMDR)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "8e2b3afe-9cbd-44d3-ac8b-b6d4392cdd34",
+                "id": "em_lista_espera",
+                "label": "Em lista de espera",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pb1f1b14f-b985-4b42-a3cf-e245950a7804",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "burnout_criterios_tdm",
+            "titulo": "<p><strong>Critérios de TDM preenchidos concomitantemente ao Burnout?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'burnout' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P334f0d3c-633c-45b1-be71-de2a13a418bc",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "pcl5_score",
+            "titulo": "<p><strong>PCL-5 score (se aplicado)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tept' in diagnostico_ativo",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P93495da7-e1d6-4c78-9ae6-bb75e4555596",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "primeiro_episodio_psicotico",
+            "titulo": "<p><strong>Primeiro episódio psicótico?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'esquizofrenia' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P522c926a-6e5f-4c43-bbf8-4916b9e74787",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "causa_organica_investigada",
+            "titulo": "<p><strong>Causa orgânica investigada (neuroimagem + labs)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "primeiro_episodio_psicotico == 'sim'",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "554a1ede-e7ac-4294-a92a-c43c7a39fff6",
+                "id": "sim",
+                "label": "Sim — investigação completa sem causa orgânica",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "c2cf3a1b-e643-4d11-89d6-a36fbca94e01",
+                "id": "nao_pendente",
+                "label": "Não — pendente (solicitar nesta consulta)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "44fa5681-7186-444b-a4e7-8b9dba6b2703",
+                "id": "nao",
+                "label": "Não — primeiro episódio recente, não aplicável ainda",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pf869830a-0ac6-4b35-be39-6abafc6fa12e",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "eps_presente",
+            "titulo": "<p><strong>EPS presente</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'esquizofrenia' in diagnostico_ativo",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "24553824-d42c-4749-a962-d4d8a456c008",
+                "id": "sem_eps",
+                "label": "Sem EPS",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "cad42905-1833-44b5-bec6-a71f559f99cb",
+                "id": "parkinsonismo",
+                "label": "Parkinsonismo (rigidez, bradicinesia, tremor)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "7685cb8e-ad4f-45b4-8fe7-e81d9296c3eb",
+                "id": "acatisia",
+                "label": "Acatisia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "640f99a5-f2ba-44fc-bba6-ac710b179e00",
+                "id": "distonia_aguda",
+                "label": "Distonia aguda",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "87d68d65-d072-441b-a560-68829792ea33",
+                "id": "discinesia_tardia",
+                "label": "Discinesia tardia",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P14cea4fc-bfb0-4d7d-8688-abc0b45582b8",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "esquizofrenia_refrataria",
+            "titulo": "<p><strong>Esquizofrenia refratária (≥2 antipsicóticos falhados em dose e tempo adequados)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'esquizofrenia' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P28f3a0a2-7894-460e-83ab-78cd1aecfcb0",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "comportamento_suicida_recorrente",
+            "titulo": "<p><strong>Comportamento suicida recorrente (critério adicional para clozapina)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'esquizofrenia' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P8ca64309-440d-42d7-812b-01d762e85101",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tdah_apresentacao",
+            "titulo": "<p><strong>Apresentação do TDAH (DSM-5)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tdah' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "903de80e-3769-459d-991c-b1ded8df8f45",
+                "id": "desatenta",
+                "label": "Predominantemente desatenta",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "bfb3d2b7-c69f-4761-8ec8-f0994155b09e",
+                "id": "hiperativa_impulsiva",
+                "label": "Predominantemente hiperativa-impulsiva",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "8de19550-440a-4289-a03a-3930a87b14d6",
+                "id": "combinada",
+                "label": "Combinada",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P51a70f03-660e-434b-96f3-ea9f6d956cee",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tdah_abuso_substancias_ativo",
+            "titulo": "<p><strong>Abuso de substâncias ativo concomitante?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tdah' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P9e093359-3c6f-48e9-92dd-168508c8d329",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "sintomas_cardiacos_tdah",
+            "titulo": "<p><strong>Sintomas cardíacos ou suspeita de cardiopatia?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tdah' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "Pc5d942b3-a6da-42a8-9650-4762e6ab5b17",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "neuropsicologica_indicada",
+            "titulo": "<p><strong>Avaliação neuropsicológica indicada?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tdah' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "0df189bc-36c6-4a03-bf2d-957f54e62247",
+                "id": "sim_solicitada",
+                "label": "Sim — solicitada nesta consulta",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "ebb0df88-9165-41f4-b9e3-f8050f0d196c",
+                "id": "sim_pendente",
+                "label": "Sim — pendente (em agenda)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "3400a545-fbe7-458e-aaaa-ac558441928a",
+                "id": "nao_diagnostico_clinico_claro",
+                "label": "Não — diagnóstico clínico suficientemente claro",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pc6f615e1-4c1a-4487-b8b6-802b5b2d995c",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tea_nivel_suporte",
+            "titulo": "<p><strong>Nível de suporte necessário (DSM-5 / ICD-11)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tea' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "ec9787ce-bb59-4d88-bbf5-6750678a96d6",
+                "id": "nivel1",
+                "label": "Nível 1 — requer suporte",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "86116db9-0174-48ab-b7dc-1830fa521935",
+                "id": "nivel2",
+                "label": "Nível 2 — requer suporte substancial",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "2a0cacf6-dadc-4450-9eb4-5e0d14cf6c4c",
+                "id": "nivel3",
+                "label": "Nível 3 — requer suporte muito substancial",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pc1f98303-3597-4548-9ff1-0f2df213ac0e",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tea_irritabilidade_grave",
+            "titulo": "<p><strong>Irritabilidade grave (critério para considerar AP)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tea' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "P624f5d79-08b1-4aed-a10a-29224c86e114",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tea_comorbidades",
+            "titulo": "<p><strong>Comorbidades psiquiátricas associadas ao TEA</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tea' in diagnostico_ativo",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "cac55914-413f-47e0-b0b6-6a457bf2dd78",
+                "id": "nenhuma",
+                "label": "Nenhuma",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "fd36f537-67dd-470a-967a-47fc2a488a01",
+                "id": "ansiedade",
+                "label": "Ansiedade",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "9b9fbe84-5693-4946-b435-843fbc11509e",
+                "id": "depressao",
+                "label": "Depressão",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "d527afd5-7118-4b6f-9342-f64b7a3816c9",
+                "id": "tdah_comorbido",
+                "label": "TDAH",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "42a99661-f4f3-47d0-817a-5b9dcae23c12",
+                "id": "toc_comorbido",
+                "label": "TOC",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "127dcfef-e254-4afd-8ba7-48d6f6047c96",
+                "id": "psicose_comorbida",
+                "label": "Psicose",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P325f8b62-3aca-453a-8a03-517710fa2763",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tpb_autolesao_ativa",
+            "titulo": "<p><strong>Autolesão ativa (não suicida)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tpb' in diagnostico_ativo",
+            "select": "boolean",
+            "options": [],
+            "defaultValue": "false"
+          },
+          {
+            "id": "Ped80ecce-34cb-4459-a163-ebaadfb42705",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tpb_em_tcd",
+            "titulo": "<p><strong>Paciente em TCD (Terapia Comportamental Dialética)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tpb' in diagnostico_ativo",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "bd0ec2f6-f76c-40fc-be22-3b19a01beda3",
+                "id": "sim",
+                "label": "Sim — em TCD",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "149f54d0-0e92-4cee-8dd5-d9f780954578",
+                "id": "nao_encaminhar",
+                "label": "Não — encaminhar para TCD",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "8e7694af-ab17-4d03-9aa2-5de26e03de1e",
+                "id": "aguardando_vaga",
+                "label": "Aguardando vaga em TCD",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P9fef7551-30ef-4956-b0fd-6479f2ffd521",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "tpb_sintoma_alvo",
+            "titulo": "<p><strong>Sintoma-alvo para farmacoterapia (se indicada)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'tpb' in diagnostico_ativo",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "86b792f0-af03-4e02-9203-0647dd1a4062",
+                "id": "nenhum",
+                "label": "Nenhum — farmacoterapia não indicada no momento",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "ff2dcdc4-126f-4c30-a5e0-ecd3d388da26",
+                "id": "impulsividade_grave",
+                "label": "Impulsividade grave",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "a862c7f6-73ce-459c-aa65-6231ca8ae0d2",
+                "id": "instabilidade_humor",
+                "label": "Instabilidade de humor",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "821df491-ce51-4e47-922c-9a9baf95ef4c",
+                "id": "mini_psicose_transitoria",
+                "label": "Mini-psicose transitória / ideação paranoide",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P9c6e3104-af94-431b-a5ad-fa1fb05bc5aa",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "an_sinais_alarme",
+            "titulo": "<p><strong>Sinais de alarme para AN (critérios de internação)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'ta_anorexia' in diagnostico_ativo",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "c8ca18c9-e227-46b9-bc0f-f76db2c896c2",
+                "id": "sem_sinais_alarme",
+                "label": "Sem sinais de alarme",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "d3749ba8-da1b-440d-907a-77982a4e6259",
+                "id": "imc_menor_15",
+                "label": "IMC <15",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "482fb82c-0aef-49ab-8c2a-c38506e43687",
+                "id": "fc_menor_50",
+                "label": "FC <50 bpm",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c506b263-81e4-4f08-8527-deb7cdaa689e",
+                "id": "pa_menor_90_60",
+                "label": "PA <90/60 mmHg",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "113ff5cd-715b-4d5d-b384-b3e040d0702a",
+                "id": "sincope",
+                "label": "Síncope",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "59d78936-3776-4456-a927-29ced300c985",
+                "id": "eletrólitos_criticos",
+                "label": "Eletrólitos críticos (K+ <3,0 ou Na+ <130)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8f849b15-89ed-401b-a791-d1ade3e3a1dd",
+                "id": "instabilidade_clinica",
+                "label": "Instabilidade clínica geral",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P030c621f-b36e-40d2-9746-624d6fc21df9",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "nutri_encaminhada",
+            "titulo": "<p><strong>Nutricionista encaminhada?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "selected_any(diagnostico_ativo, 'ta_anorexia', 'ta_bulimia', 'ta_tcap')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "59dd5d8b-5d30-4608-bc76-283836401e08",
+                "id": "sim_encaminhada",
+                "label": "Sim — encaminhada nesta consulta",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "c40a3df4-4edf-4194-88cf-11cdcd123909",
+                "id": "ja_acompanha",
+                "label": "Já em acompanhamento nutricional",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "93878b06-2d96-475b-a2f5-e4fb46ee80a0",
+                "id": "nao_encaminhar",
+                "label": "Não — encaminhar",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-05-farmacos",
+      "type": "custom",
+      "position": {
+        "x": 7200,
+        "y": 100
+      },
+      "data": {
+        "label": "Monitoramento Farmacológico — Medicina",
+        "descricao": "<p>Perguntas condicionadas pelos psicofármacos em uso. Apenas itens relevantes serão exibidos.</p>",
+        "condicionais": [
+          {
+            "linkId": "node-psiq-06-conduta",
+            "condicao": ""
+          }
+        ],
+        "questions": [
+          {
+            "id": "P38b53201-47b2-44dd-9560-3e6a324f11b1",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "litio_fase",
+            "titulo": "<p><strong>Fase do uso de lítio</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'litio' in medicamentos_em_uso",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "c140ce24-712d-4a2a-9aaf-5dbd3cff0465",
+                "id": "iniciando_baseline",
+                "label": "Iniciando — aguardando baseline laboratorial",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "9f02447e-252c-4ccc-8e05-d6ecb3312b63",
+                "id": "ajuste_dose",
+                "label": "Ajuste de dose (litemia fora da faixa alvo)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "97b20baa-b9ac-49a7-82cb-fa952ae5d5a6",
+                "id": "manutencao_menos_1ano",
+                "label": "Manutenção estável < 1 ano",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "dcc49a38-7a10-4f2e-99c6-a7fc08a20250",
+                "id": "manutencao_mais_1ano",
+                "label": "Manutenção estável ≥ 1 ano",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P8299accd-c682-4b1c-9b05-cba6035be7ec",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "litemia_valor",
+            "titulo": "<p><strong>Litemia mais recente (mEq/L) — coletar 12h após última dose</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'litio' in medicamentos_em_uso",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pf18c1b90-adde-486a-9288-dabdabb17224",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "litemia_dentro_faixa",
+            "titulo": "<p><strong>Litemia dentro da faixa terapêutica?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'litio' in medicamentos_em_uso",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "94734dd5-bef3-40d6-99f6-e49afe827ceb",
+                "id": "sim",
+                "label": "Sim — dentro da faixa (0,6–1,0 mEq/L manutenção / 0,8–1,2 aguda)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "0fe3d881-7ea1-404d-8b09-6326230f3067",
+                "id": "baixo",
+                "label": "Abaixo da faixa — considerar ajuste de dose",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1923745a-49c1-4383-8a74-e9e157f2e03f",
+                "id": "alto_risco_toxicidade",
+                "label": "⛔ Acima de 1,2 mEq/L — risco de toxicidade",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "f2c1869e-be91-4562-98e3-818b3a74ea03",
+                "id": "nao_coletada",
+                "label": "Não coletada — solicitar",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P53ca1a42-0171-4b2b-a2b8-4a5ed4acfbff",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "sintomas_toxicidade_litio",
+            "titulo": "<p><strong>Sinais de toxicidade ao lítio?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'litio' in medicamentos_em_uso",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "b16d3723-60a8-41b9-9471-6d821aaa46a7",
+                "id": "nenhum",
+                "label": "Nenhum",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "2861c7af-0535-412e-8663-56912ef07690",
+                "id": "tremor_novo",
+                "label": "Tremor novo ou agravado",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "28328a9a-80db-4a22-88b2-94193f833591",
+                "id": "nausea_diarreia",
+                "label": "Náusea / vômito / diarreia",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "e96114a1-db50-440d-9c65-447509f17652",
+                "id": "ataxia",
+                "label": "Ataxia / disartria",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "bc2fecab-c147-495a-9473-301342afeff1",
+                "id": "confusao",
+                "label": "Confusão mental / obnubilação",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "P67117641-8c08-4f4c-946b-689047d1a6bc",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "vpa_fase",
+            "titulo": "<p><strong>Fase do uso de valproato</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'valproato' in medicamentos_em_uso",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "790bb58e-1e45-4b99-a391-d6e69f1a054e",
+                "id": "iniciando",
+                "label": "Iniciando",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "bfb6b952-647b-4e5c-8a78-27cdc4453898",
+                "id": "ajuste",
+                "label": "Ajuste de dose",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "4b9564a5-cc9f-4854-89df-a3041a234a0f",
+                "id": "manutencao",
+                "label": "Manutenção estável",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P40fd00c7-4aec-4f2d-ab40-51e02247a6f7",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "vpa_nivel",
+            "titulo": "<p><strong>Nível sérico de VPA (µg/mL) — faixa terapêutica: 50–125</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'valproato' in medicamentos_em_uso",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "P4c19dac8-002e-48d1-94d5-b86adc13eb79",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "vpa_labs_recentes",
+            "titulo": "<p><strong>Monitoramento laboratorial VPA nos últimos 3 meses</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'valproato' in medicamentos_em_uso",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "86a0d151-524d-4383-b108-d4801bfe861b",
+                "id": "tgo_tgp",
+                "label": "TGO / TGP",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "cc39ff4c-e12b-4cb3-8479-405b79b461b1",
+                "id": "hemograma_plaquetas",
+                "label": "Hemograma + plaquetas",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "600caa87-2dd6-4b9a-99fd-934d59e98ae2",
+                "id": "amonia",
+                "label": "Amônia sérica",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "e3d710cc-99c1-4383-8ff5-b92a891ca2c7",
+                "id": "nenhum_pendente",
+                "label": "Nenhum — solicitar monitoramento",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pbb499289-b089-48c4-9e59-64e93d39e640",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "vpa_mie_consentimento",
+            "titulo": "<p><strong>⚠️ Aconselhamento de teratogenicidade VPA documentado + contracepção eficaz?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('valproato' in medicamentos_em_uso) and (sexo_feminino_ie is True)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "7b34b8c3-761f-4d1d-a76d-f3d473b8f925",
+                "id": "sim_documentado",
+                "label": "Sim — documentado em prontuário + contracepção dupla confirmada",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "a27a0307-8af3-4b70-bc79-fd5f5d233898",
+                "id": "nao_pendente_hoje",
+                "label": "⛔ Não — obrigatório realizar e documentar HOJE (AAN/AES/SMFM 2024)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P9e7c0e18-dca6-4251-be6a-90329557337a",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "cbz_nivel",
+            "titulo": "<p><strong>Nível sérico de carbamazepina (µg/mL) — faixa: 4–12</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'carbamazepina' in medicamentos_em_uso",
+            "select": "number",
+            "options": [],
+            "opcional": true
+          },
+          {
+            "id": "Pa237c7e5-d73f-4139-b6c9-5cdef3e1a4f7",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "cbz_hla_realizado",
+            "titulo": "<p><strong>HLA-B*1502 realizado (risco de Stevens-Johnson em descendentes asiáticos)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'carbamazepina' in medicamentos_em_uso",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "f7dbf9f6-e04e-4ace-9f2d-6508d20dc8e6",
+                "id": "sim_negativo",
+                "label": "Sim — negativo (seguro prosseguir)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "f40527cb-acc5-4b0b-83ea-e04203a7044f",
+                "id": "sim_positivo_evitar",
+                "label": "⛔ Sim — positivo (EVITAR carbamazepina)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "5499b0cd-c2f7-4984-944f-28accab7d397",
+                "id": "nao_nao_asiatico",
+                "label": "Não realizado — sem descendência asiática relevante",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "edca284f-582c-4e76-8132-330cf13121b0",
+                "id": "nao_pendente",
+                "label": "Não realizado — solicitar (descendência asiática)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P35674171-b0ba-42a5-aac2-27c2c52ea068",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "clozapina_semana",
+            "titulo": "<p><strong>Semana atual de uso de clozapina</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'clozapina' in medicamentos_em_uso",
+            "select": "number",
+            "options": []
+          },
+          {
+            "id": "P65802478-8b1c-495c-b476-ffb39b263fc8",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "anc_valor",
+            "titulo": "<p><strong>ANC mais recente (/µL)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'clozapina' in medicamentos_em_uso",
+            "select": "number",
+            "options": []
+          },
+          {
+            "id": "P9da2d9cd-dd2f-423f-b15c-b24cf20b0a03",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "anc_dentro_limite",
+            "titulo": "<p><strong>ANC status</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "'clozapina' in medicamentos_em_uso",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "cf169ea6-eacc-4b29-9cce-5309dc29e647",
+                "id": "normal_maior_1500",
+                "label": "Normal (>1.500/µL)",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "1ee35732-4ea4-4977-a7a3-cd257164ccad",
+                "id": "alerta_1000_1500",
+                "label": "⚠️ Alerta (1.000–1.500/µL) — aumentar frequência do monitoramento",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "d1069571-ccf3-4650-a55c-a01b436d41fe",
+                "id": "suspender_menor_1000",
+                "label": "⛔ SUSPENDER CLOZAPINA (<1.000/µL)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P5c70d047-6385-4973-94ab-88c57f644e3a",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "sintomas_miocardite",
+            "titulo": "<p><strong>Sintomas sugestivos de miocardite (monitorar no 1º mês)?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('clozapina' in medicamentos_em_uso) and (clozapina_semana <= 4)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "d8a1f95d-ed79-4af1-8b85-04d76c15a2be",
+                "id": "nenhum",
+                "label": "Nenhum",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "8e3b775d-363c-4b24-965a-c38aec53fdd6",
+                "id": "dor_toracica_dispneia_febre",
+                "label": "⛔ Dor torácica / dispneia / febre — encaminhar urgência",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "7e0af069-436d-4884-a60a-182b7e0cbe36",
+                "id": "taquicardia_inexplicada",
+                "label": "⚠️ Taquicardia inexplicada — solicitar troponina + ECG",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P2fdf9274-2b58-4f8a-8e1e-08fe4d7d343c",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "ap_tempo_uso",
+            "titulo": "<p><strong>Tempo de uso do antipsicótico atípico</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "selected_any(medicamentos_em_uso, 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol', 'ap_atipico_ziprasidona')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "2dbf31bb-76f9-492b-a358-472f36c3e752",
+                "id": "iniciando_baseline",
+                "label": "Iniciando — baseline metabólico pendente",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "e6219115-29ab-4f18-a2e4-386c9a8abe73",
+                "id": "um_a_tres_meses",
+                "label": "1–3 meses de uso",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "9a8fdfac-090d-4819-9cdb-43ca67a502d5",
+                "id": "mais_de_tres_meses",
+                "label": ">3 meses de uso estável",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pa212ea22-6381-4fde-9497-0b5e4cd6aae0",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "metabolico_monitorado",
+            "titulo": "<p><strong>Monitoramento metabólico realizado (últimos 3 meses)</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "selected_any(medicamentos_em_uso, 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol', 'ap_atipico_ziprasidona')",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "9d3085b3-436b-4bc7-b98f-85709f924dde",
+                "id": "glicemia_hba1c",
+                "label": "Glicemia / HbA1c",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "2c299238-14e1-4809-8b08-94278d7853dc",
+                "id": "lipidios",
+                "label": "Lipídios (CT, LDL, HDL, TG)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6be9f5f2-4cff-4436-b46e-4dccf8456a55",
+                "id": "peso_imc_cc",
+                "label": "Peso / IMC / circunferência abdominal",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8e7a29e1-0a10-41cb-acd9-83c29908d91c",
+                "id": "nenhum_pendente",
+                "label": "Nenhum — solicitar monitoramento completo",
+                "preselected": true,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "Pf2dbc79c-ecb9-4325-ac71-06d12b01a76b",
+            "nodeId": "node-psiq-05-farmacos",
+            "uid": "ecg_indicado_psico",
+            "titulo": "<p><strong>ECG indicado por psicofármaco?</strong></p>",
+            "descricao": "",
+            "condicional": "condicional",
+            "expressao": "('isrs' in medicamentos_em_uso) or ('antidepressivo_tca' in medicamentos_em_uso) or ('estimulante' in medicamentos_em_uso) or ('clozapina' in medicamentos_em_uso)",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "450075f0-c095-4219-bd2e-b223865fa4bd",
+                "id": "nao_indicado",
+                "label": "Não indicado no momento",
+                "preselected": true,
+                "exclusive": true
+              },
+              {
+                "iid": "02ef335d-456e-4539-ae47-350c47d8ef0a",
+                "id": "isrs_dose_alta_qt",
+                "label": "ISRS em dose alta (escitalopram >20mg / citalopram >20mg) — QTc",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "b6a6cd6e-adbc-4ffd-a165-948b233c02e5",
+                "id": "tca_obrigatorio",
+                "label": "TCA em uso — ECG obrigatório antes de iniciar",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1faa38fe-af8d-4e86-80c0-2a328ae7cc4f",
+                "id": "estimulante_cardiopatia",
+                "label": "Estimulante + suspeita de cardiopatia",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "d4de50a8-e8fa-41b7-b9dd-c300a3526ec5",
+                "id": "qt_multiplas_drogas",
+                "label": "Múltiplos fármacos QT-prolongantes",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          }
+        ],
+        "condutaDataNode": null,
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    },
+    {
+      "id": "node-psiq-06-conduta",
+      "type": "conduct",
+      "position": {
+        "x": 8100,
+        "y": 100
+      },
+      "data": {
+        "label": "Conduta — Medicina",
+        "descricao": "<p>Conduta gerada automaticamente com base nas respostas clínicas. Exames, alertas de segurança, encaminhamentos e lembretes de prescrição são exibidos de acordo com os dados coletados.</p>",
+        "condicionais": [],
+        "questions": [],
+        "condutaDataNode": {
+          "orientacao": [],
+          "exame": [
+            {
+              "id": "7e56481b-74f8-4a90-b399-f35885fbc89c",
+              "nome": "Litemia (lítio sérico)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "9ceef061-b287-47e1-babb-45a5200b698c",
+                  "sistema": "TUSS",
+                  "codigo": "40302440",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Monitoramento de lítio — estabilizador do humor. Faixa mania: 0,8–1,2 mEq/L; manutenção: 0,6–1,0 mEq/L.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar 12h após última dose, em jejum. Não tomar comprimido antes da coleta.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "5516ac5b-baeb-471f-9bb4-be3313825400",
+              "nome": "Creatinina sérica + eGFR",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "d8a720dd-5ae0-44d3-9593-fac1479c8599",
+                  "sistema": "TUSS",
+                  "codigo": "40302253",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — monitoramento de função renal. Nefropatia crônica em uso prolongado.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6b56ca3d-1fed-46f2-aefb-1fd282cd3b71",
+              "nome": "TSH (hormônio estimulante da tireoide)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('litio' in medicamentos_em_uso) or selected_any(diagnostico_ativo, 'tdm', 'distimia')",
+              "codigo": [
+                {
+                  "iid": "643c8a62-63db-4471-9459-84e22dca71df",
+                  "sistema": "TUSS",
+                  "codigo": "40320094",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio / depressão refratária — hipotireoidismo subclínico como causa secundária.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "be5f87dc-ad6c-42cc-9537-158f6d5d067c",
+              "nome": "Cálcio total",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "65c28637-0eee-4af1-aaa5-652b0d6fd9f7",
+                  "sistema": "TUSS",
+                  "codigo": "40302130",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — hipercalcemia e hiperparatireoidismo (efeito adverso crônico).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "acfb247d-b4a4-49e3-87a3-7ed2ca16bcf2",
+              "nome": "Ureia sérica",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'litio' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "a0b159bb-7743-456d-ba27-85f948bde258",
+                  "sistema": "TUSS",
+                  "codigo": "40302415",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio — função renal complementar (junto com creatinina).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "2e7b9910-309d-4fed-a605-77239b37753e",
+              "nome": "Nível sérico de ácido valpróico (VPA)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'valproato' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "1cf13068-8138-47dc-b6ed-3cb1737b514c",
+                  "sistema": "TUSS",
+                  "codigo": "40302555",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Valproato — faixa terapêutica: 50–100 µg/mL.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar antes da dose matinal (vale de concentração).",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "40f4273a-1d1a-44c2-802f-3cf166f4c800",
+              "nome": "ALT/TGP (alanina aminotransferase)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'valproato', 'carbamazepina', 'ap_atipico_olanzapina')",
+              "codigo": [
+                {
+                  "iid": "12737c4f-849b-4c21-acd4-bdc8c2328f00",
+                  "sistema": "TUSS",
+                  "codigo": "40302180",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Hepatotoxicidade por VPA / CBZ / olanzapina. Suspender se ALT/TGP >3× LSN com sintomas.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6f6edddb-ea2b-48dc-8b15-66180d74d013",
+              "nome": "AST/TGO (aspartato aminotransferase)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'valproato', 'carbamazepina', 'ap_atipico_olanzapina')",
+              "codigo": [
+                {
+                  "iid": "8314fdba-7495-4333-815c-301cd9e6132c",
+                  "sistema": "TUSS",
+                  "codigo": "40302172",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Hepatotoxicidade por VPA / CBZ / olanzapina.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "8aef2815-1d9b-4e17-8ba4-68b928dd8ff2",
+              "nome": "Amônia sérica",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'valproato' in medicamentos_em_uso and selected_any(sintomas_toxicidade_litio, 'confusao')",
+              "codigo": [
+                {
+                  "iid": "880b171e-1f46-4f93-9cf6-f21833ae01a3",
+                  "sistema": "TUSS",
+                  "codigo": "40302082",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "VPA — hiperamonemia (encefalopatia valproica). Suspeitar se confusão mental em uso de VPA.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "8746141f-bea8-4b77-8977-0c165339a772",
+              "nome": "Nível sérico de carbamazepina (CBZ)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "31ec1ee8-a4bd-4fea-be3e-e58f5ded4100",
+                  "sistema": "TUSS",
+                  "codigo": "40302490",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "CBZ — faixa terapêutica: 4–12 µg/mL.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Coletar antes da dose matinal.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "4e4bbe97-50aa-4fe0-8cda-00270eea6b88",
+              "nome": "Sódio sérico",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso",
+              "codigo": [
+                {
+                  "iid": "8b66fd22-e472-429b-8df7-2cfaf5e326dd",
+                  "sistema": "TUSS",
+                  "codigo": "40302350",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "CBZ — hiponatremia por SIADH (síndrome de secreção inapropriada de ADH).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "1cca8e5b-bba9-4df8-835a-58e18a328f79",
+              "nome": "HLA-B*1502 (genotipagem)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'carbamazepina' in medicamentos_em_uso and cbz_hla_realizado == 'nao_pendente'",
+              "codigo": [],
+              "cid": "F31",
+              "indicacao": "CBZ — risco de Síndrome de Stevens-Johnson em pacientes de descendência asiática. TUSS a confirmar.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "96235a1c-cc75-4bfc-960e-513725aecf56",
+              "nome": "Hemograma completo com plaquetas",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'carbamazepina', 'valproato')",
+              "codigo": [
+                {
+                  "iid": "9fb3b3e9-3247-4f6f-8a04-310ee8c47e0e",
+                  "sistema": "TUSS",
+                  "codigo": "40302058",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Clozapina / CBZ / VPA — mielossupresso. Anemia aplstica (CBZ), agranulocitose (clozapina), trombocitopenia (VPA).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "bf0a6569-f2f1-469e-a5b1-0d080ffd3a61",
+              "nome": "Glicemia de jejum",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'glicemia_hba1c' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "247b42e8-cedf-4b73-9221-1e209afcc5b7",
+                  "sistema": "TUSS",
+                  "codigo": "40302148",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — síndrome metabólica / DM2. Maior risco: olanzapina, clozapina, quetiapina.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 8h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "70f95f0a-00a0-49f7-a351-534b623c412c",
+              "nome": "Hemoglobina glicada (HbA1c)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'glicemia_hba1c' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "66c9ffdf-2f7c-4e9c-986b-ed413ea882d5",
+                  "sistema": "TUSS",
+                  "codigo": "40307252",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — controle glicêmico e rastreio de DM2.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "39b815bb-67f0-47ac-8e43-7ab70767c356",
+              "nome": "Colesterol total e frações (LDL, HDL, VLDL)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'lipidios' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "9f914e11-5e2c-409a-b872-1a4d7312a2cc",
+                  "sistema": "TUSS",
+                  "codigo": "40302121",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — dislipidemia. Clozapina e olanzapina com maior impacto lipídico.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 12h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "4035719e-8c8a-4794-9e60-032216af4297",
+              "nome": "Triglicerídeos",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(medicamentos_em_uso, 'clozapina', 'ap_atipico_olanzapina', 'ap_atipico_quetiapina', 'ap_atipico_risperidona', 'ap_atipico_aripiprazol') and 'lipidios' not in metabolico_monitorado",
+              "codigo": [
+                {
+                  "iid": "bb7871f0-28b4-46dc-a52c-5ec498f9e420",
+                  "sistema": "TUSS",
+                  "codigo": "40302407",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "AP atípico — hipertrigliceridemia.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "Jejum de 12h.",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "f4492ff2-3770-4aa3-a470-0ce97fdbd47c",
+              "nome": "Prolactina",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'ap_atipico_risperidona' in medicamentos_em_uso and prolactina_sintomatic != 'nenhum'",
+              "codigo": [
+                {
+                  "iid": "4f8877a7-0536-4015-b443-578bb7278dcb",
+                  "sistema": "TUSS",
+                  "codigo": "40302326",
+                  "nome": ""
+                }
+              ],
+              "cid": "F32",
+              "indicacao": "Risperidona — hiperprolactinemia sintomática (galactorreia, amenorreia, disfunção sexual).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "efaf6e84-5304-4eaf-b1d9-a79d4a87bd99",
+              "nome": "Beta-HCG (gonadotrofina coriônica)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "sexo_feminino_ie == 'sim' and selected_any(medicamentos_em_uso, 'litio', 'valproato')",
+              "codigo": [
+                {
+                  "iid": "db04e0af-47ec-4313-9fb1-acfd71b089e8",
+                  "sistema": "TUSS",
+                  "codigo": "40306045",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Lítio/VPA em mulher em idade fértil — excluir gravidez antes de iniciar/manter fármaco teratogênico.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue ou urina"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "d1da83ff-3173-4e58-8ef7-498bd4721d9c",
+              "nome": "ECG convencional 12 derivações",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "ecg_indicado_psico != 'nao_indicado'",
+              "codigo": [
+                {
+                  "iid": "8417a280-e1db-4cb8-93d3-47c148b3217e",
+                  "sistema": "TUSS",
+                  "codigo": "40101010",
+                  "nome": ""
+                }
+              ],
+              "cid": "F31",
+              "indicacao": "Psicofármaco QT-prolongante — rastreio de arritmia / QTc prolongado. TCA: ECG obrigatório.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": ""
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "a1b3e931-a1fd-4025-b87d-eba52377d1eb",
+              "nome": "Hemograma com diferencial (1º episódio)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "bdfc06e5-b9cc-4c4a-8b12-025121020235",
+                  "sistema": "TUSS",
+                  "codigo": "40302058",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio psicótico — exclusão de causa orgânica infecciosa/inflamatória.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "9a4f2983-2eeb-4635-beed-624d33264e2f",
+              "nome": "TSH (1º episódio)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "0df284d1-3406-4d65-9ca6-971a7c86a241",
+                  "sistema": "TUSS",
+                  "codigo": "40320094",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — hipotireoidismo ou hipertireoidismo como causa orgânica.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "6cbec494-910d-41fa-9739-de889c98b219",
+              "nome": "VDRL / RPR (sífilis)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "9e373e69-abdf-41da-a184-2b22d8676661",
+                  "sistema": "TUSS",
+                  "codigo": "40314098",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — neurossífilis (treponema pallidum).",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "1e350367-a25d-4550-88b0-43e99f381cb1",
+              "nome": "Sorologia HIV (anti-HIV 1 e 2)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "codigo": [
+                {
+                  "iid": "5b41ec06-d687-49ca-87a4-e9e20ee1053a",
+                  "sistema": "TUSS",
+                  "codigo": "40312003",
+                  "nome": ""
+                }
+              ],
+              "cid": "F29",
+              "indicacao": "Primeiro episódio — encefalite ou complicações neurológicas por HIV.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            },
+            {
+              "id": "3a2c4652-a5b4-442d-b286-6be4e6d48b4d",
+              "nome": "Troponina + Proteína C-reativa (PCR)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "sintomas_miocardite in ('dor_toracica_dispneia_febre', 'taquicardia_inexplicada')",
+              "codigo": [],
+              "cid": "F29",
+              "indicacao": "Clozapina — suspeita de miocardite. TUSS a confirmar com codificação específica da instituição.",
+              "narrativa": "",
+              "codigoTexto": "",
+              "categorias": [],
+              "detalhesPedido": "",
+              "quantidade": 1,
+              "tipoAmostra": {
+                "sistema": "",
+                "codigo": "",
+                "nome": "",
+                "texto": "Sangue"
+              },
+              "instrucoesPaciente": "",
+              "guiaSeparada": false,
+              "programacaoDosagem": {
+                "codigoProgramacao": {
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "",
+                  "texto": ""
+                },
+                "numRepeticoes": 0,
+                "numRepeticoesMax": 0,
+                "duracao": 0,
+                "duracaoMax": 0,
+                "unidadeTempoDuracao": ""
+              },
+              "comentarios": ""
+            }
+          ],
+          "medicamento": [
+            {
+              "id": "01a4a87a-3119-4e33-af5a-b6b1c40be68c",
+              "nome": "Escitalopram 10mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico') and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Escitalopram 10mg",
+              "posologia": "<p>10 mg/dia pela manhã. Aumentar para 20 mg após 4 semanas se resposta parcial. Máx 20 mg/dia.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "7a0e408c-46e9-4af6-b832-e6f5c741e91a",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "8d7ce91b-427c-4c00-9f63-bb3eb21f9fe1",
+              "nome": "Sertralina 50mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico', 'tept', 'toc') and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'depressao_grave')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Sertralina 50mg",
+              "posologia": "<p>50 mg/dia com alimento. Titular até 100–200 mg/dia. TOC: dose alvo 150–200 mg.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "9668b72a-f3d2-4f5c-9a48-7cdcdd45cb4e",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "4ae7c7fb-0c2f-4ce3-ab8f-544e6a4e3b5a",
+              "nome": "Fluoxetina 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'toc', 'ta_bulimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Fluoxetina 20mg",
+              "posologia": "<p>TDM: 20 mg/dia. TOC: 60–80 mg/dia (titular lentamente). BN: 60 mg/dia alvo.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "3f8e2992-ddce-4175-ae8d-0303af530b4f",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "ISRS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "af56b039-cd51-4206-80e2-fef556856b18",
+              "nome": "Lítio 300mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tab' in diagnostico_ativo) and episodio_atual_humor in ('mania', 'hipomania', 'eutimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lítio 300mg",
+              "posologia": "<p>300 mg 3×/dia (início). Nível-alvo: mania aguda 0,8–1,2 mEq/L; manutenção 0,6–1,0 mEq/L. Coletar litemia 12h após última dose.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "d0735cf9-a3fd-44a1-b9a6-7df8e262cafe",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estabilizador de humor",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "5842d4a2-8b9f-4389-bf7b-63b73035f432",
+              "nome": "Lamotrigina 25mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tab' in diagnostico_ativo) and episodio_atual_humor in ('depressao_leve', 'depressao_moderada', 'eutimia')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lamotrigina 25mg",
+              "posologia": "<p>Iniciar 25 mg/dia × 2 semanas → 50 mg/dia × 2 semanas → 100 mg/dia. Titação lenta obrigatória (risco Stevens-Johnson).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "25cd3f2d-2e49-4676-a2e3-4b99e17a05ae",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estabilizador de humor",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "6702db27-686b-4cd8-b1e2-d576b52f9101",
+              "nome": "Metilfenidato LP 18mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tdah' in diagnostico_ativo and tdah_abuso_substancias_ativo != 'sim'",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Metilfenidato LP 18mg",
+              "posologia": "<p>18 mg/dia pela manhã (início). Titular até 36–54 mg/dia. Máx 72 mg/dia.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "7dc351b7-3ecd-4bee-8b0a-6f5a13a1f8ad",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estimulante — TDAH",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "9352ae26-39ac-4c5a-a638-cc0033a09d4a",
+              "nome": "Lisdexanfetamina 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('tdah' in diagnostico_ativo) or ('ta_tcap' in diagnostico_ativo)",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Lisdexanfetamina 20mg",
+              "posologia": "<p>TDAH: 20–30 mg/dia (início) → 30–70 mg/dia. TCAP: 30–70 mg/dia. Tomar pela manhã.</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "8bb1183e-b6d4-4fdf-b5f2-8b8e6b99c7ca",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Estimulante — TDAH / TCAP",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "27b2fde3-0730-4e67-978b-971a53c66c40",
+              "nome": "Biperideno 2mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(eps_presente, 'parkinsonismo', 'distonia_aguda')",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Biperideno 2mg",
+              "posologia": "<p>EPS/parkinsonismo: 2–4 mg/dia VO. Distonia aguda: 5 mg IM (repetir se necessário em 30 min).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "3dfbc50d-dd9d-4b76-ae3b-526ca6d61e18",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "Anticolinergíco — EPS",
+                  "texto": ""
+                }
+              ]
+            },
+            {
+              "id": "c9f99ff6-e453-4ff6-892f-2dd562a693f3",
+              "nome": "Propranolol 20mg",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'acatisia' in eps_presente",
+              "condicionalMedicamento": "domiciliar",
+              "quantidade": 1,
+              "codigo": [],
+              "nomeMed": "Propranolol 20mg",
+              "posologia": "<p>20–40 mg/dia, dividido 2×/dia. Verificar contraindicações (asma, bloqueio AV, bradicardia).</p>",
+              "mensagemMedico": "",
+              "via": "oral",
+              "narrativa": "",
+              "categorias": [
+                {
+                  "iid": "e9fca6f4-cb34-4d1f-b8b1-b9358af2e498",
+                  "sistema": "",
+                  "codigo": "",
+                  "nome": "β-bloqueador — Acatisia",
+                  "texto": ""
+                }
+              ]
+            }
+          ],
+          "encaminhamento": [
+            {
+              "id": "49647157-605d-4b3d-a8d7-6a162d805fed",
+              "nome": "Psicólogo — ERP (TOC)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'toc' in diagnostico_ativo",
+              "indicacao": "ERP (Exposição com Prevenção de Resposta) — tratamento obrigatório para TOC. Psicólogo com treinamento específico. Resposta esperada: redução ≥35% no Y-BOCS após 12–20 sessões.",
+              "cid": "F42",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "07afad8b-2f89-4ff0-92ff-e6d0996d8fa1",
+              "nome": "Psicólogo — TF-CBT/EMDR (TEPT)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tept' in diagnostico_ativo and tept_psicoterapia_indicada != 'sim'",
+              "indicacao": "Psicoterapia focada em trauma obrigatória: TF-CBT, CPT, PE ou EMDR. 1ª linha com maior nível de evidência para TEPT (APA/NICE 2024).",
+              "cid": "F43.1",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "4e1b83ae-2495-40c2-bae8-fb1c3ad2d4ba",
+              "nome": "Psicólogo — TCD (TPB)",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'tpb' in diagnostico_ativo and tpb_em_tcd != 'sim'",
+              "indicacao": "TCD (Terapia Comportamental Dialética) — único tratamento de 1ª linha para TPB com RCT confirmatório. Mínimo 1 ano de tratamento.",
+              "cid": "F60.3",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "eb76b1d5-1d4e-4194-9332-f911be982625",
+              "nome": "Psicólogo — TCC",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'tdm', 'tag', 'panico', 'fobia_social', 'burnout')",
+              "indicacao": "TCC como adjuvante à farmacoterapia. 1ª linha em combinação com ISRS para TDM / TAG / Pânico / Fobia Social.",
+              "cid": "F32",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Psicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "041a7502-ea52-4f38-9aa2-cfd6b2c13d12",
+              "nome": "Neuropsicólogo",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "neuropsicologica_indicada in ('sim_solicitada', 'sim_pendente')",
+              "indicacao": "Avaliação neuropsicológica: TDAH com diagnóstico incerto / TEA adulto para confirmação. Relatório diagnóstico completo.",
+              "cid": "F90",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Neuropsicólogo",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "bb388cc2-7995-44d2-861e-e59107dca613",
+              "nome": "Nutricionista",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'ta_anorexia', 'ta_bulimia', 'ta_tcap') and nutri_encaminhada != 'ja_acompanha'",
+              "indicacao": "Avaliação e acompanhamento nutricional obrigatório em transtornos alimentares. Avaliar risco de síndrome de realimentação (AN).",
+              "cid": "F50",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Nutricionista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "a86867c6-ab7b-44c7-a1c8-b958298c42e8",
+              "nome": "Emergência / SAMU 192",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "risco_suicidio_alto is True",
+              "indicacao": "SAMU 192. Encaminhamento de urgência por risco suicida alto classificado no C-SSRS. Não deixar paciente sem acompanhante.",
+              "cid": "Z91.5",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Emergência",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "260889e2-fa7b-405f-9e28-3d6c6237bc1a",
+              "nome": "CAPS II",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'esquizofrenia' in diagnostico_ativo",
+              "indicacao": "Acompanhamento psicossocial complementar — esquizofrenia estável. Reabilitação e reinserção social (Lei 10.216/2001).",
+              "cid": "F20",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "CAPS II",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "cd8fa3e9-8df4-424e-a196-a0297df74155",
+              "nome": "CAPS-AD",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(diagnostico_ativo, 'uso_substancias')",
+              "indicacao": "Dependência de substâncias — CAPS-AD. Tratamento especializado em rede pública.",
+              "cid": "F19",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "CAPS-AD",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "af304b1e-9584-43cc-86e2-a2c1236b38c6",
+              "nome": "Neurologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' or selected_any(comorbidades_clinicas, 'epilepsia')",
+              "indicacao": "Primeiro episódio psicótico / epilepsia — exclusão de causa orgânica. Solicitar neuroimagem (TC ou RM de crânio).",
+              "cid": "F29",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Neurologista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "bb168d2f-1ba0-43f5-883b-0d1d5264663c",
+              "nome": "Cardiologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(an_sinais_alarme, 'fc_menor_50') or ecg_indicado_psico in ('estimulante_cardiopatia') or (anc_dentro_limite == 'suspender_menor_1000' and sintomas_miocardite != 'nenhum')",
+              "indicacao": "QTc >500ms / cardiopatia estrutural / miocardite por clozapina. Avaliação urgente.",
+              "cid": "I49",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Cardiologista",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "8806bb9f-9057-49a4-ac43-fb9ee7dffb8e",
+              "nome": "Medicina do Trabalho",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "'burnout' in diagnostico_ativo",
+              "indicacao": "Burnout grave — análise do ambiente organizacional e afastamento quando indicado.",
+              "cid": "F43.8",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Médico do Trabalho",
+              "detalhesPedido": "",
+              "categorias": []
+            },
+            {
+              "id": "8264f103-532d-4d61-a308-99c6a40bff7a",
+              "nome": "Endocrinologia",
+              "descricao": "",
+              "condicional": "visivel",
+              "condicao": "('litio' in medicamentos_em_uso) and ('hipotireoidismo' in comorbidades_clinicas)",
+              "indicacao": "Hipotireoidismo em uso de lítio. Lítio inibe síntese e liberação de hormônios tireoidianos. Ajuste de levotiroxina.",
+              "cid": "E03",
+              "narrativa": "",
+              "especialidade": [],
+              "especialidadeTexto": "Endocrinologista",
+              "detalhesPedido": "",
+              "categorias": []
+            }
+          ],
+          "mensagem": [
+            {
+              "id": "264c5116-d50b-4f50-a718-6c7200f5c026",
+              "nome": "⛔ GATE P0 — RISCO ALTO: Internação indicada",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "risco_suicidio_alto is True and internacao_indicada_p0 in ('sim_involuntaria', 'sim_voluntaria')",
+              "conteudo": "<p><strong>Acionar SAMU 192 / encaminhar UPA imediatamente.</strong><br>Não deixar paciente sozinho. Notificar familiar (CFM Art. 46). Iniciar SPI antes do encaminhamento quando possível. Completar laudo para internação involuntária (Lei 10.216/2001, Art. 6). Notificar MP em 72h (Art. 9).</p>",
+              "observacao": ""
+            },
+            {
+              "id": "3f15ec15-1266-4ae8-82e2-9e7d00f1c2f9",
+              "nome": "⚠️ GATE P0 — RISCO INTERMEDIÁRIO: SPI obrigatório",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "risco_suicidio_intermediario is True and spi_realizado != 'sim'",
+              "conteudo": "<p><strong>SPI obrigatório antes de encerrar a consulta.</strong><br>Retorno intensificado &lt;2 semanas. Acionar suporte familiar. Documentar nível de risco e conduta no prontuário.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "916afd2e-4e54-41f2-a962-29be04fb2875",
+              "nome": "⛔ CLOZAPINA — ANC &lt;1.000: SUSPENDER IMEDIATAMENTE",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "anc_dentro_limite == 'suspender_menor_1000'",
+              "conteudo": "<p><strong>Suspender clozapina imediatamente.</strong><br>Encaminhar urgência hematológica. Registrar na monitoração do PGRM (ANVISA). Não reiniciar sem avaliação especializada.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "f6bd15ec-4ce1-471b-91f4-312dfaa4d3cd",
+              "nome": "⚠️ VPA + MIE — Aconselhamento pendente",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "vpa_mie_consentimento == 'nao_pendente_hoje'",
+              "conteudo": "<p><strong>Realizar aconselhamento hoje:</strong><br>Risco de malformações maiores ~9% (espinha bífida, cardiopatia). Contracepção eficaz obrigatória. Ácido fólico ≥0,4 mg/dia. Documentar no prontuário. (AAN/AES/SMFM 2024)</p>",
+              "observacao": ""
+            },
+            {
+              "id": "fbcce3f5-c8dc-4f06-a25b-5535cf625b52",
+              "nome": "⚠️ TAB + Antidepressivo sem estabilizador de humor",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "ad_sem_estabilizador == 'confirmado_risco_documentado'",
+              "conteudo": "<p><strong>Antidepressivo sem estabilizador em TAB: contraindicado.</strong><br>Risco de viragem maníaca e ciclagem rápida. Revisar prescrição. Associar estabilizador (lítio, lamotrigina ou VPA) antes de manter AD.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "b8abd765-0f09-47a9-9695-9b01664af464",
+              "nome": "⛔ ANOREXIA NERVOSA — Sinais de alarme: Internação urgente",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(an_sinais_alarme, 'imc_menor_15', 'fc_menor_50', 'pa_menor_90_60', 'eletrólitos_criticos', 'instabilidade_clinica')",
+              "conteudo": "<p><strong>AN com instabilidade clínica — internação urgente.</strong><br>FC &lt;50 bpm, PA &lt;90/60 mmHg ou eletrólitos críticos (K+ &lt;3,0 mEq/L ou Na+ &lt;130 mEq/L): emergência médica. Encaminhar UPA/hospital com suporte nutricional.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "2bf8187a-1198-48f7-b675-e52cd4fd03be",
+              "nome": "⚠️ CLOZAPINA — Sintomas de miocardite",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "sintomas_miocardite in ('dor_toracica_dispneia_febre', 'taquicardia_inexplicada')",
+              "conteudo": "<p><strong>Suspeita de miocardite associada à clozapina.</strong><br>Solicitar troponina + PCR urgente. Encaminhar cardiologia/emergência. Suspender clozapina se confirmada. Monitorar CK-MB e ECG.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "86c5274c-cb2e-44a5-889c-4a8582935e21",
+              "nome": "⚠️ TOXICIDADE DE LÍTIO",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(sintomas_toxicidade_litio, 'ataxia', 'confusao')",
+              "conteudo": "<p><strong>Sintomas de toxicidade ao lítio.</strong><br>Solicitar nível sérico urgente. Suspender AINEs, IECA e diuréticos. Hidratação vigorosa. Hemodiálise indicada se litemia &gt;2,5 mEq/L ou toxicidade grave. Encaminhar urgência.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "233a956f-4b38-47d8-bf80-9e9d835e26fe",
+              "nome": "ℹ️ PRIMEIRO EPÍSODIO PSICÓTICO — Investigação orgânica obrigatória",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "primeiro_episodio_psicotico == 'sim' and causa_organica_investigada != 'sim'",
+              "conteudo": "<p><strong>Descartar causa orgânica antes de estabelecer diagnóstico primário.</strong><br>Hemograma, metabólico completo, TSH, B12, VDRL, HIV. Neuroimagem (TC ou RM) obrigatória. Encaminhar neurologia para avaliação.</p>",
+              "observacao": ""
+            }
+          ]
+        },
+        "clinicalExpressions": null,
+        "templateMarkdown": null
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-node-psiq-01-triagem-20e05d57-3dfa-43cb-b039-74279162a73a",
+      "source": "node-psiq-01-triagem",
+      "target": "20e05d57-3dfa-43cb-b039-74279162a73a",
+      "data": {}
+    },
+    {
+      "id": "e-20e05d57-3dfa-43cb-b039-74279162a73a-node-psiq-03-anamnese",
+      "source": "20e05d57-3dfa-43cb-b039-74279162a73a",
+      "target": "node-psiq-03-anamnese",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-03-anamnese-node-psiq-02-gate-p0",
+      "source": "node-psiq-03-anamnese",
+      "target": "node-psiq-02-gate-p0",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-02-gate-p0-summary-6e3e3703-1337-46f0-8b08-55e814f0f8ef",
+      "source": "node-psiq-02-gate-p0",
+      "target": "summary-6e3e3703-1337-46f0-8b08-55e814f0f8ef",
+      "data": {}
+    },
+    {
+      "id": "e-summary-6e3e3703-1337-46f0-8b08-55e814f0f8ef-conduta-a9ccd9ee-4962-4bf2-ae6a-a0f4fef7d7d9",
+      "source": "summary-6e3e3703-1337-46f0-8b08-55e814f0f8ef",
+      "target": "conduta-a9ccd9ee-4962-4bf2-ae6a-a0f4fef7d7d9",
+      "data": {}
+    },
+    {
+      "id": "e-conduta-a9ccd9ee-4962-4bf2-ae6a-a0f4fef7d7d9-node-psiq-04-diagnostico",
+      "source": "conduta-a9ccd9ee-4962-4bf2-ae6a-a0f4fef7d7d9",
+      "target": "node-psiq-04-diagnostico",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-04-diagnostico-node-psiq-05-farmacos",
+      "source": "node-psiq-04-diagnostico",
+      "target": "node-psiq-05-farmacos",
+      "data": {}
+    },
+    {
+      "id": "e-node-psiq-05-farmacos-node-psiq-06-conduta",
+      "source": "node-psiq-05-farmacos",
+      "target": "node-psiq-06-conduta",
+      "data": {}
+    }
+  ]
+}

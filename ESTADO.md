@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-07*
+*Atualizado: 2026-03-08*
 
 ---
 
@@ -38,13 +38,19 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
-- Fase atual consolidada: **Fase 4 CONCLUÍDA — JSON produzido e validado**
-- Gate clínico: playbook auditado e liberado ✅ | JSON completo ✅ | Validação estrutural PASSOU ✅
-- Artefato: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v1.0.0.json`
-  - 6 nodes, 5 edges, 83 questões, 260 iids únicos
-  - Nó 6 (Conduta): 9 alertas, 25 exames TUSS, 13 encaminhamentos, 9 medicamentos
-  - 5 clinicalExpressions no Nó 1 (aliases farmacológicos)
-- Próximo passo macro: Fase 5 — QA final com o usuário, revisão de condicionais e aprovação
+- Fase atual consolidada: **Fase 5 — QA iterativo (patches de design)**
+- Gate clínico: playbook auditado ✅ | JSON v0.1.1 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json`
+  - 9 nodes, 8 edges, 75 questões
+  - Nó summary (Processamento Clínico): 3 expressões de risco C-SSRS corrigidas
+  - Nó conduta enfermagem (pausa): handoff enfermagem → médico
+  - Nó 6 (Conduta Medicina): 9 alertas, 25 exames TUSS, 13 encaminhamentos, 9 medicamentos
+  - 0 BLOQUEANTES na auditoria | 44 revisão (escopo v0.1.2–v0.1.4)
+- Artefatos de suporte:
+  - `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado
+  - `scripts/audit_design_v01.py` — auditoria estrutural
+  - `scripts/patch_vdraft_to_v011.py` — script de patch aplicado
+- Próximo passo macro: QA clínico do v0.1.1 no preview Daktus, depois patch v0.1.2
 
 ### Infraestrutura do ambiente
 - Status macro: refatoração lean inicial integrada
@@ -103,17 +109,19 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_014 — Fase 4 Psiquiatria concluída (2026-03-07)
-- Commits: `9d33d01` (Nós 4+5) + `459b6b4` (Nó 6 + clinicalExpressions)
-- Foco: injeção dos Nós 4, 5 e 6 no JSON, validação estrutural, QA de 3 perfis clínicos
+- Sessão: session_015 — Fase 5 Psiquiatria — Patch v0.1.1 (2026-03-08)
+- Commit: ver HANDOFF.md
+- Foco: GUIA_DESIGN_UX.md, audit_design_v01.py, patch vdraft→v0.1.1 (25 modificações, 0 BLOQUEANTES)
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. Fase 5 — QA final e revisão clínica do JSON de Psiquiatria com o usuário.
-2. Corrigir eventuais ajustes de condicionais ou conteúdo clínico.
-3. Promover versão de `1.0.0-draft` para `1.0.0` após aprovação.
+1. QA clínico do v0.1.1 no ambiente de preview Daktus.
+2. Patch v0.1.2 — conectar uids de alta prioridade à conduta (A3 prioridade 1).
+3. Patch v0.1.3 — mapear scores diagnósticos a thresholds de conduta.
+4. Patch v0.1.4 — avaliar uids informativos (manter, conectar ou remover).
+5. Aprovar e promover versão para v1.0.0 após QA completo.
 
 ---
 
