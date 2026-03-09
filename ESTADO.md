@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-08 (session_016)*
+*Atualizado: 2026-03-09 (session_017)*
 
 ---
 
@@ -48,11 +48,12 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
   - Nó 6 (Conduta Medicina): 21 alertas, 25 exames TUSS (categorizados), 14 encaminhamentos, 13 medicamentos, 4 orientações (77 items total)
   - 0 BLOQUEANTES na auditoria | 32 A3 (contexto clínico + monitoramento farmacológico)
 - Artefatos de suporte:
-  - `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado
+  - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 atualizado em session_017)
   - `scripts/audit_design_v01.py` — auditoria estrutural
   - `scripts/patch_vdraft_to_v011.py` — patch v0.1.1
   - `scripts/patch_v011_to_v012.py` — patch v0.1.2 (boolean fixes + alertas clínicos)
   - `scripts/patch_v012_improvements.py` — quality patch v0.1.2 (46 mod.: same-node, emojis, categorias, handoff, antipsicóticos, orientações, coesão)
+  - `scripts/patch_v012_conditional_fix.py` — validador/corretor DSL (13 anti-patterns catalogados)
 - Próximo passo macro: QA clínico do v0.1.2 no preview Daktus
 
 ### Infraestrutura do ambiente
@@ -112,9 +113,9 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_016 — Fase 5 Psiquiatria — Quality Patch v0.1.2 (2026-03-08)
-- Foco: quality patch (46 mod.) — same-node fixes, emojis, categorias, handoff, antipsicóticos, orientações, coesão
-- Resultado: 0 BLOQUEANTES | 32 A3 residuais (legítimos)
+- Sessão: session_017 — Fase 5 Psiquiatria — Correção DSL (2026-03-09)
+- Foco: 13 padrões `campo in ('v1', 'v2')` corrigidos para `selected_any()` em v0.1.2; GUIA §2.1 criado
+- Resultado: 0 BLOQUEANTES | JSON v0.1.2 com DSL 100% correto
 
 ---
 

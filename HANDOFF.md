@@ -1,5 +1,5 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-08 — Quality patch v0.1.2 aplicado (session_016)*
+*Atualizado: 2026-03-09 — Validação DSL + GUIA atualizado (session_017)*
 
 ---
 
@@ -128,11 +128,21 @@ Classificação dos uids A3 restantes:
 
 ---
 
+## O QUE FOI FEITO — session_017 (2026-03-09)
+
+- **Correção DSL**: 13 padrões `campo in ('v1', 'v2')` corrigidos para `selected_any(campo, 'v1', 'v2')` em v0.1.2 (3 em `expressao`, 10 em `condicao`)
+- **Diagnóstico confirmado**: `select=choice` com `exclusive: True` usa DSL de `choice` (`selected_any`), não de `single` (`==`)
+- **Script criado**: `scripts/patch_v012_conditional_fix.py` — utilidade de validação e correção DSL futura (13 substituições catalogadas)
+- **GUIA atualizado**: `tools/GUIA_DESIGN_UX.md` §2.1 — nova seção com tabela de operadores, anti-patterns e exemplos reais
+- **Auditoria reconfirmada**: 0 BLOQUEANTES | 32 A3 (legítimos)
+
+---
+
 ## PRÓXIMO PASSO RECOMENDADO
 
 1. QA clínico do v0.1.2 no ambiente de preview Daktus (percorrer 3 perfis críticos)
 2. Ajustar condicionais ou conteúdo clínico conforme feedback do QA
-3. Avaliar 31 uids A3 residuais: manter, conectar ou remover
+3. Avaliar 32 uids A3 residuais: manter, conectar ou remover
 4. Promover para v1.0.0 após aprovação clínica completa
 
 ---
@@ -156,6 +166,7 @@ Classificação dos uids A3 restantes:
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-08 (session_016) — sobrescreve estado de session_015
+- HANDOFF atualizado em 2026-03-09 (session_017) — sobrescreve estado de session_016
 - v0.1.0 publicado como legado; v0.1.1 como versão estável; v0.1.2 como artefato ativo (draft)
 - vdraft do usuário incorporado ao v0.1.2 (UX improvements: sex/age ocultos, roteamento por `ideacao_passiva`, `especificador_misto` movido para Nó 5)
+- DSL confirmado correto em v0.1.2 — patterns `campo in ('v1')` reportados pelo usuário não existiam no artefato (apenas no vdraft dele)
