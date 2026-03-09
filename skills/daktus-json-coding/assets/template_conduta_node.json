@@ -1,0 +1,23 @@
+{
+  "id": "conduta-UUID",
+  "type": "condutaNode",
+  "position": { "x": 5400, "y": 100 },
+  "data": {
+    "condutaDataNode": {
+      "exame": [
+        {
+          "iid": "iid-UUID",
+          "nome": "Nome do exame",
+          "codigo": ["XXXXXXXX"],
+          "condicao": "'diagnostico_x' in diagnostico_ativo",
+          "periodicidade": "anual",
+          "cid": ["ZXX.X"]
+        }
+      ],
+      "orientacao": [],
+      "encaminhamento": [],
+      "medicamento": [],
+      "mensagem": []
+    }
+  }
+}

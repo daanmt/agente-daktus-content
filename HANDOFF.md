@@ -1,13 +1,13 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-09 — Auditoria end-to-end + promoção para v0.2 (session_019)*
+*Atualizado: 2026-03-09 — Skillização piloto: daktus-json-coding (session_020)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Fase 5 — Psiquiatria — Promoção para v0.2** (session_019)
-- Especialidade/tema ativo: Psiquiatria
+- Última sessão integrada: **Infraestrutura — Skillização piloto** (session_020)
+- Especialidade/tema ativo: Psiquiatria (Fase 5 continua) + Infraestrutura (skillização)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
 - Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
 
@@ -194,9 +194,39 @@ Classificação dos uids A3 restantes:
 
 ---
 
+## O QUE FOI FEITO — session_020 (2026-03-09)
+
+**Skillização piloto: criação de `skills/daktus-json-coding/`**
+
+Objetivo: alinhar o projeto à infraestrutura de skills Anthropic com uma skill piloto exportável, sem romper a arquitetura state-driven existente.
+
+**Arquivos criados (8):**
+- `skills/daktus-json-coding/SKILL.md` — skill autocontida com frontmatter YAML, ~300 linhas
+- `skills/daktus-json-coding/references/DSL_CONDICIONAL.md` — tabela de operadores, 14 anti-patterns, regras de visibilidade
+- `skills/daktus-json-coding/references/PADROES_REUTILIZAVEIS.md` — 6 padrões arquiteturais extraídos de projetos anteriores
+- `skills/daktus-json-coding/references/ERROS_DOCUMENTADOS.md` — 8 erros documentados + checklist QA ampliado
+- `skills/daktus-json-coding/scripts/validate_json.py` — validação estrutural generalizada (CLI)
+- `skills/daktus-json-coding/assets/template_form_node.json`
+- `skills/daktus-json-coding/assets/template_conduta_node.json`
+- `skills/daktus-json-coding/assets/template_edge.json`
+
+**Arquivos modificados (2):**
+- `tools/skills/codificacao-json/SKILL.md` — nota de shim adicionada (direciona para skill exportável)
+- `SKILL.md` (root) — seção aditiva reconhecendo camada `/skills/`
+
+**Validação:**
+- `validate_json.py` executado contra `amil-ficha_psiquiatria-v0.2.0.json` → 0 erros, 9 nodes, 8 edges, 79 IIDs
+
+**Arquitetura de duas camadas:**
+- `tools/skills/` = pipeline interno (inalterado)
+- `skills/` = skills exportáveis padrão Anthropic (nova camada)
+- `tools/*.md` = fontes canônicas transversais (inalterados)
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-09 (session_019) — sobrescreve estado de session_018
-- v0.2 = primeira versão revisada conjuntamente; v0.1.x = versões de desenvolvimento do agente
-- Condicionais de conduta com UIDs não definidos identificados e corrigidos (session_019)
-- Filosofia de enxugamento aplicada: remover perguntas sem conduta associada e sem referências downstream
+- HANDOFF atualizado em 2026-03-09 (session_020) — sobrescreve estado de session_019
+- v0.2 continua como artefato ativo de psiquiatria
+- Skill exportável criada em paralelo — não substitui pipeline interno
+- Deprecação de `tools/skills/codificacao-json/` só quando skill exportável provar-se funcional em 2+ especialidades

@@ -366,3 +366,15 @@ Essas respostas vêm de:
 
 Use este arquivo para navegar o pipeline.
 Use o estado do ambiente para decidir o próximo passo real.
+
+---
+
+## SKILLS EXPORTÁVEIS
+
+Além das sub-skills internas do pipeline (`tools/skills/`), o ambiente possui skills exportáveis no padrão Anthropic em `/skills/`. Estas são autocontidas, com frontmatter YAML, e podem ser usadas por agentes externos.
+
+| Skill | Pasta | Descrição |
+|-------|-------|-----------|
+| `daktus-json-coding` | `skills/daktus-json-coding/` | Compila playbook auditado em JSON Daktus executável |
+
+As skills exportáveis consolidam conhecimento que antes estava disperso em múltiplos documentos auxiliares. Elas não substituem o pipeline — são artefatos derivados dele.

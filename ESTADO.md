@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-09 (session_019)*
+*Atualizado: 2026-03-09 (session_020)*
 
 ---
 
@@ -56,14 +56,16 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 - Próximo passo macro: QA clínico de v0.2 no preview Daktus (3 perfis críticos)
 
 ### Infraestrutura do ambiente
-- Status macro: refatoração lean inicial integrada
+- Status macro: arquitetura de duas camadas implementada (session_020)
 - Situação atual:
   - `AGENTE.md` definido como ponto único de entrada;
   - `HANDOFF.md` definido como estado operacional curto;
   - `ESTADO.md` mantido como snapshot canônico;
   - `CLAUDE.md` reduzido a bootstrap mínimo;
-  - `SKILL.md` reposicionado como orchestrator do pipeline.
-- Próximo passo macro: consolidar uso do novo regime e alinhar workflows, sub-skills e rotinas auxiliares ao boot centralizado
+  - `SKILL.md` reposicionado como orchestrator do pipeline;
+  - `skills/` = nova camada de skills exportáveis padrão Anthropic;
+  - `skills/daktus-json-coding/` = skill piloto (SKILL.md + references/ + scripts/ + assets/).
+- Próximo passo macro: validar skill piloto em uso real; deprecar `tools/skills/codificacao-json/` quando skill exportável provar-se funcional
 
 ---
 
@@ -78,12 +80,15 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 - `README.md` — visão estável do ambiente
 
 ### Método agnóstico
-- `tools/skills/*/SKILL.md`
+- `tools/skills/*/SKILL.md` — sub-skills do pipeline interno
 - `tools/AGENT_PROMPT_PROTOCOLO_DAKTUS.md`
 - `tools/PADROES_ARQUITETURA_JSON.md`
 - `tools/GUARDRAIL_EVIDENCIAS.md`
 - `tools/CONTEXTO_FERRAMENTAS_E_METODOS.md`
 - `tools/KICKSTART_NOVA_ESPECIALIDADE.md`
+
+### Skills exportáveis (padrão Anthropic)
+- `skills/daktus-json-coding/` — compila playbook auditado em JSON Daktus
 
 ### Registro e rastreabilidade
 - `history/session_NNN.md`
@@ -112,9 +117,9 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_019 — Fase 5 Psiquiatria — Auditoria end-to-end + promoção para v0.2 (2026-03-09)
-- Foco: auditoria completa de 66 perguntas; remoção de 24 (orphans + vdraft + monitoramento); 12 condicionais de conduta simplificadas/corrigidas; geração de v0.2
-- Resultado: 42 perguntas | 79 itens de conduta | 0 UIDs indefinidos | 0 BLOQUEANTES
+- Sessão: session_020 — Infraestrutura — Skillização piloto: `daktus-json-coding` (2026-03-09)
+- Foco: criação de skill exportável no padrão Anthropic; arquitetura de duas camadas (`tools/skills/` interno + `skills/` exportável)
+- Resultado: 8 arquivos criados, 2 modificados, validação OK contra v0.2.0.json
 
 ---
 

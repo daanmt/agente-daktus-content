@@ -1,0 +1,27 @@
+{
+  "id": "node-UUID",
+  "type": "custom",
+  "position": { "x": 900, "y": 100 },
+  "data": {
+    "label": "Nome do nó",
+    "descricao": "<p>Contexto opcional para o médico</p>",
+    "condicionais": [
+      {
+        "linkId": "node-TARGET-UUID",
+        "condicao": ""
+      }
+    ],
+    "questions": [
+      {
+        "uid": "nome_variavel_snake_case",
+        "titulo": "<p><strong>Label clínico descritivo?</strong></p>",
+        "descricao": null,
+        "condicional": "visivel",
+        "expressao": "",
+        "select": "boolean",
+        "options": [],
+        "defaultValue": "false"
+      }
+    ]
+  }
+}

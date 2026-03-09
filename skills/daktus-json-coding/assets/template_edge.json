@@ -1,0 +1,6 @@
+{
+  "id": "e-{source}-{target}",
+  "source": "node-UUID-ORIGEM",
+  "target": "node-UUID-DESTINO",
+  "data": {}
+}

@@ -1,6 +1,11 @@
 # SKILL — CODIFICAÇÃO JSON DAKTUS
 ## `codificacao-json` | Fase 4
 
+> **Skill exportável disponível:** a versão consolidada e autocontida desta skill está em
+> `skills/daktus-json-coding/SKILL.md` (padrão Anthropic, com frontmatter YAML, references/, scripts/ e assets/).
+> Para execução completa da fase de codificação JSON, prefira a skill exportável.
+> Este arquivo é mantido como referência de compatibilidade com o pipeline interno.
+
 > **Pré-condição de boot:** esta skill é invocada após boot completo via `AGENTE.md`.
 > `HANDOFF.md` deve ter sido lido e a fase atual confirmada antes de executar qualquer ação aqui.
 
@@ -81,10 +86,8 @@ exam_map = {
 }
 ```
 
-**Fontes de lookup TUSS (em ordem de confiabilidade):**
-1. Tabela TUSS compartilhada do projeto (xlsx em `/jsons/referencia/` ou equivalente)
-2. Planilha Depara Mevo/Daktus
-3. Tabela TUSS oficial ANS
+**Fontes de lookup TUSS e códigos MEVO:**
+- 'TUSS.xlsx' para códigos de exames e 'Mevo.xlsx' para códigos de medicamentos MEVO (em `/jsons/referencia/`)
 
 **Sem código TUSS identificado:** manter `"codigo": []`, sinalizar para o usuário e **não bloquear a produção**.
 
@@ -126,7 +129,7 @@ x_positions = [900, 1800, 2700, 3600, 4500, 5400, 6300, ...]
           { "value": "opcao_1", "label": "Rótulo da opção 1", "preselected": false },
           { "value": "opcao_2", "label": "Estado mais comum", "preselected": true }
         ],
-        "condicional": "condicional",
+        "condicional": "visivel",
         "expressao": "uid_variavel_anterior == 'valor'"
       }
     ],
@@ -151,7 +154,7 @@ x_positions = [900, 1800, 2700, 3600, 4500, 5400, 6300, ...]
           "iid": "iid-UUID",
           "nome": "Nome do exame",
           "codigo": ["XXXXXXXX"],
-          "condicional": "condicional",
+          "condicional": "visivel",
           "expressao": "q_diagnostico == 'condicao_x'",
           "periodicidade": "anual",
           "cid": ["ZXX.X"]
