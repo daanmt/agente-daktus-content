@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-09 (session_018)*
+*Atualizado: 2026-03-09 (session_019)*
 
 ---
 
@@ -38,24 +38,22 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
-- Fase atual consolidada: **Fase 5 — QA iterativo (patches de design)**
-- Gate clínico: playbook auditado ✅ | JSON v0.1.2 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
+- Fase atual consolidada: **Fase 5 — QA iterativo → próximo: QA clínico no preview Daktus**
+- Gate clínico: playbook auditado ✅ | JSON v0.2 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
   - 9 nodes, 8 edges
-  - Violações same-node corrigidas: 5 perguntas movidas entre nós (Grupos A)
-  - Nó summary (Processamento Clínico): 3 expressões de risco C-SSRS corrigidas (session_015)
-  - Nó conduta enfermagem (pausa): 3 mensagens de handoff por nível de risco adicionadas
-  - Nó 6 (Conduta Medicina): 21 alertas, 25 exames TUSS (categorizados), 14 encaminhamentos, 13 medicamentos, 4 orientações (77 items total)
-  - 0 BLOQUEANTES na auditoria | 32 A3 (contexto clínico + monitoramento farmacológico)
+  - **42 perguntas** (era 66 em v0.1.2 — 24 removidas por auditoria end-to-end)
+  - Nó 6 (Conduta Medicina): 79 itens totais, 0 UIDs indefinidos, 0 BLOQUEANTES
+  - v0.2 = primeira versão revisada conjuntamente (usuário + agente)
 - Artefatos de suporte:
-  - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 atualizado em session_017)
+  - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 + §5 atualizados)
   - `scripts/audit_design_v01.py` — auditoria estrutural
   - `scripts/patch_vdraft_to_v011.py` — patch v0.1.1
   - `scripts/patch_v011_to_v012.py` — patch v0.1.2 (boolean fixes + alertas clínicos)
-  - `scripts/patch_v012_improvements.py` — quality patch v0.1.2 (46 mod.: same-node, emojis, categorias, handoff, antipsicóticos, orientações, coesão)
-  - `scripts/patch_v012_conditional_fix.py` — validador/corretor DSL (13 anti-patterns catalogados)
-  - 12 valores `"condicional": "condicional"` corrigidos para `"visivel"` (session_018)
-- Próximo passo macro: QA clínico do v0.1.2 no preview Daktus
+  - `scripts/patch_v012_improvements.py` — quality patch v0.1.2 (46 mod.)
+  - `scripts/patch_v012_conditional_fix.py` — validador/corretor DSL (13 anti-patterns)
+  - `scripts/patch_v012_to_v02.py` — patch v0.2 (24 remoções + 12 simplificações de conduta)
+- Próximo passo macro: QA clínico de v0.2 no preview Daktus (3 perfis críticos)
 
 ### Infraestrutura do ambiente
 - Status macro: refatoração lean inicial integrada
@@ -114,18 +112,20 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_018 — Fase 5 Psiquiatria — Correção condicional values (2026-03-09)
-- Foco: 12 valores `"condicional": "condicional"` corrigidos para `"visivel"` em v0.1.2; GUIA §5 atualizado
-- Resultado: 0 instâncias de `"condicional": "condicional"` restantes | GUIA com regra explícita
+- Sessão: session_019 — Fase 5 Psiquiatria — Auditoria end-to-end + promoção para v0.2 (2026-03-09)
+- Foco: auditoria completa de 66 perguntas; remoção de 24 (orphans + vdraft + monitoramento); 12 condicionais de conduta simplificadas/corrigidas; geração de v0.2
+- Resultado: 42 perguntas | 79 itens de conduta | 0 UIDs indefinidos | 0 BLOQUEANTES
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. QA clínico do v0.1.2 no preview Daktus (3 perfis críticos).
+1. QA clínico de v0.2 no preview Daktus (3 perfis críticos):
+   - Alto risco suicida com acesso a meios → verificar restrição de meios letais
+   - Mulher grávida em uso de valproato → verificar alerta gestante+VPA
+   - Esquizofrenia refratária → verificar indicação de clozapina
 2. Ajustar conduta e condicionais conforme feedback clínico.
-3. Avaliar 32 uids A3 residuais: manter como contexto ou conectar a conduta.
-4. Aprovar e promover versão para v1.0.0 após QA completo.
+3. Promover para v1.0.0 após QA completo.
 
 ---
 

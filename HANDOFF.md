@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-09 — Correção condicional values + GUIA §5 atualizado (session_018)*
+*Atualizado: 2026-03-09 — Auditoria end-to-end + promoção para v0.2 (session_019)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Fase 5 — Psiquiatria — Quality Patch v0.1.2** (session_016)
+- Última sessão integrada: **Fase 5 — Psiquiatria — Promoção para v0.2** (session_019)
 - Especialidade/tema ativo: Psiquiatria
-- Fase atual: **Fase 5 — QA iterativo (patches de design)**
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
+- Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
 
 ---
 
@@ -19,7 +19,8 @@
 |--------|--------|----------|-------------|
 | v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` | Primeira versão completa, com falhas estruturais de design |
 | v0.1.1 | publicado | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural + conduta expandida — 0 BLOQUEANTES |
-| **v0.1.2** | **ativo (draft)** | `amil-ficha_psiquiatria-v0.1.2.json` | UX improvements (usuário) + quality patch (46 mod.) — 0 BLOQUEANTES |
+| v0.1.2 | legado (base de desenvolvimento) | `amil-ficha_psiquiatria-v0.1.2.json` | UX improvements + quality patch + DSL + condicional values fixes |
+| **v0.2** | **ativo** | `amil-ficha_psiquiatria-v0.2.json` | Primeira versão revisada conjuntamente — 42 perguntas, 79 conduta, 0 BLOQUEANTES |
 
 ---
 
@@ -149,12 +150,30 @@ Classificação dos uids A3 restantes:
 
 ---
 
+## O QUE FOI FEITO — session_019 (2026-03-09)
+
+**Auditoria end-to-end + geração de v0.2:**
+
+- **24 perguntas removidas** (66 → 42 perguntas):
+  - Grupo A (6 re-adicionadas pelo agente): `spi_realizado`, `neuropsicologica_indicada`, `tept_psicoterapia_indicada`, `nutri_encaminhada`, `tpb_em_tcd`, `tea_comorbidades`
+  - Grupo B (10 orphans diagnósticas): `tab_fase_diagnostica`, `mdq_aplicado`, `burnout_criterios_tdm`, `especificador_misto`, `tdah_apresentacao`, `sintomas_cardiacos_tdah`, `tea_nivel_suporte`, `tpb_autolesao_ativa`, `tpb_sintoma_alvo`, `ciclagem_rapida`
+  - Grupo C (8 monitoramento farmacológico sem conduta): `litio_fase`, `litemia_valor`, `vpa_fase`, `vpa_nivel`, `vpa_labs_recentes`, `cbz_nivel`, `anc_valor`, `ap_tempo_uso`
+- **12 condicionais de conduta corrigidas**:
+  - 5 simplificações (gates de perguntas removidas)
+  - 7 correções de UIDs não definidos (nunca disparavam)
+- **v0.2 gerado**: `amil-ficha_psiquiatria-v0.2.json` — 0 BLOQUEANTES
+- **Script**: `scripts/patch_v012_to_v02.py`
+
+---
+
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. QA clínico do v0.1.2 no ambiente de preview Daktus (percorrer 3 perfis críticos)
+1. QA clínico de v0.2 no ambiente de preview Daktus (3 perfis críticos):
+   - Alto risco suicida com acesso a meios → verificar restrição de meios letais
+   - Mulher grávida em uso de valproato → verificar alerta gestante+VPA
+   - Esquizofrenia refratária → verificar indicação de clozapina
 2. Ajustar condicionais ou conteúdo clínico conforme feedback do QA
-3. Avaliar 32 uids A3 residuais: manter, conectar ou remover
-4. Promover para v1.0.0 após aprovação clínica completa
+3. Promover para v1.0.0 após aprovação clínica completa
 
 ---
 
@@ -162,14 +181,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.1.2 é o artefato ativo — não alterar sem novo patch documentado
-- v0.1.1 mantido como versão publicada estável
+- v0.2 é o artefato ativo — não alterar sem novo patch documentado
+- v0.1.2 mantido como base histórica
 - branch-base: `main`
 - TUSS pendentes: HLA-B*1502 e Troponina+PCR — `codigo: []` no JSON, sinalizado
 
@@ -177,7 +196,7 @@ Classificação dos uids A3 restantes:
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-09 (session_018) — sobrescreve estado de session_017
-- v0.1.0 publicado como legado; v0.1.1 como versão estável; v0.1.2 como artefato ativo (draft)
-- vdraft do usuário incorporado ao v0.1.2 (UX improvements: sex/age ocultos, roteamento por `ideacao_passiva`, `especificador_misto` movido para Nó 5)
-- DSL confirmado correto em v0.1.2 — 13 patterns `campo in ('v1')` corrigidos (session_017); 12 values `"condicional"` corrigidos para `"visivel"` (session_018)
+- HANDOFF atualizado em 2026-03-09 (session_019) — sobrescreve estado de session_018
+- v0.2 = primeira versão revisada conjuntamente; v0.1.x = versões de desenvolvimento do agente
+- Condicionais de conduta com UIDs não definidos identificados e corrigidos (session_019)
+- Filosofia de enxugamento aplicada: remover perguntas sem conduta associada e sem referências downstream
