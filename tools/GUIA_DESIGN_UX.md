@@ -53,7 +53,7 @@ A pergunta é puramente binária?
 {
   "uid": "gestante",
   "titulo": "<p><strong>Paciente gestante?</strong></p>",
-  "condicional": "condicional",
+  "condicional": "visivel",
   "expressao": "sexo_feminino_ie is True",
   "select": "boolean",
   "options": [],
@@ -219,21 +219,23 @@ Critérios clínicos ou contexto relevante podem ser adicionados após o label p
 
 | `condicional` | Quando usar |
 |--------------|-------------|
-| `"visivel"` | Pergunta sempre visível nesta tela |
-| `"oculto"` | Pergunta visível **apenas** quando a `expressao` for verdadeira |
-| `"condicional"` | Raramente usado — preferir `"oculto"` com `expressao` |
+| `"visivel"` | **Valor padrão.** Pergunta exibida normalmente — sempre (sem `expressao`) ou condicionalmente (quando `expressao` for verdadeira) |
+| `"oculto"` | Campo verdadeiramente oculto do formulário (preenchimento automático pela plataforma, ex.: `sex`, `age`) — **raramente necessário** |
+| `"condicional"` | ❌ **NUNCA usar** — valor inválido/depreciado no DSL Daktus |
 
-### Cascata válida (exemplo ginecologia)
+> **Regra:** Use `"visivel"` para qualquer pergunta que deva aparecer na tela (com ou sem condição). Use `"oculto"` apenas para campos auto-preenchidos pela plataforma que nunca devem ser exibidos ao usuário.
+
+### Cascata válida (exemplo)
 
 ```
-queixa_principal (visivel)
-  → sua_padrao (oculto, expressao: "'sua' in queixa_principal")
-      → sua_refrataria (oculto, expressao: "'sua' in queixa_principal and (age >= 35 or ...)")
+queixa_principal (visivel, sem expressao)
+  → sua_padrao (visivel, expressao: "'sua' in queixa_principal")
+      → sua_refrataria (visivel, expressao: "'sua' in queixa_principal and (age >= 35 or ...)")
 ```
 
 ### Expressão vazia
 
-Se `condicional: "visivel"` → deixar `expressao: ""` (string vazia)
+Se `condicional: "visivel"` sem condição → deixar `expressao: ""` (string vazia)
 
 ---
 

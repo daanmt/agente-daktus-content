@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-09 (session_017)*
+*Atualizado: 2026-03-09 (session_018)*
 
 ---
 
@@ -54,6 +54,7 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
   - `scripts/patch_v011_to_v012.py` — patch v0.1.2 (boolean fixes + alertas clínicos)
   - `scripts/patch_v012_improvements.py` — quality patch v0.1.2 (46 mod.: same-node, emojis, categorias, handoff, antipsicóticos, orientações, coesão)
   - `scripts/patch_v012_conditional_fix.py` — validador/corretor DSL (13 anti-patterns catalogados)
+  - 12 valores `"condicional": "condicional"` corrigidos para `"visivel"` (session_018)
 - Próximo passo macro: QA clínico do v0.1.2 no preview Daktus
 
 ### Infraestrutura do ambiente
@@ -113,9 +114,9 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_017 — Fase 5 Psiquiatria — Correção DSL (2026-03-09)
-- Foco: 13 padrões `campo in ('v1', 'v2')` corrigidos para `selected_any()` em v0.1.2; GUIA §2.1 criado
-- Resultado: 0 BLOQUEANTES | JSON v0.1.2 com DSL 100% correto
+- Sessão: session_018 — Fase 5 Psiquiatria — Correção condicional values (2026-03-09)
+- Foco: 12 valores `"condicional": "condicional"` corrigidos para `"visivel"` em v0.1.2; GUIA §5 atualizado
+- Resultado: 0 instâncias de `"condicional": "condicional"` restantes | GUIA com regra explícita
 
 ---
 

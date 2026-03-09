@@ -1,5 +1,5 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-09 — Validação DSL + GUIA atualizado (session_017)*
+*Atualizado: 2026-03-09 — Correção condicional values + GUIA §5 atualizado (session_018)*
 
 ---
 
@@ -138,6 +138,17 @@ Classificação dos uids A3 restantes:
 
 ---
 
+## O QUE FOI FEITO — session_018 (2026-03-09)
+
+- **Correção condicional values**: 12 perguntas com `"condicional": "condicional"` corrigidas para `"condicional": "visivel"` em v0.1.2
+  - Nó 3: `gestante`
+  - Nó 4: `tab_fase_diagnostica`, `ciclagem_rapida`, `audit_score`, `mdq_aplicado`, `phq9_score`, `ybocs_score`, `tept_psicoterapia_indicada`, `burnout_criterios_tdm`
+  - Nó 5: `ymrs_score`, `madrs_score`, `ap_tempo_uso`
+- **Regra confirmada**: `"condicional"` aceita apenas `"visivel"` (padrão — pergunta condicional ou sempre exibida) ou `"oculto"` (campo auto-preenchido, nunca exibido — raramente necessário)
+- **GUIA atualizado**: `tools/GUIA_DESIGN_UX.md` §5 — tabela de visibilidade corrigida, exemplo de cascata corrigido, template boolean (linha 56) corrigido
+
+---
+
 ## PRÓXIMO PASSO RECOMENDADO
 
 1. QA clínico do v0.1.2 no ambiente de preview Daktus (percorrer 3 perfis críticos)
@@ -166,7 +177,7 @@ Classificação dos uids A3 restantes:
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-09 (session_017) — sobrescreve estado de session_016
+- HANDOFF atualizado em 2026-03-09 (session_018) — sobrescreve estado de session_017
 - v0.1.0 publicado como legado; v0.1.1 como versão estável; v0.1.2 como artefato ativo (draft)
 - vdraft do usuário incorporado ao v0.1.2 (UX improvements: sex/age ocultos, roteamento por `ideacao_passiva`, `especificador_misto` movido para Nó 5)
-- DSL confirmado correto em v0.1.2 — patterns `campo in ('v1')` reportados pelo usuário não existiam no artefato (apenas no vdraft dele)
+- DSL confirmado correto em v0.1.2 — 13 patterns `campo in ('v1')` corrigidos (session_017); 12 values `"condicional"` corrigidos para `"visivel"` (session_018)
