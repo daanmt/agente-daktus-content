@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-08*
+*Atualizado: 2026-03-08 (session_016)*
 
 ---
 
@@ -39,18 +39,20 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
 - Fase atual consolidada: **Fase 5 — QA iterativo (patches de design)**
-- Gate clínico: playbook auditado ✅ | JSON v0.1.1 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Gate clínico: playbook auditado ✅ | JSON v0.1.2 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
 - Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
-  - 9 nodes, 8 edges, 75 questões
-  - Nó summary (Processamento Clínico): 3 expressões de risco C-SSRS corrigidas
-  - Nó conduta enfermagem (pausa): handoff enfermagem → médico
-  - Nó 6 (Conduta Medicina): 19 alertas, 25 exames TUSS, 14 encaminhamentos, 9 medicamentos (66 items total)
-  - 0 BLOQUEANTES na auditoria | 31 revisão (contexto clínico + monitoramento farmacológico)
+  - 9 nodes, 8 edges
+  - Violações same-node corrigidas: 5 perguntas movidas entre nós (Grupos A)
+  - Nó summary (Processamento Clínico): 3 expressões de risco C-SSRS corrigidas (session_015)
+  - Nó conduta enfermagem (pausa): 3 mensagens de handoff por nível de risco adicionadas
+  - Nó 6 (Conduta Medicina): 21 alertas, 25 exames TUSS (categorizados), 14 encaminhamentos, 13 medicamentos, 4 orientações (77 items total)
+  - 0 BLOQUEANTES na auditoria | 32 A3 (contexto clínico + monitoramento farmacológico)
 - Artefatos de suporte:
   - `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado
   - `scripts/audit_design_v01.py` — auditoria estrutural
   - `scripts/patch_vdraft_to_v011.py` — patch v0.1.1
-  - `scripts/patch_v011_to_v012.py` — patch v0.1.2
+  - `scripts/patch_v011_to_v012.py` — patch v0.1.2 (boolean fixes + alertas clínicos)
+  - `scripts/patch_v012_improvements.py` — quality patch v0.1.2 (46 mod.: same-node, emojis, categorias, handoff, antipsicóticos, orientações, coesão)
 - Próximo passo macro: QA clínico do v0.1.2 no preview Daktus
 
 ### Infraestrutura do ambiente
@@ -110,9 +112,9 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_015 — Fase 5 Psiquiatria — Patches v0.1.1 + v0.1.2 (2026-03-08)
-- Commits: `a83eddd` (v0.1.1 — 25 mod.) + `2a82a68` (v0.1.2 — 23 mod.)
-- Foco: patch estrutural (0 BLOQUEANTES) + expansão da conduta (10 alertas + correções)
+- Sessão: session_016 — Fase 5 Psiquiatria — Quality Patch v0.1.2 (2026-03-08)
+- Foco: quality patch (46 mod.) — same-node fixes, emojis, categorias, handoff, antipsicóticos, orientações, coesão
+- Resultado: 0 BLOQUEANTES | 32 A3 residuais (legítimos)
 
 ---
 
@@ -120,7 +122,7 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 1. QA clínico do v0.1.2 no preview Daktus (3 perfis críticos).
 2. Ajustar conduta e condicionais conforme feedback clínico.
-3. Avaliar 31 uids A3 residuais: manter como contexto ou conectar a conduta.
+3. Avaliar 32 uids A3 residuais: manter como contexto ou conectar a conduta.
 4. Aprovar e promover versão para v1.0.0 após QA completo.
 
 ---

@@ -1,12 +1,12 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-08 — Patch v0.1.2 aplicado (v0.1.1 → v0.1.2)*
+*Atualizado: 2026-03-08 — Quality patch v0.1.2 aplicado (session_016)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Fase 5 — Psiquiatria — Patch v0.1.1** (session_015)
+- Última sessão integrada: **Fase 5 — Psiquiatria — Quality Patch v0.1.2** (session_016)
 - Especialidade/tema ativo: Psiquiatria
 - Fase atual: **Fase 5 — QA iterativo (patches de design)**
 - Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.2.json`
@@ -17,51 +17,60 @@
 
 | Versão | Status | Artefato | Observações |
 |--------|--------|----------|-------------|
-| v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` (renomeado) | Primeira versão completa, com falhas estruturais de design |
-| vdraft | base do usuário | `amil-ficha_psiquiatria-vdraft.json` | Modificações manuais do usuário (booleans Gate P0, novo nó summary, pausa enfermagem) |
-| v0.1.1 | base | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural — todos os BLOQUEANTES zerados |
-| **v0.1.2** | **ativo** | `amil-ficha_psiquiatria-v0.1.2.json` | Conduta expandida — 10 alertas + correções de expressões |
+| v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` | Primeira versão completa, com falhas estruturais de design |
+| v0.1.1 | publicado | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural + conduta expandida — 0 BLOQUEANTES |
+| **v0.1.2** | **ativo (draft)** | `amil-ficha_psiquiatria-v0.1.2.json` | UX improvements (usuário) + quality patch (46 mod.) — 0 BLOQUEANTES |
 
 ---
 
-## O QUE FOI FEITO — PATCH v0.1.2 (session_015, continuação)
+## O QUE FOI FEITO — QUALITY PATCH v0.1.2 (session_016)
 
-### Artefatos produzidos nesta sessão
+### Script produzido
 
-- `tools/GUIA_DESIGN_UX.md` — guia de design UX consolidado ✅
-- `scripts/audit_design_v01.py` — auditoria estrutural (não-destrutiva) ✅
-- `scripts/patch_vdraft_to_v011.py` — script de patch (25 modificações) ✅
-- `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.1.1.json` — artefato ativo ✅
+- `scripts/patch_v012_improvements.py` — 46 modificações ✅
 
-### Modificações aplicadas no v0.1.1 (25 total)
+### Modificações aplicadas (46 total)
 
-**Grupo A — Fórmulas do nó summary corrigidas (3):**
-- `risco_suicidio_alto`: critérios C-SSRS completos (plano, intenção, método, tentativa_previa, acesso_meios)
-- `risco_suicidio_intermediario`: ideação ativa + tentativa prévia, sem plano/intenção
-- `risco_suicidio_baixo`: ideação ativa sem fatores de risco, com fatores protetores
+**Grupo A — Correção de violações same-node (5 movimentações):**
+- `phq9_score`, `mdq_aplicado`, `audit_score`: Nó 3 → Nó 4 (expressões referenciam Nó 3 como nó anterior → válido)
+- `madrs_score`, `ymrs_score`: Nó 4 → Nó 5 (expressões referenciam `episodio_atual_humor` do Nó 4 como anterior → válido)
+- `madrs_score`: condicional corrigido de "visivel" para "condicional" (bug)
 
-**Grupo B — Conduta: nivel_risco_p0 eliminado (3 condições reescritas):**
-- Alertas e encaminhamento de SAMU agora usam `risco_suicidio_alto is True` / `risco_suicidio_intermediario is True`
+**Grupo B — Redundância removida (1):**
+- `ansiedade_subtipo` removido do Nó 4 (duplicava opções já presentes em `diagnostico_ativo`)
 
-**Grupo C — Perguntas movidas para Medicina (4 operações):**
-- `spi_realizado` e `internacao_indicada_p0` removidos do nó de enfermagem (gate-p0)
-- Inseridos como primeiras perguntas do nó de diagnóstico médico (nó 4)
-- Expressões atualizadas para referenciar as novas variáveis booleanas do summary
+**Grupo C — Escores conectados à conduta (3 operações):**
+- Alerta PHQ-9 ≥15 adicionado (complementar ao MADRS, sem duplicata)
+- Alerta AUDIT ≥8 adicionado (intervenção breve / CAPS-AD)
+- Encaminhamento CAPS-AD: condição expandida com `audit_score >= 16`
 
-**Grupo D — Referência inexistente corrigida (1):**
-- `ideacao_com_plano.expressao`: `ideacao_suicida is True` → `ideacao_ativa is True`
+**Grupo D — Emojis removidos (21):**
+- 19 nomes de alertas: prefixos ⛔/⚠️/ℹ️ removidos
+- 2 labels de opções de `sintomas_miocardite`: prefixos ⛔/⚠️ removidos
 
-**Grupo E — Boolean conversões iniciais Nó 4 (2):**
-- `ciclagem_rapida` e `especificador_misto`: choice(sim/nao) → boolean
+**Grupo E — Categorias adicionadas a todos os exames (25):**
+- "Monitoramento Farmacológico": litemia, creatinina, VPA, HLA-B*, CBZ, ANC, troponina+PCR
+- "Investigação Orgânica": TSH, cálcio, VDRL, HIV, neuroimagem
+- "Cardiometabólico": glicemia, HbA1c, colesterol, ECG
+- "Avaliação Laboratorial": hemograma, ureia, transaminases, sódio, prolactina, beta-HCG, etc.
 
-**Grupo F — Expressão de vpa_mie_consentimento (1):**
-- `sexo_feminino_ie == 'sim'` → `sexo_feminino_ie is True`
+**Grupo F — Mensagem de handoff na pausa de enfermagem (3 mensagens):**
+- `condutaDataNode` adicionado ao nó `conduta-a9ccd9ee-...` com 3 mensagens de handoff por nível de risco
 
-**Grupo G — Boolean conversões residuais Nós 3 e 4 (10):**
-- Nó 3: `sexo_feminino_ie`, `gestante`
-- Nó 4: `burnout_criterios_tdm`, `primeiro_episodio_psicotico`, `esquizofrenia_refrataria`, `comportamento_suicida_recorrente`, `tdah_abuso_substancias_ativo`, `sintomas_cardiacos_tdah`, `tea_irritabilidade_grave`, `tpb_autolesao_ativa`
+**Grupo G — 4 antipsicóticos adicionados à conduta médica (4):**
+- Quetiapina 25/50/100 mg, Olanzapina 5/10 mg, Risperidona 1/2 mg, Aripiprazol 10/15 mg
 
-### Resultado da auditoria final v0.1.2
+**Grupo H — 4 orientações ao paciente adicionadas (4):**
+- "Sobre seu diagnóstico", "Sobre seus medicamentos", "Plano de segurança em crise", "Sono e rotina"
+- Escritas em 2ª pessoa (voz do paciente)
+
+**Grupo I — Correções de coesão (6):**
+- Typo: "EPÍSODIO" → "EPISÓDIO"
+- Anglicismo: "Lethal means counseling" → "Restrição de meios letais" (no nome)
+- NodeId: 3 perguntas com nodeId errado corrigidas (`tipo_consulta`, `motivo_consulta`, `exames_recentes`)
+- `metadata.version`: "draft" → "0.1.2"
+
+### Resultado da auditoria final v0.1.2 (quality patch)
 
 ```
 A1 choice→boolean BLOQUEANTE:  0  ✅
@@ -69,39 +78,34 @@ A2 labels enum BLOQUEANTE:      0  ✅
 A4 conduta sem condicao BLOQ:   0  ✅
 TOTAL BLOQUEANTES: 0
 
-A1 revisão (choice 2-opções legítimas): 4
-A3 uid sem impacto (revisão): 31  (eram 40 em v0.1.1)
-Total conduta items: 66 (eram 56 em v0.1.1)
+A1 revisão (choice 2-opções legítimas): 2
+A3 uid sem impacto (revisão): 32  (contexto clínico + monitoramento farmacológico)
+Total itens de conduta: 79
 ```
 
-### Estrutura de nós v0.1.1
+### Inventário da conduta médica (node-psiq-06-conduta)
 
-| ID | Tipo | Label | Questões |
-|----|------|-------|----------|
-| `node-psiq-01-triagem` | custom | Identificação — Prontuário | ~2q |
-| `20e05d57-...` | custom | Triagem — Enfermagem | ~4q |
-| `node-psiq-03-anamnese` | custom | Anamnese Psiquiátrica — Enfermagem | ~12q |
-| `node-psiq-02-gate-p0` | custom | Triagem Suicídio — Enfermagem (C-SSRS) | 7q |
-| `summary-6e3e...` | summary | Processamento Clínico | 3 clinicalExpressions |
-| `conduta-a9cc...` | conduct | Conduta — Enfermagem (pausa) | handoff |
-| `node-psiq-04-diagnostico` | custom | Fluxo de seguimento — Medicina | ~11q |
-| `node-psiq-05-farmacos` | custom | Monitoramento Farmacológico — Medicina | ~10q |
-| `node-psiq-06-conduta` | conduct | Conduta — Medicina | 9 alertas, 25 exames, 13 enc., 9 meds |
-
-**Total:** 9 nodes, 8 edges, 75 questões | `nivel_risco_p0` e `ideacao_suicida`: ausentes ✅
+| Seção | Antes | Depois |
+|-------|-------|--------|
+| mensagem (alertas) | 19 | 21 (+PHQ-9 ≥15, +AUDIT ≥8) |
+| exame | 25 | 25 (categorizados) |
+| encaminhamento | 14 | 14 (CAPS-AD condição expandida) |
+| medicamento | 9 | 13 (+quetiapina, +olanzapina, +risperidona, +aripiprazol) |
+| orientacao | 0 | 4 (novo) |
+| **total** | **67** | **77** |
 
 ---
 
 ## O QUE ESTÁ ABERTO AGORA
 
-### A3 residual: 31 uids informativos (sem conduta direta)
+### A3 residual: 32 uids informativos (sem conduta direta)
 
 Classificação dos uids A3 restantes:
 
 **Contexto clínico legítimo (manter sem conduta):**
 `tipo_consulta`, `motivo_consulta`, `exames_recentes`, `ideacao_passiva`,
-`outros_medicamentos_relevantes`, `internacao_psiq_previa`, `phq9_score`,
-`mdq_aplicado`, `audit_score`, `primeira_consulta_vida`
+`outros_medicamentos_relevantes`, `internacao_psiq_previa`, `mdq_aplicado`,
+`primeira_consulta_vida`
 
 **Monitoramento farmacológico de referência (valores para o médico):**
 `litio_fase`, `litemia_valor`, `litemia_dentro_faixa`, `vpa_fase`,
@@ -109,14 +113,16 @@ Classificação dos uids A3 restantes:
 
 **Nuances diagnósticas (potencial conduta futura):**
 `tab_fase_diagnostica`, `ciclagem_rapida`, `especificador_misto`,
-`ansiedade_subtipo`, `burnout_criterios_tdm`, `tdah_apresentacao`,
+`burnout_criterios_tdm`, `tdah_apresentacao`,
 `sintomas_cardiacos_tdah`, `tea_nivel_suporte`, `tea_irritabilidade_grave`,
 `tea_comorbidades`, `tpb_autolesao_ativa`, `tpb_sintoma_alvo`
+
+*(Nota: `ansiedade_subtipo` removido do JSON. `phq9_score` e `audit_score` conectados à conduta — não são mais A3.)*
 
 ### Próximo passo recomendado
 
 **QA clínico no ambiente de preview Daktus com v0.1.2** — percorrer 3 perfis:
-1. Alto risco suicida com acesso a meios → verificar lethal means counseling
+1. Alto risco suicida com acesso a meios → verificar restrição de meios letais
 2. Mulher grávida em uso de valproato → verificar alerta gestante+VPA
 3. Esquizofrenia refratária → verificar indicação de clozapina
 
@@ -141,8 +147,8 @@ Classificação dos uids A3 restantes:
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.1.1 é o artefato ativo — não alterar sem novo patch documentado
-- `amil-ficha_psiquiatria-vdraft.json` mantido como referência de intenção do usuário
+- v0.1.2 é o artefato ativo — não alterar sem novo patch documentado
+- v0.1.1 mantido como versão publicada estável
 - branch-base: `main`
 - TUSS pendentes: HLA-B*1502 e Troponina+PCR — `codigo: []` no JSON, sinalizado
 
@@ -150,5 +156,6 @@ Classificação dos uids A3 restantes:
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-08 (session_015) — sobrescreve estado de 2026-03-07
-- v0.1.0 publicado como legado; vdraft como referência; v0.1.1 como artefato ativo
+- HANDOFF atualizado em 2026-03-08 (session_016) — sobrescreve estado de session_015
+- v0.1.0 publicado como legado; v0.1.1 como versão estável; v0.1.2 como artefato ativo (draft)
+- vdraft do usuário incorporado ao v0.1.2 (UX improvements: sex/age ocultos, roteamento por `ideacao_passiva`, `especificador_misto` movido para Nó 5)
