@@ -96,8 +96,11 @@ Descreve:
 ├── README.md               # visão geral estável
 │
 ├── tools/
-│   ├── skills/             # sub-skills por fase
+│   ├── skills/             # sub-skills por fase (pipeline interno)
 │   └── *.md                # padrões, guardrails e documentos auxiliares
+│
+├── skills/                 # skills exportáveis (padrão Anthropic)
+│   └── daktus-json-coding/ # skill piloto: compila playbook → JSON
 │
 ├── especialidades/         # frentes ativas em produção
 ├── referencia/             # artefatos maduros / read-only
@@ -106,6 +109,32 @@ Descreve:
 ````
 
 A estrutura exata pode evoluir, mas a separação de responsabilidades entre os arquivos-mestre deve permanecer estável.
+
+### Arquitetura de duas camadas (desde session_020)
+
+- **`tools/skills/`** — sub-skills do pipeline interno (inalteradas)
+- **`skills/`** — skills exportáveis no padrão Anthropic (nova camada)
+  - Autocontidas com frontmatter YAML
+  - Estrutura modular: `references/`, `scripts/`, `assets/`
+  - Reutilizáveis em múltiplos contextos e projetos
+
+---
+
+## SKILLS EXPORTÁVEIS
+
+Além do pipeline interno (`tools/skills/`), o ambiente oferece skills autocontidas no padrão Anthropic em `/skills/`.
+
+### Skill piloto: `daktus-json-coding`
+
+Compila playbooks clínicos auditados em JSON Daktus executável.
+
+Estrutura:
+- `SKILL.md` — skill autocontida com frontmatter YAML
+- `references/` — documentação detalhada (DSL, padrões, erros)
+- `scripts/` — validação estrutural
+- `assets/` — templates JSON
+
+Estas skills podem ser usadas por agentes externos, reutilizadas em outros projetos, ou integradas a fluxos específicos.
 
 ---
 
@@ -209,6 +238,16 @@ Servem para:
 * histórico de decisões bem sucedidas.
 
 Não devem ser tratadas como autorização automática para copiar lógica clínica entre especialidades.
+
+### Interação entre camadas
+
+A camada interna (`tools/skills/`) continua como ponto de entrada para o pipeline operacional.
+A camada exportável (`skills/`) consolida conhecimento técnico reutilizável, referenciando sempre as fontes canônicas em `tools/`.
+
+Durante a transição:
+- `tools/skills/` mantém compatibilidade total com o pipeline existente
+- `skills/` cresce de forma paralela, sem substituição imediata
+- Deprecação de sub-skills internas só ocorre quando a skill exportável correspondente comprovadamente funciona em múltiplos contextos
 
 ---
 
