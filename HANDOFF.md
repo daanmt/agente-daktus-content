@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-09 — Skillização piloto: daktus-json-coding (session_020)*
+*Atualizado: 2026-03-09 — Análise de melhorias + fixes v0.2.1 (session_021)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Infraestrutura — Skillização piloto** (session_020)
-- Especialidade/tema ativo: Psiquiatria (Fase 5 continua) + Infraestrutura (skillização)
+- Última sessão integrada: **Análise de melhorias v0.2.1** (session_021)
+- Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.1.json`
 
 ---
 
@@ -20,7 +20,8 @@
 | v0.1.0 | legado publicado | `amil-ficha_psiquiatria-v0.1.0.json` | Primeira versão completa, com falhas estruturais de design |
 | v0.1.1 | publicado | `amil-ficha_psiquiatria-v0.1.1.json` | Patch estrutural + conduta expandida — 0 BLOQUEANTES |
 | v0.1.2 | legado (base de desenvolvimento) | `amil-ficha_psiquiatria-v0.1.2.json` | UX improvements + quality patch + DSL + condicional values fixes |
-| **v0.2** | **ativo** | `amil-ficha_psiquiatria-v0.2.json` | Primeira versão revisada conjuntamente — 42 perguntas, 79 conduta, 0 BLOQUEANTES |
+| v0.2 | publicado | `amil-ficha_psiquiatria-v0.2.json` | Primeira versão revisada conjuntamente — 42 perguntas, 79 conduta, 0 BLOQUEANTES |
+| **v0.2.1** | **ativo** | `amil-ficha_psiquiatria-v0.2.1.json` | Ajustes manuais do usuário + fixes session_021 — 37 perguntas, 79 conduta, TUSS 100%, MEVO 8/13 |
 
 ---
 
@@ -166,14 +167,32 @@ Classificação dos uids A3 restantes:
 
 ---
 
+## O QUE FOI FEITO — session_021 (2026-03-09)
+
+**Análise de melhorias v0.2.1 + fixes + TUSS/MEVO:**
+
+**Contexto:** Usuário fez ajustes manuais em v0.2 (removeu 5 escores PHQ-9/YMRS/MADRS/YBOCS/PCL-5, corrigiu ECG com `selected_any`). Sessão auditou e corrigiu todos os problemas.
+
+- **5 alertas bloqueantes corrigidos** (referenciavam escores removidos → substituídos por condições baseadas em `episodio_atual_humor` / `diagnostico_ativo`)
+- **2 condições de medicamento** com `madrs_score` residual removidas (Quetiapina + Aripiprazol)
+- **metadata.version**: "draft" → "0.2.1"
+- **TUSS 100% populados**: HLA-B*1502 (40306887) + Troponina+PCR (40302571 + 40308391)
+- **MEVO 8/13 populados**: Sertralina, Fluoxetina, Lítio, Lamotrigina, Quetiapina, Olanzapina, Risperidona, Aripiprazol
+- **5 MEVOs ausentes** (não no catálogo Mevo/Amil atual): Escitalopram 10mg, Metilfenidato LP, Lisdexanfetamina, Biperideno, Propranolol — documentado, aguarda verificação
+- **Scripts criados**: `scripts/patch_v021_fixes.py`, `scripts/patch_v021_to_v03_codigos.py`
+- **Gap analysis completo** vs. playbook: maioria dos gaps previamente identificados já estavam em v0.2.1 (surpresa positiva); gaps reais documentados em roadmap v0.3
+
+---
+
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. QA clínico de v0.2 no ambiente de preview Daktus (3 perfis críticos):
+1. QA clínico de v0.2.1 no ambiente de preview Daktus (3 perfis críticos):
    - Alto risco suicida com acesso a meios → verificar restrição de meios letais
    - Mulher grávida em uso de valproato → verificar alerta gestante+VPA
    - Esquizofrenia refratária → verificar indicação de clozapina
-2. Ajustar condicionais ou conteúdo clínico conforme feedback do QA
-3. Promover para v1.0.0 após aprovação clínica completa
+2. Confirmar 5 MEVOs ausentes com equipe Amil
+3. v0.3 — expandir prescrições (Venlafaxina, Bupropiona, Valproato Rx, Clozapina Rx, Atomoxetina) + encaminhamentos (Infectologia, Psiquiatria terciária)
+4. Promover para v1.0.0 após QA clínico completo
 
 ---
 
@@ -181,16 +200,18 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.1.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.2 é o artefato ativo — não alterar sem novo patch documentado
+- v0.2.1 é o artefato ativo — não alterar sem novo patch documentado
+- v0.2 mantido como marco histórico (primeira revisão conjunta)
 - v0.1.2 mantido como base histórica
 - branch-base: `main`
-- TUSS pendentes: HLA-B*1502 e Troponina+PCR — `codigo: []` no JSON, sinalizado
+- TUSS: 100% populados ✅
+- MEVO pendentes (5): Escitalopram 10mg, Metilfenidato LP, Lisdexanfetamina, Biperideno, Propranolol — não no catálogo Mevo/Amil atual
 
 ---
 
@@ -226,7 +247,7 @@ Objetivo: alinhar o projeto à infraestrutura de skills Anthropic com uma skill 
 
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-09 (session_020) — sobrescreve estado de session_019
-- v0.2 continua como artefato ativo de psiquiatria
-- Skill exportável criada em paralelo — não substitui pipeline interno
+- HANDOFF atualizado em 2026-03-09 (session_021) — sobrescreve estado de session_020
+- v0.2.1 agora é o artefato ativo (substituindo v0.2)
+- Skill exportável `skills/daktus-json-coding/` criada em session_020 — ativa
 - Deprecação de `tools/skills/codificacao-json/` só quando skill exportável provar-se funcional em 2+ especialidades
