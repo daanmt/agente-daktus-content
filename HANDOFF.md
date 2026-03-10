@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-10 — Correção estrutural + fármacos faltantes → v0.2.2 (session_022)*
+*Atualizado: 2026-03-10 — Fechamento de hiatos do briefing → v0.2.3 (session_023)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Correção estrutural + fármacos faltantes → v0.2.2** (session_022)
+- Última sessão integrada: **Fechamento de hiatos do briefing → v0.2.3** (session_023)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.2.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.3.json`
 
 ---
 
@@ -22,7 +22,8 @@
 | v0.1.2 | legado (base de desenvolvimento) | `amil-ficha_psiquiatria-v0.1.2.json` | UX improvements + quality patch + DSL + condicional values fixes |
 | v0.2 | publicado | `amil-ficha_psiquiatria-v0.2.json` | Primeira versão revisada conjuntamente — 42 perguntas, 79 conduta, 0 BLOQUEANTES |
 | v0.2.1 | publicado | `amil-ficha_psiquiatria-v0.2.1.json` | Ajustes manuais do usuário + fixes session_021 — 37 perguntas, 79 conduta, TUSS 100%, MEVO 8/13 |
-| **v0.2.2** | **ativo** | `amil-ficha_psiquiatria-v0.2.2.json` | Correção estrutural (antipsicóticos) + 11 fármacos adicionados — 28 medicamentos, 0 BLOQUEANTES, MEVO 19/28 |
+| v0.2.2 | histórico | `amil-ficha_psiquiatria-v0.2.2.json` | Correção estrutural (antipsicóticos) + 11 fármacos adicionados — 28 medicamentos, 0 BLOQUEANTES, MEVO 19/28 |
+| **v0.2.3** | **ativo** | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
 
 ---
 
@@ -187,14 +188,15 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.2.2** no ambiente de preview Daktus (4 perfis críticos):
+1. **QA clínico de v0.2.3** no ambiente de preview Daktus (5 perfis críticos):
    - Alto risco suicida com acesso a meios → verificar restrição de meios letais
-   - Mulher grávida em uso de valproato → verificar alerta GESTANTE+VPA (e que Valproato de sódio aparece como prescrição)
-   - Esquizofrenia refratária → verificar indicação de clozapina (25mg agora presente)
+   - Mulher grávida em uso de valproato → verificar alerta GESTANTE+VPA + Valproato como prescrição
+   - Esquizofrenia refratária → verificar indicação de clozapina + alerta hemograma
    - TDAH com TDM comórbido → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
+   - Paciente com comportamento agressivo → verificar alerta de risco para terceiros
 2. **Confirmar 9 MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.3** — adicionar fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária)
+4. **v0.3** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária)
 5. Promover para v1.0.0 após QA clínico completo
 
 ---
@@ -203,13 +205,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.2.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.3.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.2.2 é o artefato ativo — não alterar sem novo patch documentado
+- v0.2.3 é o artefato ativo — não alterar sem novo patch documentado
+- v0.2.2 mantido como marco histórico (session_022)
 - v0.2.1 mantido como marco histórico (fixes session_021)
 - v0.2 mantido como marco histórico (primeira revisão conjunta)
 - v0.1.2 mantido como base histórica
@@ -268,9 +271,38 @@ Objetivo: alinhar o projeto à infraestrutura de skills Anthropic com uma skill 
 
 ---
 
+## O QUE FOI FEITO — session_023 (2026-03-10)
+
+**Análise de hiatos + fechamento briefing → v0.2.3:**
+
+**Contexto:** Usuário entregou vdraft(3) com melhorias significativas (37 meds, 25 exames, 13 encaminhamentos, novas clinical expressions, comorbidades_clinicas, outros_medicamentos_relevantes) e briefing dos psiquiatras. Sessão realizou análise rigorosa de hiatos entre o briefing e o que o sistema entregava.
+
+**Análise de hiatos realizada:**
+- 11 diagnósticos do briefing: 10/11 cobertos (Agressividade ausente) ✅ + gap identificado
+- motivo_consulta: 11 opções existentes cobriam parcialmente; 8 itens do briefing ausentes/parciais
+- Encaminhamentos: Neuropsicólogo restrito a TDAH (TEA + 1º psicótico não cobertos)
+- Exames: 4/4 itens laboratoriais do briefing presentes; avaliação neuropsicológica coberta como encaminhamento
+- Histórico familiar psiquiátrico: ausente do formulário
+
+**8 mudanças aplicadas em v0.2.3:**
+1. `motivo_consulta` +3 opções: `irritabilidade`, `agressividade_comportamento`, `sonolencia_hipersonia`
+2. `diagnostico_ativo` +1 opção: `agressividade` (TEI / F63.8)
+3. `node-psiq-03-anamnese` +1 pergunta: `historico_familiar_psiq` (6 opções multiChoice)
+4. `node-psiq-04-diagnostico` +1 pergunta: `sintomas_depressivos_presentes` (anedonia, apatia, astenia, isolamento_social, choro_frequente, inapetencia) — condicional a TDM/distimia/burnout/TPB/TAB
+5. Encaminhamento Neuropsicólogo: condição expandida para TDAH + TEA + `primeiro_episodio_psicotico`
+6. Conduta +1 mensagem: alerta de risco para terceiros (Agressividade)
+7. Conduta +1 orientação: atividade física / sedentarismo (condicional a transtornos de humor/ansiedade)
+8. `metadata.version` → "0.2.3"
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 105 IIDs | 37 meds | 25 exames | 13 enc. | 22 mensagens | 5 orientações
+
+**Script criado:** `scripts/patch_vdraft3_to_v023.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-10 (session_022) — sobrescreve estado de session_021
+- HANDOFF atualizado em 2026-03-10 (session_023) — sobrescreve estado de session_022
 - v0.2.2 agora é o artefato ativo (substituindo v0.2.1)
 - v0.2.1 mantido como marco histórico (fixes session_021)
 - Skill exportável `skills/daktus-json-coding/` criada em session_020 — ativa
