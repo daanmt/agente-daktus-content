@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-09 (session_021)*
+*Atualizado: 2026-03-10 (session_022)*
 
 ---
 
@@ -39,13 +39,13 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
 - Fase atual consolidada: **Fase 5 — QA iterativo → próximo: QA clínico no preview Daktus**
-- Gate clínico: playbook auditado ✅ | JSON v0.2.1 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.1.json`
-  - 9 nodes, 8 edges
+- Gate clínico: playbook auditado ✅ | JSON v0.2.2 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.2.json`
+  - 9 nodes, 8 edges, 94 IIDs
   - **37 perguntas** (era 42 em v0.2 — usuário removeu 5 escores; era 66 em v0.1.2)
-  - Nó 6 (Conduta Medicina): 79 IIDs, 0 UIDs indefinidos, 0 BLOQUEANTES
-  - TUSS: 100% populados ✅ | MEVO: 8/13 (5 não no catálogo Amil — documentado)
-  - v0.2.1 = v0.2 + ajustes manuais do usuário + fixes de auditoria session_021
+  - Nó 6 (Conduta Medicina): **28 medicamentos**, 0 BLOQUEANTES
+  - TUSS: 100% populados ✅ | MEVO: 19/28 (9 não no catálogo Amil — documentado)
+  - v0.2.2 = vdraft (2) do usuário + correções estruturais (4 grupos de bugs) + 11 fármacos adicionados (session_022)
 - Artefatos de suporte:
   - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 + §5 atualizados)
   - `skills/daktus-json-coding/scripts/validate_json.py` — validação estrutural generalizada
@@ -57,7 +57,8 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
   - `scripts/patch_v012_to_v02.py` — patch v0.2 (24 remoções + 12 simplificações)
   - `scripts/patch_v021_fixes.py` — fixes de alertas e metadata v0.2.1 (session_021)
   - `scripts/patch_v021_to_v03_codigos.py` — TUSS/MEVO population (session_021)
-- Próximo passo macro: QA clínico de v0.2.1 no preview Daktus (3 perfis críticos)
+  - `scripts/patch_vdraft2_to_v022.py` — correção estrutural + 11 fármacos (session_022)
+- Próximo passo macro: QA clínico de v0.2.2 no preview Daktus (4 perfis críticos)
 
 ### Infraestrutura do ambiente
 - Status macro: arquitetura de duas camadas implementada (session_020)
@@ -121,21 +122,23 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_021 — Análise de melhorias v0.2.1: fixes + TUSS/MEVO (2026-03-09)
-- Foco: auditoria end-to-end de v0.2.1 (ajustes manuais do usuário), correção de alertas com UIDs de escores removidos, população de códigos TUSS/MEVO
-- Resultado: 0 BLOQUEANTES, TUSS 100%, MEVO 8/13, metadata.version = "0.2.1"
+- Sessão: session_022 — Correção estrutural + fármacos faltantes → v0.2.2 (2026-03-10)
+- Foco: benchmarking e correção de 4 grupos de bugs estruturais nos medicamentos, adição de 11 fármacos essenciais do playbook
+- Resultado: 0 BLOQUEANTES, 28 medicamentos, schema 28/28 canônico, MEVO 19/28, metadata.version = "0.2.2"
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. QA clínico de v0.2.1 no preview Daktus (3 perfis críticos):
+1. QA clínico de v0.2.2 no preview Daktus (4 perfis críticos):
    - Alto risco suicida com acesso a meios → verificar restrição de meios letais
-   - Mulher grávida em uso de valproato → verificar alerta gestante+VPA
-   - Esquizofrenia refratária → verificar indicação de clozapina
-2. Confirmar 5 MEVOs ausentes com equipe Amil (Escitalopram 10mg, Metilfenidato LP, Lisdexanfetamina, Biperideno, Propranolol).
-3. v0.3 — expandir prescrições e encaminhamentos conforme roadmap em session_021.md.
-4. Promover para v1.0.0 após QA completo.
+   - Mulher grávida em uso de valproato → verificar alerta gestante+VPA + Valproato como prescrição
+   - Esquizofrenia refratária → verificar indicação de clozapina (25mg agora presente)
+   - TDAH com TDM → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
+2. Confirmar 9 MEVOs ausentes com equipe Amil (ver `history/session_022_report_farmacologia.md`).
+3. Confirmar Escitalopram MEVO 20945 (inserido manualmente, não verificado no Mevo..xlsx).
+4. v0.3 — adicionar fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes.
+5. Promover para v1.0.0 após QA completo.
 
 ---
 
