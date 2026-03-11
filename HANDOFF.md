@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-10 — Onda 2: 4 eixos discriminatórios + shortcut retorno → v0.4.0 (session_025)*
+*Atualizado: 2026-03-11 — Onda 3: 7 gaps corrigidos (psicose, urgência, iminência, TA, TEA, bugs farmacológicos) → v0.5.0 (session_026)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Onda 2 — discriminação sindrômica ampliada → v0.4.0** (session_025)
+- Última sessão integrada: **Onda 3 — 7 gaps + 2 bugs de segurança corrigidos → v0.5.0** (session_026)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.4.0.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.5.0.json`
 
 ---
 
@@ -25,7 +25,8 @@
 | v0.2.2 | histórico | `amil-ficha_psiquiatria-v0.2.2.json` | Correção estrutural (antipsicóticos) + 11 fármacos adicionados — 28 medicamentos, 0 BLOQUEANTES, MEVO 19/28 |
 | v0.2.3 | histórico | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
 | v0.3.0 | histórico | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
-| **v0.4.0** | **ativo** | `amil-ficha_psiquiatria-v0.4.0.json` | Onda 2 — 6 perguntas novas (tipo_consulta + 4 eixos + TEA), 6 mensagens, shortcut retorno, 0 BLOQUEANTES, 117 IIDs |
+| v0.4.0 | histórico | `amil-ficha_psiquiatria-v0.4.0.json` | Onda 2 — 6 perguntas novas (tipo_consulta + 4 eixos + TEA), 6 mensagens, shortcut retorno, 0 BLOQUEANTES, 117 IIDs |
+| **v0.5.0** | **ativo** | `amil-ficha_psiquiatria-v0.5.0.json` | Onda 3 — 3 perguntas novas (tea_suspeita, agressividade_iminencia, ta_fenotipo) + sintomas_toxicidade_vpa + 3 mensagens + 7 fixes, 0 BLOQUEANTES |
 
 ---
 
@@ -190,19 +191,21 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.4.0** no ambiente de preview Daktus (8 perfis críticos):
-   - Alto risco suicida com acesso a meios → verificar restrição de meios letais
-   - Mulher grávida em uso de valproato → verificar alerta GESTANTE+VPA + Valproato como prescrição
-   - Esquizofrenia refratária → verificar indicação de clozapina + alerta hemograma
-   - TDAH com TDM comórbido → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
-   - Depressão com rastreio bipolar positivo → verificar alerta BIPOLAR NÃO DESCARTADO
-   - Agressividade com red flags orgânicos → verificar encaminhamento Neurologia + alerta
-   - **[novo]** Retorno medicamentoso → verificar shortcut (sem internacao_psiq_previa e historico_familiar)
-   - **[novo]** Autolesão sem diagnóstico de TPB → verificar rastreio TPB + alerta TCD
+1. **QA clínico de v0.5.0** no ambiente de preview Daktus (10 perfis críticos):
+   - Alto risco suicida com acesso a meios → restrição de meios letais
+   - Mulher grávida em uso de valproato → alerta GESTANTE+VPA
+   - Esquizofrenia refratária → clozapina + hemograma
+   - TDAH com TDM comórbido → Metilfenidato + Bupropiona (verificar bloqueio se TA presente)
+   - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
+   - Agressividade com red flags orgânicos → Neurologia + alerta
+   - Retorno medicamentoso → shortcut (sem internacao_psiq_previa e historico_familiar)
+   - Autolesão sem diagnóstico de TPB → rastreio TPB + alerta TCD
+   - **[novo Onda 3]** Primeiro episódio psicótico via motivo_consulta → alerta investigação orgânica
+   - **[novo Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
 2. **Confirmar 9 MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.5.0 / Onda 3** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária) + limpeza de perguntas sem conduta
-5. Promover para v1.0.0 após QA clínico completo e Onda 3
+4. **v0.6.0 / Onda 4** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta
+5. Promover para v1.0.0 após QA clínico completo
 
 ---
 
@@ -210,13 +213,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.4.0.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.5.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.4.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.5.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.4.0 mantido como marco histórico (session_025)
 - v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
 - v0.2.2 mantido como marco histórico (session_022)
@@ -394,10 +398,55 @@ GRUPO E — 2 recalibrações de encaminhamento:
 
 ---
 
+## O QUE FOI FEITO — session_026 (2026-03-11)
+
+**Onda 3 — 7 gaps clínicos corrigidos + 2 bugs de segurança → v0.5.0:**
+
+**Contexto:** Auditoria clínica pós-Onda 2 identificou 7 gaps remanescentes: 5 de cobertura (psicose gate estreito, urgência não suicida sem rota, agressividade sem iminência, TA fenotipagem pós-diagnóstico, TEA mascarado) e 2 bugs de segurança farmacológica (bupropiona sem proteção em TA, amônia sérica usando campo de lítio em contexto de VPA).
+
+**14 mudanças aplicadas em v0.5.0:**
+
+GRUPO A — Modificar expressão de pergunta existente:
+1. `primeiro_episodio_psicotico` gate alargado: + `'sintomas_psicoticos' in motivo_consulta`
+
+GRUPO B — 3 novas perguntas em `node-psiq-04-diagnostico`:
+2. `tea_suspeita_clinica` (multiChoice, 5 opções) — após `tea_nivel_suporte`; TEA adulto mascarado sem diagnóstico rotulado
+3. `agressividade_iminencia` (multiChoice, 6 opções) — após `contexto_agressividade`; ameaça atual, vítima, escalada, agressão física
+4. `ta_fenotipo` (choice, 4 opções) — antes de `an_sinais_alarme`; restricao/compulsao+purgacao/compulsao_sem_comp/inapetencia
+
+GRUPO C — 1 nova opção em `tdah_discriminador`:
+5. `curso_continuo_sem_episodios` — proteção explícita contra falso-positivo TAB
+
+GRUPO D — 1 nova pergunta em `node-psiq-05-farmacos`:
+6. `sintomas_toxicidade_vpa` (multiChoice, 5 opções) — gate: `'valproato' in medicamentos_em_uso`
+
+GRUPO E — 3 novas mensagens em `node-psiq-06-conduta`:
+7. URGÊNCIA — MANIA GRAVE COM AGITAÇÃO/PSICOSE
+8. AGRESSIVIDADE — RISCO IMINENTE PARA TERCEIROS
+9. BULIMIA NERVOSA — Monitorar eletrólitos e risco de hipocalemia
+
+GRUPO F — Modificar gate de pergunta existente:
+10. `an_sinais_alarme`: + `ta_fenotipo == 'restricao_medo_engordar'`
+
+GRUPO G — Recalibrações:
+11. SAMU: + `selected_any(agressividade_iminencia, 'ameaca_atual', 'agressao_fisica_recente', 'vitima_identificada')`
+12. Amônia sérica: `sintomas_toxicidade_litio` → `sintomas_toxicidade_vpa` (bug fix G7b)
+13. Neuropsicólogo: + `selected_any(tea_suspeita_clinica, ...)`
+
+GRUPO H — Bug fixes farmacológicos:
+14. Bupropiona 150mg + 300mg: + `not selected_any(diagnostico_ativo, 'ta_bulimia', 'ta_anorexia')`
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 24 perguntas em node-psiq-04 | 37 mensagens (+3) | 7 farmacos node-psiq-05 (+1)
+
+**Script criado:** `scripts/patch_v040_to_v050.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-10 (session_025) — sobrescreve estado de session_024
-- v0.4.0 agora é o artefato ativo (substituindo v0.3.0)
+- HANDOFF atualizado em 2026-03-11 (session_026) — sobrescreve estado de session_025
+- v0.5.0 agora é o artefato ativo (substituindo v0.4.0)
+- v0.4.0 mantido como marco histórico (session_025)
 - v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
 - v0.2.2 mantido como marco histórico (session_022)
@@ -405,4 +454,4 @@ GRUPO E — 2 recalibrações de encaminhamento:
 - Versão local do usuário tem prioridade sobre commits anteriores (confirmado session_024)
 - Skill exportável `skills/daktus-json-coding/` criada em session_020 — ativa
 - Deprecação de `tools/skills/codificacao-json/` só quando skill exportável provar-se funcional em 2+ especialidades
-- Neuropsicólogo: condição corrigida (session_024) — `primeiro_episodio_psicotico` removido
+- Neuropsicólogo: condição recalibrada (session_026) — inclui `tea_suspeita_clinica`

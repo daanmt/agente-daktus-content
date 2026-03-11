@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-10 (session_025)*
+*Atualizado: 2026-03-11 (session_026)*
 
 ---
 
@@ -39,17 +39,18 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
 - Fase atual consolidada: **Fase 5 — QA iterativo → próximo: QA clínico no preview Daktus**
-- Gate clínico: playbook auditado ✅ | JSON v0.4.0 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.4.0.json`
-  - 9 nodes, 8 edges, 117 IIDs
+- Gate clínico: playbook auditado ✅ | JSON v0.5.0 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.5.0.json`
+  - 9 nodes, 8 edges
   - motivo_consulta: **14 opções** (inalterado)
   - diagnostico_ativo: **19 opções** (inalterado)
-  - Triagem Enfermagem: **tipo_consulta** adicionado (shortcut retorno)
-  - node-psiq-04-diagnostico: **21 perguntas** (+5: burnout_tdm_discriminador, substancia_relacao_quadro, tpb_rastreio, tdah_discriminador, tea_nivel_suporte)
-  - Nó 6 (Conduta Medicina): **37 medicamentos**, 25 exames, 13 encaminhamentos, **34 mensagens** (+6), 5 orientações
-  - Perguntas de intake gateadas em retorno: `internacao_psiq_previa`, `historico_familiar_psiq`
-  - 0 BLOQUEANTES ✅ | Onda 2 de reforma completa (8 eixos de discriminação sindrômica)
-  - v0.4.0 = v0.3.0 + Onda 2 session_025 + 17 mudanças
+  - Triagem Enfermagem: **tipo_consulta** presente (shortcut retorno, Onda 2)
+  - node-psiq-04-diagnostico: **24 perguntas** (+3: tea_suspeita_clinica, agressividade_iminencia, ta_fenotipo)
+  - node-psiq-05-farmacos: **7 perguntas** (+1: sintomas_toxicidade_vpa)
+  - Nó 6 (Conduta Medicina): **37 medicamentos**, 25 exames, 13 encaminhamentos, **37 mensagens** (+3), 5 orientações
+  - Bugs corrigidos: bupropiona em TA, amônia sérica (campo VPA), 3 gates recalibrados
+  - 0 BLOQUEANTES ✅ | 10 eixos de discriminação sindrômica
+  - v0.5.0 = v0.4.0 + Onda 3 session_026 + 14 mudanças
 - Artefatos de suporte:
   - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 + §5 atualizados)
   - `skills/daktus-json-coding/scripts/validate_json.py` — validação estrutural generalizada
@@ -65,7 +66,8 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
   - `scripts/patch_vdraft3_to_v023.py` — fechamento de hiatos do briefing (session_023)
   - `scripts/patch_v023_to_v030.py` — dissecção sindrômica intermediária (session_024)
   - `scripts/patch_v030_to_v040.py` — Onda 2: 4 eixos discriminatórios + shortcut retorno (session_025)
-- Próximo passo macro: QA clínico de v0.4.0 no preview Daktus (8 perfis críticos)
+  - `scripts/patch_v040_to_v050.py` — Onda 3: 7 gaps + 2 bugs de segurança (session_026)
+- Próximo passo macro: QA clínico de v0.5.0 no preview Daktus (10 perfis críticos)
 
 ### Infraestrutura do ambiente
 - Status macro: arquitetura de duas camadas implementada (session_020)
@@ -129,27 +131,29 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_025 — Onda 2: 4 eixos discriminatórios + shortcut retorno → v0.4.0 (2026-03-10)
-- Foco: tipo_consulta (shortcut retorno), substancia_relacao_quadro, tpb_rastreio, tdah_discriminador, burnout_tdm_discriminador, tea_nivel_suporte + 6 mensagens + 2 encaminhamentos recalibrados
-- Resultado: 0 BLOQUEANTES, 34 mensagens, 21 perguntas no nó diagnóstico, metadata.version = "0.4.0"
+- Sessão: session_026 — Onda 3: 7 gaps + 2 bugs de segurança → v0.5.0 (2026-03-11)
+- Foco: tea_suspeita_clinica, agressividade_iminencia, ta_fenotipo, sintomas_toxicidade_vpa, gates psicose/an_sinais_alarme alargados, 3 mensagens urgência/iminência/BN, fixes bupropiona+amônia
+- Resultado: 0 BLOQUEANTES, 37 mensagens, 24 perguntas no nó diagnóstico, 7 no node-psiq-05-farmacos, metadata.version = "0.5.0"
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. QA clínico de v0.4.0 no preview Daktus (8 perfis críticos):
-   - Alto risco suicida com acesso a meios → verificar restrição de meios letais
-   - Mulher grávida em uso de valproato → verificar alerta gestante+VPA + Valproato como prescrição
-   - Esquizofrenia refratária → verificar indicação de clozapina + alerta hemograma
-   - TDAH com TDM → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
-   - Depressão com rastreio bipolar positivo → verificar alerta BIPOLAR NÃO DESCARTADO
-   - Agressividade com red flags orgânicos → verificar encaminhamento Neurologia + alerta
-   - **[novo]** Retorno medicamentoso → verificar shortcut (sem internacao_psiq_previa e historico_familiar)
-   - **[novo]** Autolesão sem TPB → verificar rastreio TPB + alerta TCD
-2. Confirmar MEVOs com equipe Amil (ver `history/session_022_report_farmacologia.md` para lista completa).
+1. QA clínico de v0.5.0 no preview Daktus (10 perfis críticos):
+   - Alto risco suicida com acesso a meios → restrição de meios letais
+   - Mulher grávida em uso de valproato → alerta gestante+VPA
+   - Esquizofrenia refratária → clozapina + hemograma
+   - TDAH com TDM → Metilfenidato + Bupropiona (verificar bloqueio se TA presente)
+   - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
+   - Agressividade com red flags orgânicos → Neurologia + alerta
+   - Retorno medicamentoso → shortcut (sem internacao_psiq_previa e historico_familiar)
+   - Autolesão sem TPB → rastreio TPB + alerta TCD
+   - **[novo]** Primeiro episódio psicótico via motivo_consulta → alerta investigação orgânica
+   - **[novo]** Mania grave com psicose/agitação → mensagem urgência + SAMU
+2. Confirmar MEVOs com equipe Amil (ver `history/session_022_report_farmacologia.md`).
 3. Confirmar Escitalopram MEVO 20945 (inserido manualmente, não verificado no Mevo..xlsx).
-4. v0.5.0 / Onda 3 — fármacos de 2ª linha + encaminhamentos faltantes + limpeza de perguntas sem conduta.
-5. Promover para v1.0.0 após QA completo e Onda 3.
+4. v0.6.0 / Onda 4 — fármacos de 2ª linha + limpeza de perguntas sem conduta.
+5. Promover para v1.0.0 após QA completo.
 
 ---
 
