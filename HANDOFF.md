@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-10 — Dissecção sindrômica + 4 bugs corrigidos → v0.3.0 (session_024)*
+*Atualizado: 2026-03-10 — Onda 2: 4 eixos discriminatórios + shortcut retorno → v0.4.0 (session_025)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Dissecção sindrômica intermediária → v0.3.0** (session_024)
+- Última sessão integrada: **Onda 2 — discriminação sindrômica ampliada → v0.4.0** (session_025)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.3.0.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.4.0.json`
 
 ---
 
@@ -24,7 +24,8 @@
 | v0.2.1 | publicado | `amil-ficha_psiquiatria-v0.2.1.json` | Ajustes manuais do usuário + fixes session_021 — 37 perguntas, 79 conduta, TUSS 100%, MEVO 8/13 |
 | v0.2.2 | histórico | `amil-ficha_psiquiatria-v0.2.2.json` | Correção estrutural (antipsicóticos) + 11 fármacos adicionados — 28 medicamentos, 0 BLOQUEANTES, MEVO 19/28 |
 | v0.2.3 | histórico | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
-| **v0.3.0** | **ativo** | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
+| v0.3.0 | histórico | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
+| **v0.4.0** | **ativo** | `amil-ficha_psiquiatria-v0.4.0.json` | Onda 2 — 6 perguntas novas (tipo_consulta + 4 eixos + TEA), 6 mensagens, shortcut retorno, 0 BLOQUEANTES, 117 IIDs |
 
 ---
 
@@ -189,18 +190,19 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.3.0** no ambiente de preview Daktus (6 perfis críticos):
+1. **QA clínico de v0.4.0** no ambiente de preview Daktus (8 perfis críticos):
    - Alto risco suicida com acesso a meios → verificar restrição de meios letais
    - Mulher grávida em uso de valproato → verificar alerta GESTANTE+VPA + Valproato como prescrição
    - Esquizofrenia refratária → verificar indicação de clozapina + alerta hemograma
    - TDAH com TDM comórbido → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
-   - **[novo]** Depressão com rastreio bipolar positivo → verificar alerta BIPOLAR NÃO DESCARTADO
-   - **[novo]** Agressividade com red flags orgânicos → verificar encaminhamento Neurologia + alerta
+   - Depressão com rastreio bipolar positivo → verificar alerta BIPOLAR NÃO DESCARTADO
+   - Agressividade com red flags orgânicos → verificar encaminhamento Neurologia + alerta
+   - **[novo]** Retorno medicamentoso → verificar shortcut (sem internacao_psiq_previa e historico_familiar)
+   - **[novo]** Autolesão sem diagnóstico de TPB → verificar rastreio TPB + alerta TCD
 2. **Confirmar 9 MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.4.0** — Onda 2: `tipo_consulta` (shortcut retorno), `substancia_relacao_quadro` (modificador transversal), TPB mini-discriminador, TDAH/TEA separação granular, Burnout vs. TDM discriminador
-5. **v0.4.0+** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária)
-6. Promover para v1.0.0 após QA clínico completo e Onda 3
+4. **v0.5.0 / Onda 3** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária) + limpeza de perguntas sem conduta
+5. Promover para v1.0.0 após QA clínico completo e Onda 3
 
 ---
 
@@ -208,13 +210,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.3.0.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.4.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.3.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.4.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
 - v0.2.2 mantido como marco histórico (session_022)
 - v0.2.1 mantido como marco histórico (fixes session_021)
@@ -352,13 +355,54 @@ GRUPO E — 3 recalibrações de encaminhamento:
 
 ---
 
+## O QUE FOI FEITO — session_025 (2026-03-10)
+
+**Onda 2 — 4 eixos adicionais de discriminação sindrômica + shortcut retorno → v0.4.0:**
+
+**Contexto:** Plano da Onda 2 aprovado pelo usuário com base no roadmap das sessões anteriores (Kaplan & Sadock + Dalgalarrondo). 5 problemas resolvidos: TPB capturado tarde, TDAH sem critérios completos, burnout/TDM não discriminados, substância como causa vs. comorbidade, UX em retornos.
+
+**17 mudanças aplicadas em v0.4.0:**
+
+GRUPO A — 6 perguntas novas:
+1. `tipo_consulta` (choice, 3 opções) — Triagem Enfermagem; shortcut de retorno medicamentoso
+2. `substancia_relacao_quadro` (choice, 4 opções) — após `audit_score`; relação causal substância/quadro
+3. `tpb_rastreio` (multiChoice, 6 opções) — após `comportamento_suicida_recorrente`; entrada via `autolesao`
+4. `tdah_discriminador` (multiChoice, 4 opções) — após `tdah_abuso_substancias_ativo`; valida critérios
+5. `burnout_tdm_discriminador` (multiChoice, 5 opções) — após `bipolar_rastreio`; feições de TDM sobreposto
+6. `tea_nivel_suporte` (choice, 3 opções) — após `tea_irritabilidade_grave`; nível de suporte DSM-5
+
+GRUPO B — 2 modificações de expressão (shortcut retorno):
+7. `internacao_psiq_previa`: visível apenas em `primeira_consulta`
+8. `historico_familiar_psiq`: visível apenas em `primeira_consulta`
+
+GRUPO C+D — 6 novas mensagens:
+9. SUBSTÂNCIA COMO CAUSA PRIMÁRIA — tratar dependência antes de psicofármaco
+10. AUTOMEDICAÇÃO — identificar e tratar sintoma-alvo subjacente
+11. RASTREIO POSITIVO PARA TPB — avaliar critérios completos antes de farmacoterapia
+12. TDAH — Critérios diagnósticos incompletos: confirmar antes de prescrever estimulante
+13. BURNOUT COM FEIÇÕES DE TDM — considerar TDM comórbido não diagnosticado
+14. TEA Nível 2/3 — Suporte multidisciplinar substancial indicado
+
+GRUPO E — 2 recalibrações de encaminhamento:
+15. CAPS-AD: adiciona `substancia_relacao_quadro == 'causa_primaria'`
+16. Psicólogo TCD: adiciona `selected_any(tpb_rastreio, 'autolesao_suicidio_recorrente')`
+17. `metadata.version` → "0.4.0"
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 117 IIDs | 37 meds | 25 exames | 13 enc. | 34 mensagens (+6) | 5 orientações
+
+**Script criado:** `scripts/patch_v030_to_v040.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-10 (session_024) — sobrescreve estado de session_023
-- v0.3.0 agora é o artefato ativo (substituindo v0.2.3)
+- HANDOFF atualizado em 2026-03-10 (session_025) — sobrescreve estado de session_024
+- v0.4.0 agora é o artefato ativo (substituindo v0.3.0)
+- v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
 - v0.2.2 mantido como marco histórico (session_022)
 - v0.2.1 mantido como marco histórico (fixes session_021)
+- Versão local do usuário tem prioridade sobre commits anteriores (confirmado session_024)
 - Skill exportável `skills/daktus-json-coding/` criada em session_020 — ativa
 - Deprecação de `tools/skills/codificacao-json/` só quando skill exportável provar-se funcional em 2+ especialidades
-- Neuropsicólogo: condição corrigida (session_024) — `primeiro_episodio_psicotico` removido; bug introduzido em session_023 e corrigido em session_024
+- Neuropsicólogo: condição corrigida (session_024) — `primeiro_episodio_psicotico` removido
