@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-11 — Onda 5: Reforma Sindrômica → v0.7.0 (session_028)*
+*Atualizado: 2026-03-11 — Merge do Gestor → v0.8.0 (session_029)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Onda 5 — Reforma Sindrômica → v0.7.0** (session_028)
+- Última sessão integrada: **Merge do Gestor → v0.8.0** (session_029)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.7.0.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.8.0.json`
 
 ---
 
@@ -29,7 +29,8 @@
 | v0.5.0 | histórico | `amil-ficha_psiquiatria-v0.5.0.json` | Onda 3 — 3 perguntas novas (tea_suspeita, agressividade_iminencia, ta_fenotipo) + sintomas_toxicidade_vpa + 3 mensagens + 7 fixes, 0 BLOQUEANTES |
 | v0.6.0 | histórico | `amil-ficha_psiquiatria-v0.6.0.json` | Onda 4 — 3 fórmulas risco recalibradas + 4 bugs DSL + DEPRESSÃO LEVE corrigida + tdah_abuso removido + 19 TUSS + 6 orientações + 22 acentos, 0 BLOQUEANTES |
 | v0.6.1 | histórico (base v0.7.0) | `amil-ficha_psiquiatria-v0.6.1.json` | Versão manual do usuário — pasta psiquiatria adicionada, base para Onda 5 |
-| **v0.7.0** | **ativo** | `amil-ficha_psiquiatria-v0.7.0.json` | Onda 5 — 20 expressões derivadas de fenótipo + OR conservador 22 meds + 5 exames/perguntas + 1 orientação + 38 acentos, 0 BLOQUEANTES |
+| v0.7.0 | histórico (base v0.8.0) | `amil-ficha_psiquiatria-v0.7.0.json` | Onda 5 — 20 expressões derivadas de fenótipo + OR conservador 22 meds + 5 exames/perguntas + 1 orientação + 38 acentos, 0 BLOQUEANTES |
+| **v0.8.0** | **ativo** | `amil-ficha_psiquiatria-v0.8.0.json` | Merge do Gestor — fluxo único médico (−1 nó, −1 edge) + enxugamento conduta (−3 orient, −4 encam, −2 msg) + merge GESTANTE + limpeza CAPS/SAMU + 20 acentos, 0 BLOQUEANTES |
 
 ---
 
@@ -194,22 +195,21 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.7.0** no ambiente de preview Daktus (perfis críticos):
+1. **QA clínico de v0.8.0** no ambiente de preview Daktus (perfis críticos):
    - **[Novo — Onda 5]** Depressão provável sem diagnóstico formal → Escitalopram via `candidato_isrs_depressao`
    - **[Novo — Onda 5]** TAG provável sem diagnóstico → Escitalopram/Sertralina/Venlafaxina via `tag_provavel`
    - **[Novo — Onda 5]** TDAH confirmado operacionalmente sem CID → Metilfenidato via `tdah_confirmado_operacional`
-   - **[Novo — Onda 5]** Síndrome em investigação → `orient-investigacao-001` exibida
    - Alto risco suicida com acesso a meios → restrição de meios letais + fórmulas risco recalibradas
-   - Mulher grávida em uso de valproato → alerta GESTANTE+VPA
+   - Mulher grávida em uso de valproato **ou lítio** → alerta GESTANTE+PSICOTRÓPICO (mensagem unificada v0.8.0)
    - Esquizofrenia refratária → clozapina + hemograma + orientação clozapina
    - TDAH com TDM → Metilfenidato (`tdah_confirmado_operacional`) + Bupropiona (`candidato_isrs_depressao`)
    - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
    - Agressividade com red flags orgânicos → Neurologia + alerta
    - **[Onda 3]** Primeiro episódio psicótico → alerta investigação orgânica
-   - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
+   - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência (SAMU removido — redirecionado para "serviço de urgência psiquiátrica")
 2. **Confirmar MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md`)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.8.0 / Onda 6** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3)
+4. **v0.9.0 / Onda 6** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3)
 5. Promover para v1.0.0 após QA clínico completo
 
 ---
@@ -218,13 +218,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.7.0.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.8.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.7.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.8.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.7.0 mantido como base histórica (input do Merge do Gestor)
 - v0.6.1 mantido como base histórica (input da Onda 5)
 - v0.6.0 mantido como marco histórico (session_027)
 - v0.5.0 mantido como marco histórico (session_026)
@@ -526,9 +527,43 @@ GRUPO F — 38 correções de acento em campos de display
 
 ---
 
+## O QUE FOI FEITO — session_029 (2026-03-11)
+
+**Merge do Gestor → v0.8.0:**
+
+**Contexto:** O gestor editou uma versão prévia do JSON antes da publicação da v0.7.0 com mudanças arquiteturais e de enxugamento intencionais. Estratégia: usar v0.7.0 como base (qualitativamente superior — camada sindrômica intacta) e portar apenas as mudanças do gestor.
+
+**49 mudanças aplicadas em v0.8.0:**
+
+GRUPO A — Reforma arquitetural (fluxo único médico):
+- Nó `conduta-a9ccd9ee-...` (Conduta — Enfermagem) removido
+- 2 edges removidas (conexões ao nó removido); 1 edge nova adicionada (passagem direta node-03→node-04)
+- `node-psiq-03-anamnese.condicionais[0].linkId` atualizado para `node-psiq-04-diagnostico`
+- 6 labels renomeados (sufixos "Enfermagem"/"Medicina" eliminados)
+
+GRUPO B — Enxugamento da conduta:
+- 3 orientações removidas: "Sobre seu diagnóstico", "Sobre seus medicamentos", "Quadro em avaliação"
+- 4 encaminhamentos removidos: CAPS II, CAPS-AD, Emergência/SAMU, Medicina do Trabalho
+- 1 mensagem removida: "GATE P0 — RISCO INTERMEDIÁRIO: SPI obrigatório" (inadequada para consultório particular)
+
+GRUPO C — Pergunta exames_recentes: titulo atualizado para "Trouxe exames para avaliação?"
+
+GRUPO D — Merge mensagens de gravidez: GESTANTE+VALPROATO + GESTANTE+LÍTIO unificadas em "GESTANTE + PSICOTRÓPICO — Revisão urgente" com `selected_any(..., 'valproato', 'litio')`
+
+GRUPO E — Limpeza de mensagens: 3 nomes com acentos corrigidos + 7 mensagens com referências CAPS/SAMU atualizadas (linguagem de consultório particular)
+
+GRUPO F — 20 correções de acento em campos de display (internação, psicótico, maníaco, agitação, etc.)
+
+**Resultado:** 0 BLOQUEANTES ✅ | 8 nodes (−1) | 7 edges (−1) | 115 IIDs (−12) | 25 clinicalExpressions ✅ | 9 orientações | 9 encaminhamentos
+
+**Script criado:** `scripts/patch_v070_to_v080.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-11 (session_028) — sobrescreve estado de session_027
+- HANDOFF atualizado em 2026-03-11 (session_029) — sobrescreve estado de session_028
+- v0.8.0 agora é o artefato ativo (substituindo v0.7.0)
 - v0.7.0 agora é o artefato ativo (substituindo v0.6.1)
 - v0.6.0 agora é o artefato ativo (substituindo v0.5.0)
 - v0.5.0 mantido como marco histórico (session_026)

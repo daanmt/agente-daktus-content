@@ -1,5 +1,5 @@
 # ESTADO.md — SNAPSHOT CANÔNICO DO AMBIENTE
-*Atualizado: 2026-03-11 (session_028)*
+*Atualizado: 2026-03-11 (session_029)*
 
 ---
 
@@ -39,19 +39,19 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 ### Frente 2 — Psiquiatria
 - Status macro: especialidade ativa
 - Fase atual consolidada: **Fase 5 — QA iterativo → próximo: QA clínico no preview Daktus**
-- Gate clínico: playbook auditado ✅ | JSON v0.7.0 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.7.0.json`
-  - 9 nodes, 8 edges, 127 IIDs (+1 vs v0.6.1)
+- Gate clínico: playbook auditado ✅ | JSON v0.8.0 produzido ✅ | Auditoria PASSOU — 0 BLOQUEANTES ✅
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.8.0.json`
+  - 8 nodes (−1 vs v0.7.0), 7 edges (−1 vs v0.7.0), 115 IIDs (−12 vs v0.7.0)
   - motivo_consulta: **14 opções** (inalterado)
   - diagnostico_ativo: **19 opções** (inalterado)
   - Triagem Enfermagem: **tipo_consulta** presente (shortcut retorno, Onda 2)
-  - node-psiq-04-diagnostico: **23 perguntas** (inalterado vs v0.6.0)
-  - node-psiq-05-farmacos: **7 perguntas** (expressões expandidas, mas contagem inalterada)
-  - Nó 6 (Conduta Medicina): **37 medicamentos** (condições expandidas), 25 exames, 13 encaminhamentos, **37 mensagens**, **12 orientações** (+1 orient-investigacao)
-  - clinicalExpressions: **25** (+21 Onda 5: 12 fenótipos + 7 candidatos + 1 agregador + 1 tdah_derivado)
-  - Condição de roteamento node-04→node-05: expandida com 5 cláusulas sindrômicas
+  - node-psiq-04-diagnostico: **23 perguntas** (inalterado)
+  - node-psiq-05-farmacos: **7 perguntas** (inalterado)
+  - Nó 6 (Conduta Medicina): **37 medicamentos** (inalterado), 25 exames, **9 encaminhamentos** (−4), **~35 mensagens** (−2), **9 orientações** (−3)
+  - clinicalExpressions: **25** (preservadas 100% da Onda 5)
+  - Fluxo: único médico — nó intermediário Conduta Enfermagem removido
   - 0 BLOQUEANTES ✅ | 10 eixos de discriminação sindrômica
-  - v0.7.0 = v0.6.1 + Onda 5 session_028 + 92 mudanças
+  - v0.8.0 = v0.7.0 + Merge do Gestor session_029 + 49 mudanças
 - Artefatos de suporte:
   - `tools/GUIA_DESIGN_UX.md` — guia de design UX + DSL rules (§2.1 + §5 atualizados)
   - `skills/daktus-json-coding/scripts/validate_json.py` — validação estrutural generalizada
@@ -70,7 +70,8 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
   - `scripts/patch_v040_to_v050.py` — Onda 3: 7 gaps + 2 bugs de segurança (session_026)
   - `scripts/patch_v050_to_v060.py` — Onda 4: Quality & Precision Reform (session_027)
   - `scripts/patch_v061_to_v070.py` — Onda 5: Reforma Sindrômica (session_028)
-- Próximo passo macro: QA clínico de v0.7.0 no preview Daktus (perfis críticos expandidos)
+  - `scripts/patch_v070_to_v080.py` — Merge do Gestor: fluxo único médico + enxugamento (session_029)
+- Próximo passo macro: QA clínico de v0.8.0 no preview Daktus (perfis críticos expandidos)
 
 ### Infraestrutura do ambiente
 - Status macro: arquitetura de duas camadas implementada (session_020)
@@ -134,29 +135,28 @@ Se este valor mudar, atualizar também `HANDOFF.md`.
 
 ## ÚLTIMA SESSÃO INTEGRADA
 
-- Sessão: session_028 — Onda 5: Reforma Sindrômica → v0.7.0 (2026-03-11)
-- Foco: 20 expressões derivadas de fenótipo (12 fenótipos base + 7 candidatos + 1 agregador) + OR conservador em 22 medicamentos + 5 exames/perguntas expandidos + 1 nova orientação + 38 acentos
-- Resultado: 0 BLOQUEANTES, 127 IIDs, 25 clinicalExpressions, 12 orientações, metadata.version = "0.7.0"
+- Sessão: session_029 — Merge do Gestor → v0.8.0 (2026-03-11)
+- Foco: reforma arquitetural (fluxo único médico, −1 nó, −1 edge) + enxugamento conduta (−3 orient, −4 encam, −2 msg) + merge GESTANTE + limpeza CAPS/SAMU + 20 acentos
+- Resultado: 0 BLOQUEANTES, 115 IIDs, 25 clinicalExpressions (preservadas), 9 orientações, metadata.version = "0.8.0"
 
 ---
 
 ## PRÓXIMO PASSO MACRO
 
-1. QA clínico de v0.7.0 no preview Daktus (perfis críticos expandidos):
+1. QA clínico de v0.8.0 no preview Daktus (perfis críticos expandidos):
    - **[Novo — Onda 5]** Depressão provável sem diagnóstico formal → Escitalopram via `candidato_isrs_depressao`
    - **[Novo — Onda 5]** TAG provável → Escitalopram/Sertralina/Venlafaxina via `tag_provavel`
    - **[Novo — Onda 5]** TDAH confirmado operacionalmente → Metilfenidato via `tdah_confirmado_operacional`
-   - **[Novo — Onda 5]** Síndrome em investigação → `orient-investigacao-001` exibida
    - Alto risco suicida com acesso a meios → restrição de meios letais + fórmulas risco recalibradas
-   - Mulher grávida em uso de valproato → alerta gestante+VPA
+   - Mulher grávida em uso de valproato **ou lítio** → alerta GESTANTE+PSICOTRÓPICO (mensagem unificada)
    - Esquizofrenia refratária → clozapina + hemograma + orientação clozapina
    - TDAH com TDM → Metilfenidato (`tdah_confirmado_operacional`) + Bupropiona (`candidato_isrs_depressao`)
    - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
    - **[Onda 3]** Primeiro episódio psicótico → alerta investigação orgânica
-   - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
+   - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência (sem SAMU — "serviço de urgência psiquiátrica")
 2. Confirmar MEVOs com equipe Amil (ver `history/session_022_report_farmacologia.md`).
 3. Confirmar Escitalopram MEVO 20945 (inserido manualmente, não verificado no Mevo..xlsx).
-4. v0.8.0 / Onda 6 — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3).
+4. v0.9.0 / Onda 6 — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3).
 5. Promover para v1.0.0 após QA clínico completo.
 
 ---
