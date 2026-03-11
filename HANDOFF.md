@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-11 — Onda 3: 7 gaps corrigidos (psicose, urgência, iminência, TA, TEA, bugs farmacológicos) → v0.5.0 (session_026)*
+*Atualizado: 2026-03-11 — Onda 4: Quality & Precision Reform → v0.6.0 (session_027)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Onda 3 — 7 gaps + 2 bugs de segurança corrigidos → v0.5.0** (session_026)
+- Última sessão integrada: **Onda 4 — Quality & Precision Reform → v0.6.0** (session_027)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.5.0.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.6.0.json`
 
 ---
 
@@ -26,7 +26,8 @@
 | v0.2.3 | histórico | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
 | v0.3.0 | histórico | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
 | v0.4.0 | histórico | `amil-ficha_psiquiatria-v0.4.0.json` | Onda 2 — 6 perguntas novas (tipo_consulta + 4 eixos + TEA), 6 mensagens, shortcut retorno, 0 BLOQUEANTES, 117 IIDs |
-| **v0.5.0** | **ativo** | `amil-ficha_psiquiatria-v0.5.0.json` | Onda 3 — 3 perguntas novas (tea_suspeita, agressividade_iminencia, ta_fenotipo) + sintomas_toxicidade_vpa + 3 mensagens + 7 fixes, 0 BLOQUEANTES |
+| v0.5.0 | histórico | `amil-ficha_psiquiatria-v0.5.0.json` | Onda 3 — 3 perguntas novas (tea_suspeita, agressividade_iminencia, ta_fenotipo) + sintomas_toxicidade_vpa + 3 mensagens + 7 fixes, 0 BLOQUEANTES |
+| **v0.6.0** | **ativo** | `amil-ficha_psiquiatria-v0.6.0.json` | Onda 4 — 3 fórmulas risco recalibradas + 4 bugs DSL + DEPRESSÃO LEVE corrigida + tdah_abuso removido + 19 TUSS + 6 orientações + 22 acentos, 0 BLOQUEANTES |
 
 ---
 
@@ -191,20 +192,20 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.5.0** no ambiente de preview Daktus (10 perfis críticos):
-   - Alto risco suicida com acesso a meios → restrição de meios letais
+1. **QA clínico de v0.6.0** no ambiente de preview Daktus (10 perfis críticos):
+   - Alto risco suicida com acesso a meios → restrição de meios letais + verificar fórmulas risco recalibradas
    - Mulher grávida em uso de valproato → alerta GESTANTE+VPA
-   - Esquizofrenia refratária → clozapina + hemograma
-   - TDAH com TDM comórbido → Metilfenidato + Bupropiona (verificar bloqueio se TA presente)
+   - Esquizofrenia refratária → clozapina + hemograma + orientação clozapina nova
+   - TDAH com TDM comórbido → Metilfenidato (condição `'nenhum' in substancias_uso`) + Bupropiona
    - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
    - Agressividade com red flags orgânicos → Neurologia + alerta
    - Retorno medicamentoso → shortcut (sem internacao_psiq_previa e historico_familiar)
    - Autolesão sem diagnóstico de TPB → rastreio TPB + alerta TCD
-   - **[novo Onda 3]** Primeiro episódio psicótico via motivo_consulta → alerta investigação orgânica
-   - **[novo Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
-2. **Confirmar 9 MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
+   - **[Onda 3]** Primeiro episódio psicótico via motivo_consulta → alerta investigação orgânica
+   - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
+2. **Confirmar MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.6.0 / Onda 4** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta
+4. **v0.7.0 / Onda 5** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3)
 5. Promover para v1.0.0 após QA clínico completo
 
 ---
@@ -213,13 +214,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.5.0.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.6.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.5.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.6.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.5.0 mantido como marco histórico (session_026)
 - v0.4.0 mantido como marco histórico (session_025)
 - v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
@@ -442,10 +444,48 @@ GRUPO H — Bug fixes farmacológicos:
 
 ---
 
+## O QUE FOI FEITO — session_027 (2026-03-11)
+
+**Onda 4 — Quality & Precision Reform → v0.6.0:**
+
+**Contexto:** Revisão clínica aprofundada via GPT (Kaplan & Sadock + Dalgalarrondo) identificou 6 áreas de melhoria sistêmica: fórmulas de risco suicida incorretas, bugs DSL boolean, conteúdo invertido em DEPRESSÃO LEVE, pergunta redundante `tdah_abuso_substancias_ativo`, códigos TUSS incorretos e 6 orientações ao paciente clinicamente necessárias.
+
+**63 mudanças aplicadas em v0.6.0:**
+
+GRUPO A — 3 fórmulas de risco suicida recalibradas:
+1. `risco_suicidio_baixo`: corrigido de `ideacao_ativa is True` (contradição) para `ideacao_passiva is True and ideacao_ativa is False`
+2. `risco_suicidio_intermediario`: expandido com cláusula OR para cobrir (ativa-sem-plano-sem-acesso) OR (tentativa-sem-ideação-atual)
+3. `risco_suicidio_alto`: restringido para exigir concorrência plano+intenção+acesso OU tentativa+ideação-ativa/plano/intenção
+
+GRUPO B — 2 bug fixes:
+4. `causa_organica_investigada`: 4 exames corrigidos de `!= 'sim'` para `is False` (boolean DSL correto)
+5. DEPRESSÃO LEVE: nome e conteúdo corrigidos (era PHQ-9 ≥15, agora PHQ-9 < 10 + intervenções psicossociais)
+
+GRUPO C — Eliminação de redundância `tdah_abuso_substancias_ativo`:
+6. Pergunta `P51a70f03-...` removida de node-psiq-04-diagnostico (24 → 23 perguntas)
+7. Expressão derivada `not('nenhum' in substancias_uso)` adicionada em `clinicalExpressions`
+8–10. Condições de Metilfenidato 10mg, Concerta LP 18mg, Ritalina LA 10mg atualizadas para `'nenhum' in substancias_uso`
+
+GRUPO D — 20 correções TUSS + 1 nome ECG:
+11–30. 18 códigos TUSS corrigidos (Hemograma ×2, TSH, Cálcio, Uréia, Ácido valpróico, ALT, AST, Amônia, Carbamazepina, Sódio, Glicose, HbA1c, Lipidograma, Triglicerídeos, Prolactina, Beta-HCG, VDRL, HIV1+HIV2)
+31. ECG: nome atualizado para `"ECG convencional de até 12 derivações"`
+
+GRUPO E — 6 novas orientações ao paciente:
+32–37. Lítio (segurança+monitoramento), TAB (sinais de episódio), Substâncias (impacto no tto), TDAH (estratégias práticas), Transtornos alimentares (recuperação), Clozapina (vigilância hematológica)
+
+GRUPO F — 22 correções de acento em campos de display (titulo, nome, descricao, label, conteudo)
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 126 IIDs | 23 perguntas node-psiq-04 (-1) | 11 orientações (+6) | 5 clinicalExpressions (+1)
+
+**Script criado:** `scripts/patch_v050_to_v060.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-11 (session_026) — sobrescreve estado de session_025
-- v0.5.0 agora é o artefato ativo (substituindo v0.4.0)
+- HANDOFF atualizado em 2026-03-11 (session_027) — sobrescreve estado de session_026
+- v0.6.0 agora é o artefato ativo (substituindo v0.5.0)
+- v0.5.0 mantido como marco histórico (session_026)
 - v0.4.0 mantido como marco histórico (session_025)
 - v0.3.0 mantido como marco histórico (session_024)
 - v0.2.3 mantido como marco histórico (session_023)
