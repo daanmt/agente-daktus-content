@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-10 — Fechamento de hiatos do briefing → v0.2.3 (session_023)*
+*Atualizado: 2026-03-10 — Dissecção sindrômica + 4 bugs corrigidos → v0.3.0 (session_024)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Fechamento de hiatos do briefing → v0.2.3** (session_023)
+- Última sessão integrada: **Dissecção sindrômica intermediária → v0.3.0** (session_024)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.3.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.3.0.json`
 
 ---
 
@@ -23,7 +23,8 @@
 | v0.2 | publicado | `amil-ficha_psiquiatria-v0.2.json` | Primeira versão revisada conjuntamente — 42 perguntas, 79 conduta, 0 BLOQUEANTES |
 | v0.2.1 | publicado | `amil-ficha_psiquiatria-v0.2.1.json` | Ajustes manuais do usuário + fixes session_021 — 37 perguntas, 79 conduta, TUSS 100%, MEVO 8/13 |
 | v0.2.2 | histórico | `amil-ficha_psiquiatria-v0.2.2.json` | Correção estrutural (antipsicóticos) + 11 fármacos adicionados — 28 medicamentos, 0 BLOQUEANTES, MEVO 19/28 |
-| **v0.2.3** | **ativo** | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
+| v0.2.3 | histórico | `amil-ficha_psiquiatria-v0.2.3.json` | Fechamento de hiatos do briefing — 8 mudanças estruturais, 0 BLOQUEANTES, 105 IIDs |
+| **v0.3.0** | **ativo** | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
 
 ---
 
@@ -188,16 +189,18 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.2.3** no ambiente de preview Daktus (5 perfis críticos):
+1. **QA clínico de v0.3.0** no ambiente de preview Daktus (6 perfis críticos):
    - Alto risco suicida com acesso a meios → verificar restrição de meios letais
    - Mulher grávida em uso de valproato → verificar alerta GESTANTE+VPA + Valproato como prescrição
    - Esquizofrenia refratária → verificar indicação de clozapina + alerta hemograma
    - TDAH com TDM comórbido → verificar prescrições simultâneas (Metilfenidato + Bupropiona)
-   - Paciente com comportamento agressivo → verificar alerta de risco para terceiros
+   - **[novo]** Depressão com rastreio bipolar positivo → verificar alerta BIPOLAR NÃO DESCARTADO
+   - **[novo]** Agressividade com red flags orgânicos → verificar encaminhamento Neurologia + alerta
 2. **Confirmar 9 MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.3** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária)
-5. Promover para v1.0.0 após QA clínico completo
+4. **v0.4.0** — Onda 2: `tipo_consulta` (shortcut retorno), `substancia_relacao_quadro` (modificador transversal), TPB mini-discriminador, TDAH/TEA separação granular, Burnout vs. TDM discriminador
+5. **v0.4.0+** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + encaminhamentos faltantes (Infectologia, Psiquiatria terciária)
+6. Promover para v1.0.0 após QA clínico completo e Onda 3
 
 ---
 
@@ -205,13 +208,14 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.2.3.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.3.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.2.3 é o artefato ativo — não alterar sem novo patch documentado
+- v0.3.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.2.3 mantido como marco histórico (session_023)
 - v0.2.2 mantido como marco histórico (session_022)
 - v0.2.1 mantido como marco histórico (fixes session_021)
 - v0.2 mantido como marco histórico (primeira revisão conjunta)
@@ -300,10 +304,61 @@ Objetivo: alinhar o projeto à infraestrutura de skills Anthropic com uma skill 
 
 ---
 
+## O QUE FOI FEITO — session_024 (2026-03-10)
+
+**Camada de dissecção sindrômica intermediária → v0.3.0:**
+
+**Contexto:** Usuário compartilhou análise extensa realizada com GPT utilizando Kaplan & Sadock (Comprehensive Psychiatry) e Dalgalarrondo (Psicopatologia). Problema central identificado: protocolo forte em entradas e saídas, mas sem camada intermediária de dissecção sindrômica. Fluxo atual: queixa ampla → diagnóstico ativo (salto) → conduta. Fluxo desejado: queixa curta → discriminador sindrômico curto → hipótese dominante/red flags → conduta.
+
+**Plano aprovado (Onda 1 — v0.3.0):**
+- 4 perguntas discriminadoras novas (todas condicionais, 0 no tronco universal)
+- 4 bugs corrigidos (alertas que nunca disparavam, perguntas ausentes para burnout/TPB)
+- 6 novas mensagens de conduta ao médico
+- 3 condições de encaminhamento recalibradas
+
+**17 mudanças aplicadas em v0.3.0:**
+
+GRUPO A — 4 perguntas novas em `node-psiq-04-diagnostico`:
+1. `bipolar_rastreio` (multiChoice, 5 opções) — detector bipolar antes de prescrever AD; condicionado a TDM/distimia/burnout ou `humor_deprimido`
+2. `subtipo_ansioso` (choice, 6 opções) — discrimina TAG/pânico/fobia_social/TOC/TEPT/secundário; condicionado a `ansiedade_panico` ou diagnósticos ansiosos
+3. `contexto_agressividade` (multiChoice, 6 opções) — diferencia mania/psicose/substância/orgânico/TPB/TEI; condicionado a `agressividade` ou `agressividade_comportamento`
+4. `perfil_sono` (choice, 6 opções) — sono como modificador sindrômico; condicionado a `insomnia_sono` ou `sonolencia_hipersonia`
+
+GRUPO B — 2 bug fixes em perguntas existentes:
+5. `comportamento_suicida_recorrente` expressão: `esquizofrenia` → `selected_any(diagnostico_ativo, 'esquizofrenia', 'tpb')` (TPB + comportamento suicida recorrente agora ativa alerta TCD)
+6. `episodio_atual_humor` expressão expandida: adiciona `burnout`, `tpb` (episódios de humor em burnout e TPB agora capturáveis)
+
+GRUPO C — 1 bug fix em conduta:
+7. TAB + Antidepressivo: `'bupropiona_snri'` → `'bupropiona'` (alerta nunca disparava para usuários de bupropiona)
+
+GRUPO D — 6 novas mensagens ao médico:
+8. BIPOLAR NÃO DESCARTADO — Não iniciar antidepressivo sem estabilizador
+9. SONO — Redução da necessidade sem fadiga: rastreio positivo para hipomania/mania
+10. AGRESSIVIDADE — Red flags orgânicos/neurológicos: investigação obrigatória
+11. AGRESSIVIDADE — Contexto psicótico: avaliar antipsicótico e segurança imediata
+12. SUBTIPO ANSIOSO — TOC provável: avaliar ERP antes de fechar diagnóstico
+13. SUBTIPO ANSIOSO — TEPT provável: avaliar TF-CBT/EMDR antes de fechar diagnóstico
+
+GRUPO E — 3 recalibrações de encaminhamento:
+14. Neuropsicólogo: remove `primeiro_episodio_psicotico` — só TDAH/TEA conforme playbook
+15. Neurologia: adiciona `selected_any(contexto_agressividade, 'red_flag_organico')` — red flags na agressividade → neurológico obrigatório
+16. CAPS II: adiciona `agressividade` em `diagnostico_ativo` + `psicose_paranoia` em `contexto_agressividade`
+
+17. `metadata.version` → "0.3.0"
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 111 IIDs | 37 meds | 25 exames | 13 enc. | 28 mensagens (+6) | 5 orientações
+
+**Script criado:** `scripts/patch_v023_to_v030.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-10 (session_023) — sobrescreve estado de session_022
-- v0.2.2 agora é o artefato ativo (substituindo v0.2.1)
+- HANDOFF atualizado em 2026-03-10 (session_024) — sobrescreve estado de session_023
+- v0.3.0 agora é o artefato ativo (substituindo v0.2.3)
+- v0.2.3 mantido como marco histórico (session_023)
+- v0.2.2 mantido como marco histórico (session_022)
 - v0.2.1 mantido como marco histórico (fixes session_021)
 - Skill exportável `skills/daktus-json-coding/` criada em session_020 — ativa
 - Deprecação de `tools/skills/codificacao-json/` só quando skill exportável provar-se funcional em 2+ especialidades
+- Neuropsicólogo: condição corrigida (session_024) — `primeiro_episodio_psicotico` removido; bug introduzido em session_023 e corrigido em session_024

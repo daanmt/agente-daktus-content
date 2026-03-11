@@ -3,7 +3,7 @@
     "id": "amil-ficha_psiquiatria",
     "company": "amil",
     "name": "ficha_psiquiatria",
-    "version": "draft",
+    "version": "0.3.0",
     "createdAt": "2026-03-10T20:31:24.608Z",
     "description": ""
   },
@@ -1273,7 +1273,7 @@
             "titulo": "<p><strong>Episódio atual de humor</strong></p>",
             "descricao": "",
             "condicional": "visivel",
-            "expressao": "('tdm' in diagnostico_ativo) or ('distimia' in diagnostico_ativo) or ('tab' in diagnostico_ativo)",
+            "expressao": "selected_any(diagnostico_ativo, 'tdm', 'distimia', 'tab', 'burnout', 'tpb')",
             "select": "choice",
             "options": [
               {
@@ -1322,6 +1322,107 @@
                 "iid": "fa84f492-ceca-46a4-9485-f7d93bf5c4c1",
                 "id": "misto",
                 "label": "Episódio misto (≥3 sx do polo oposto)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
+          },
+          {
+            "id": "P556abbd5-dbd9-4579-aafa-652866cd66c3",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "bipolar_rastreio",
+            "titulo": "<p><strong>Rastreio para bipolaridade — histórico do paciente</strong></p>",
+            "descricao": "<p>Selecione se o paciente relata ou apresenta histórico de:</p>",
+            "condicional": "visivel",
+            "expressao": "selected_any(diagnostico_ativo, 'tdm', 'distimia', 'burnout') or 'humor_deprimido' in motivo_consulta",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "fa68960b-e7c4-4696-9642-b842b80c9a51",
+                "id": "sem_historico_bipolar",
+                "label": "Sem histórico de episódios maníacos ou hipomaníacos",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "abf4d734-6ab5-4628-8ea2-2b9b85ec588f",
+                "id": "elevacao_humor_previa",
+                "label": "Episódios prévios de euforia, expansividade ou irritabilidade marcante",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "5f5f39ae-cb1b-404e-be00-2791994ffb4f",
+                "id": "reducao_sono_sem_fadiga",
+                "label": "Já ficou dias dormindo muito menos sem sentir cansaço",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "a7f69211-671b-4c32-8859-0551d18de69f",
+                "id": "grandiosidade_episodica",
+                "label": "Episódios de autoconfiança exagerada, impulsividade ou decisões arriscadas",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "ecc502ef-d0f0-4013-a768-17cff6ae02db",
+                "id": "tab_documentado",
+                "label": "TAB já diagnosticado previamente",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "Pbcec318c-81b7-4db0-b587-8ebd7d016b63",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "subtipo_ansioso",
+            "titulo": "<p><strong>Apresentação clínica predominante do quadro ansioso</strong></p>",
+            "descricao": "<p>Selecione o padrão que melhor descreve a queixa ansiosa do paciente</p>",
+            "condicional": "visivel",
+            "expressao": "selected_any(motivo_consulta, 'ansiedade_panico') or selected_any(diagnostico_ativo, 'tag', 'panico', 'fobia_social', 'toc', 'tept')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "a8c79fc1-5fc2-4c0d-bae0-390c9444b832",
+                "id": "preocupacao_difusa_persistente",
+                "label": "Preocupação difusa, persistente, em múltiplos domínios (compatível com TAG)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "73ce0687-e806-4123-9586-068d9572c0fb",
+                "id": "crises_abruptas_esquiva",
+                "label": "Crises abruptas e intensas com medo de nova crise ou esquiva (Pânico/Agorafobia)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "503dd5ec-3836-44f4-b6fa-1bcafc4a4716",
+                "id": "medo_avaliacao_social",
+                "label": "Medo intenso de situações sociais ou de avaliação (Fobia social)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "1b16dd1d-9f78-4267-a0d5-506cc84e0eca",
+                "id": "obsessoes_compulsoes",
+                "label": "Pensamentos intrusivos repetitivos + rituais/compulsões (TOC)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "6e62a7cd-f636-4dbd-aaa3-86995527a7e0",
+                "id": "trauma_intrusao_evitacao",
+                "label": "Evento traumático com revivescência, evitação e hipervigilância (TEPT)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "cef71385-8a35-4e0b-8a47-388fe79541fd",
+                "id": "ansiedade_secundaria",
+                "label": "Ansiedade claramente relacionada a substância, estimulante ou condição clínica",
                 "preselected": false,
                 "exclusive": true
               }
@@ -1417,7 +1518,7 @@
             "titulo": "<p><strong>Comportamento suicida recorrente?</strong></p>",
             "descricao": "",
             "condicional": "visivel",
-            "expressao": "'esquizofrenia' in diagnostico_ativo",
+            "expressao": "selected_any(diagnostico_ativo, 'esquizofrenia', 'tpb')",
             "select": "boolean",
             "options": [],
             "defaultValue": "false"
@@ -1445,6 +1546,114 @@
             "select": "boolean",
             "options": [],
             "defaultValue": "false"
+          },
+          {
+            "id": "P4989b7c3-258a-4a91-98e2-cd8b070d75d8",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "contexto_agressividade",
+            "titulo": "<p><strong>Contexto do comportamento agressivo — subtipagem sindrômica</strong></p>",
+            "descricao": "<p>Selecione todos os elementos presentes que contextualizam o comportamento agressivo</p>",
+            "condicional": "visivel",
+            "expressao": "'agressividade' in diagnostico_ativo or 'agressividade_comportamento' in motivo_consulta",
+            "select": "multiChoice",
+            "options": [
+              {
+                "iid": "8ecb828e-904b-4e2d-8d68-1fe6db43d01f",
+                "id": "mania_agitacao",
+                "label": "Euforia/irritabilidade intensa + aceleração do pensamento + redução do sono",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "c7e55a16-78d9-45b3-a0a7-8e3297ff7655",
+                "id": "psicose_paranoia",
+                "label": "Delírios persecutórios ou alucinatórios associados ao comportamento",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "6354205d-2673-47a6-beed-8bfcb3ca3b5a",
+                "id": "substancia_intoxicacao",
+                "label": "Comportamento claramente associado a intoxicação ou abstinência",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "3abd8a63-84aa-4d55-8947-4b8cf44eb6cc",
+                "id": "red_flag_organico",
+                "label": "Red flags neuro: confusão, amnésia do episódio, aura, déficit focal ou início tardio",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "290ed85f-a609-49a3-ba64-bb7137a6c4e0",
+                "id": "desregulacao_tpb",
+                "label": "Padrão de desregulação intensa com medo de abandono e impulsividade crônica (TPB)",
+                "preselected": false,
+                "exclusive": false
+              },
+              {
+                "iid": "8b8ad761-1276-4c1b-8b77-a262879e0829",
+                "id": "episodico_tei",
+                "label": "Episódico, desproporcional, impulsivo, sem premeditação, com remorso após o ato (TEI)",
+                "preselected": false,
+                "exclusive": false
+              }
+            ]
+          },
+          {
+            "id": "Pf0fb53b5-0c8e-44d7-814b-105be3921db9",
+            "nodeId": "node-psiq-04-diagnostico",
+            "uid": "perfil_sono",
+            "titulo": "<p><strong>Perfil da alteração do sono</strong></p>",
+            "descricao": "<p>Selecione o padrão predominante da queixa de sono do paciente</p>",
+            "condicional": "visivel",
+            "expressao": "selected_any(motivo_consulta, 'insomnia_sono', 'sonolencia_hipersonia')",
+            "select": "choice",
+            "options": [
+              {
+                "iid": "8887d497-dbef-4175-8e21-6a102642ae0e",
+                "id": "insonia_iniciacao",
+                "label": "Dificuldade para iniciar o sono (latência prolongada)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "863acf5c-dea5-4690-9d20-eaaf347c83b6",
+                "id": "insonia_manutencao",
+                "label": "Despertares frequentes ou dificuldade para voltar a dormir",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "dc6efe0f-6286-4e63-8609-acb8c276b158",
+                "id": "despertar_precoce",
+                "label": "Despertar muito cedo sem conseguir voltar a dormir (sugestivo de melancolia)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "92a1d0e4-f3ce-4ebe-b64b-95c447f149b5",
+                "id": "hipersonia_cansaco",
+                "label": "Sonolência excessiva com cansaço marcado (hipersonia)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "56f515e5-aa26-492e-93e6-a524f5e7835d",
+                "id": "reducao_necessidade_sem_fadiga",
+                "label": "Dormiu muito menos do habitual sem sentir cansaço (rastreio: hipomania/mania)",
+                "preselected": false,
+                "exclusive": true
+              },
+              {
+                "iid": "633ca238-ab26-497b-9d46-1d171ac5a496",
+                "id": "pesadelos_trauma",
+                "label": "Pesadelos recorrentes ou sono perturbado relacionado a evento traumático (TEPT)",
+                "preselected": false,
+                "exclusive": true
+              }
+            ]
           },
           {
             "id": "P509c206c-6041-4028-8768-9b5697413574",
@@ -4407,7 +4616,7 @@
               "nome": "Neuropsicólogo",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "selected_any(diagnostico_ativo, 'tdah', 'tea') or primeiro_episodio_psicotico is True",
+              "condicao": "selected_any(diagnostico_ativo, 'tdah', 'tea')",
               "indicacao": "Avaliação neuropsicológica: TDAH com diagnóstico incerto / TEA adulto para confirmação. Relatório diagnóstico completo.",
               "cid": "F90",
               "narrativa": "",
@@ -4449,7 +4658,7 @@
               "nome": "CAPS II",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "('esquizofrenia' in diagnostico_ativo) or (comportamento_suicida_recorrente is True)",
+              "condicao": "selected_any(diagnostico_ativo, 'esquizofrenia', 'agressividade') or (comportamento_suicida_recorrente is True) or selected_any(contexto_agressividade, 'psicose_paranoia')",
               "indicacao": "Acompanhamento psicossocial complementar — esquizofrenia estável. Reabilitação e reinserção social (Lei 10.216/2001).",
               "cid": "F20",
               "narrativa": "",
@@ -4477,7 +4686,7 @@
               "nome": "Neurologia",
               "descricao": "",
               "condicional": "visivel",
-              "condicao": "primeiro_episodio_psicotico is True or selected_any(comorbidades_clinicas, 'epilepsia')",
+              "condicao": "primeiro_episodio_psicotico is True or selected_any(comorbidades_clinicas, 'epilepsia') or selected_any(contexto_agressividade, 'red_flag_organico')",
               "indicacao": "Primeiro episódio psicótico / epilepsia — exclusão de causa orgânica. Solicitar neuroimagem (TC ou RM de crânio).",
               "cid": "F29",
               "narrativa": "",
@@ -4576,7 +4785,7 @@
               "descricao": "",
               "narrativa": "",
               "condicional": "visivel",
-              "condicao": "'tab' in diagnostico_ativo and selected_any(medicamentos_em_uso, 'isrs', 'irsn', 'antidepressivo_tca', 'bupropiona_snri') and not selected_any(medicamentos_em_uso, 'litio', 'valproato', 'carbamazepina', 'lamotrigina')",
+              "condicao": "'tab' in diagnostico_ativo and selected_any(medicamentos_em_uso, 'isrs', 'irsn', 'antidepressivo_tca', 'bupropiona') and not selected_any(medicamentos_em_uso, 'litio', 'valproato', 'carbamazepina', 'lamotrigina')",
               "conteudo": "<p><strong>Antidepressivo sem estabilizador em TAB: contraindicado.</strong><br>Risco de viragem maníaca e ciclagem rápida. Revisar prescrição. Associar estabilizador (lítio, lamotrigina ou VPA) antes de manter AD.</p>",
               "observacao": ""
             },
@@ -4718,6 +4927,66 @@
               "condicional": "visivel",
               "condicao": "'agressividade' in diagnostico_ativo or 'agressividade_comportamento' in motivo_consulta",
               "conteudo": "<p>⚠️ <strong>Risco para terceiros identificado.</strong><br>• Avaliar gravidade e plano de manejo do comportamento agressivo.<br>• Documentar detalhadamente no prontuário (possível implicação legal).<br>• Comunicar responsável legal se houver risco iminente a terceiros (CFM, CEM Art. 46).<br>• Considerar encaminhamento ao CAPS II para casos refratários ou de alta complexidade.<br>• Farmacoterapia: antipsicóticos e/ou estabilizadores de humor conforme conduta abaixo.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "4250f122-6747-42b2-987c-9d542c69fa42",
+              "nome": "BIPOLAR NÃO DESCARTADO — Não iniciar antidepressivo sem estabilizador de humor",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(bipolar_rastreio, 'elevacao_humor_previa', 'reducao_sono_sem_fadiga', 'grandiosidade_episodica', 'tab_documentado') and not 'tab' in diagnostico_ativo",
+              "conteudo": "<p><strong>Rastreio positivo para bipolaridade.</strong><br>• O paciente relata histórico sugestivo de episódios maníacos ou hipomaníacos.<br>• <strong>Não iniciar antidepressivo em monoterapia</strong> sem avaliar necessidade de estabilizador de humor (risco de virada maníaca e ciclagem rápida).<br>• Aplicar MDQ ou entrevista clínica estruturada para TAB antes de fechar diagnóstico.<br>• Considerar encaminhamento para avaliação especializada se dúvida diagnóstica persistir.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "0fe9e2c0-92df-4c0b-843c-1d4853e0c915",
+              "nome": "SONO — Redução da necessidade sem fadiga: rastreio positivo para hipomania/mania",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "perfil_sono == 'reducao_necessidade_sem_fadiga'",
+              "conteudo": "<p><strong>Sono reduzido sem fadiga: sinal cardinal de hipomania/mania.</strong><br>• Diferenciar de insônia simples: na hipomania/mania o paciente não sente cansaço apesar de dormir menos.<br>• Investigar outros sintomas maníacos: taquipsiquismo, grandiosidade, impulsividade, aumento de atividade.<br>• <strong>Contraindicado iniciar antidepressivo sem estabilizador</strong> neste contexto.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "9bca41ce-ed05-43f3-ab2f-55ebdecaae62",
+              "nome": "AGRESSIVIDADE — Red flags orgânicos/neurológicos: investigação obrigatória",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(contexto_agressividade, 'red_flag_organico')",
+              "conteudo": "<p><strong>Presença de red flags neurológicos no contexto da agressividade.</strong><br>• Sinais sugestivos de causa orgânica/neurológica: confusão pós-ictal, amnésia do episódio, aura, déficit focal, início tardio (>40 anos sem psiquiatria prévia).<br>• Encaminhamento para <strong>Neurologia obrigatório</strong> (ver abaixo).<br>• Considerar: EEG, neuroimagem, eletrólitos, glicemia, função tireoidiana, toxicológico.<br>• Diagnóstico de TEI só após exclusão de causa orgânica, epilepsia temporal e psicose.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "837ff5cb-5856-427c-af0b-1c4cb490a65e",
+              "nome": "AGRESSIVIDADE — Contexto psicótico: avaliar antipsicótico e segurança imediata",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "selected_any(contexto_agressividade, 'psicose_paranoia')",
+              "conteudo": "<p><strong>Agressividade com componente psicótico identificado.</strong><br>• Delírios persecutórios ou alucinatórios como motivação para o comportamento.<br>• <strong>Antipsicótico indicado</strong>: considerar iniciar ou ajustar dose (ver prescrições abaixo).<br>• Avaliar necessidade de avaliação emergencial se risco imediato persistir.<br>• Considerar CAPS II para manejo ambulatorial intensivo se quadro complexo.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "a022efba-bbcd-43cd-b040-c9b1d42201bc",
+              "nome": "SUBTIPO ANSIOSO — TOC provável: avaliar ERP antes de fechar diagnóstico",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "subtipo_ansioso == 'obsessoes_compulsoes' and not 'toc' in diagnostico_ativo",
+              "conteudo": "<p><strong>Padrão de obsessões e compulsões identificado.</strong><br>• A apresentação clínica é compatível com TOC, embora o diagnóstico ainda não esteja formalmente registrado.<br>• Confirmar: pensamentos intrusivos repetitivos + rituais/compulsões mentais ou comportamentais + insight (ao menos parcial) + prejuízo funcional.<br>• Encaminhar para <strong>Psicólogo — ERP (Terapia de Exposição e Prevenção de Resposta)</strong> se confirmado.<br>• Considerar formalizar diagnóstico de TOC em `diagnostico_ativo`.</p>",
+              "observacao": ""
+            },
+            {
+              "id": "033ab0d5-71e2-4e5f-9268-a897da20dfda",
+              "nome": "SUBTIPO ANSIOSO — TEPT provável: avaliar TF-CBT/EMDR antes de fechar diagnóstico",
+              "descricao": "",
+              "narrativa": "",
+              "condicional": "visivel",
+              "condicao": "subtipo_ansioso == 'trauma_intrusao_evitacao' and not 'tept' in diagnostico_ativo",
+              "conteudo": "<p><strong>Padrão de reação ao trauma identificado.</strong><br>• A apresentação é compatível com TEPT: evento traumático + revivescência/flashbacks + evitação + hipervigilância.<br>• Confirmar: exposição a evento qualificante, duração >1 mês, prejuízo funcional.<br>• Encaminhar para <strong>Psicólogo — TF-CBT ou EMDR</strong> se confirmado.<br>• Considerar formalizar diagnóstico de TEPT em `diagnostico_ativo`.</p>",
               "observacao": ""
             }
           ]
