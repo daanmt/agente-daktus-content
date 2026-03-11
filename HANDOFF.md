@@ -1,15 +1,15 @@
 # HANDOFF.md — ESTADO OPERACIONAL CURTO
-*Atualizado: 2026-03-11 — Onda 4: Quality & Precision Reform → v0.6.0 (session_027)*
+*Atualizado: 2026-03-11 — Onda 5: Reforma Sindrômica → v0.7.0 (session_028)*
 
 ---
 
 ## ESTADO OPERACIONAL ATUAL
 
 - Branch-base: `main`
-- Última sessão integrada: **Onda 4 — Quality & Precision Reform → v0.6.0** (session_027)
+- Última sessão integrada: **Onda 5 — Reforma Sindrômica → v0.7.0** (session_028)
 - Especialidade/tema ativo: Psiquiatria (Fase 5 — QA iterativo)
 - Fase atual: **Fase 5 — QA iterativo** → próximo: QA clínico no preview Daktus
-- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.6.0.json`
+- Artefato ativo: `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.7.0.json`
 
 ---
 
@@ -27,7 +27,9 @@
 | v0.3.0 | histórico | `amil-ficha_psiquiatria-v0.3.0.json` | Camada de dissecção sindrômica — 4 perguntas novas, 4 bugs corrigidos, 6 novas mensagens, 0 BLOQUEANTES, 111 IIDs |
 | v0.4.0 | histórico | `amil-ficha_psiquiatria-v0.4.0.json` | Onda 2 — 6 perguntas novas (tipo_consulta + 4 eixos + TEA), 6 mensagens, shortcut retorno, 0 BLOQUEANTES, 117 IIDs |
 | v0.5.0 | histórico | `amil-ficha_psiquiatria-v0.5.0.json` | Onda 3 — 3 perguntas novas (tea_suspeita, agressividade_iminencia, ta_fenotipo) + sintomas_toxicidade_vpa + 3 mensagens + 7 fixes, 0 BLOQUEANTES |
-| **v0.6.0** | **ativo** | `amil-ficha_psiquiatria-v0.6.0.json` | Onda 4 — 3 fórmulas risco recalibradas + 4 bugs DSL + DEPRESSÃO LEVE corrigida + tdah_abuso removido + 19 TUSS + 6 orientações + 22 acentos, 0 BLOQUEANTES |
+| v0.6.0 | histórico | `amil-ficha_psiquiatria-v0.6.0.json` | Onda 4 — 3 fórmulas risco recalibradas + 4 bugs DSL + DEPRESSÃO LEVE corrigida + tdah_abuso removido + 19 TUSS + 6 orientações + 22 acentos, 0 BLOQUEANTES |
+| v0.6.1 | histórico (base v0.7.0) | `amil-ficha_psiquiatria-v0.6.1.json` | Versão manual do usuário — pasta psiquiatria adicionada, base para Onda 5 |
+| **v0.7.0** | **ativo** | `amil-ficha_psiquiatria-v0.7.0.json` | Onda 5 — 20 expressões derivadas de fenótipo + OR conservador 22 meds + 5 exames/perguntas + 1 orientação + 38 acentos, 0 BLOQUEANTES |
 
 ---
 
@@ -192,20 +194,22 @@ Classificação dos uids A3 restantes:
 
 ## PRÓXIMO PASSO RECOMENDADO
 
-1. **QA clínico de v0.6.0** no ambiente de preview Daktus (10 perfis críticos):
-   - Alto risco suicida com acesso a meios → restrição de meios letais + verificar fórmulas risco recalibradas
+1. **QA clínico de v0.7.0** no ambiente de preview Daktus (perfis críticos):
+   - **[Novo — Onda 5]** Depressão provável sem diagnóstico formal → Escitalopram via `candidato_isrs_depressao`
+   - **[Novo — Onda 5]** TAG provável sem diagnóstico → Escitalopram/Sertralina/Venlafaxina via `tag_provavel`
+   - **[Novo — Onda 5]** TDAH confirmado operacionalmente sem CID → Metilfenidato via `tdah_confirmado_operacional`
+   - **[Novo — Onda 5]** Síndrome em investigação → `orient-investigacao-001` exibida
+   - Alto risco suicida com acesso a meios → restrição de meios letais + fórmulas risco recalibradas
    - Mulher grávida em uso de valproato → alerta GESTANTE+VPA
-   - Esquizofrenia refratária → clozapina + hemograma + orientação clozapina nova
-   - TDAH com TDM comórbido → Metilfenidato (condição `'nenhum' in substancias_uso`) + Bupropiona
+   - Esquizofrenia refratária → clozapina + hemograma + orientação clozapina
+   - TDAH com TDM → Metilfenidato (`tdah_confirmado_operacional`) + Bupropiona (`candidato_isrs_depressao`)
    - Depressão com rastreio bipolar positivo → alerta BIPOLAR NÃO DESCARTADO
    - Agressividade com red flags orgânicos → Neurologia + alerta
-   - Retorno medicamentoso → shortcut (sem internacao_psiq_previa e historico_familiar)
-   - Autolesão sem diagnóstico de TPB → rastreio TPB + alerta TCD
-   - **[Onda 3]** Primeiro episódio psicótico via motivo_consulta → alerta investigação orgânica
+   - **[Onda 3]** Primeiro episódio psicótico → alerta investigação orgânica
    - **[Onda 3]** Mania grave com psicose/agitação → mensagem urgência + SAMU
-2. **Confirmar MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md` §1)
+2. **Confirmar MEVOs ausentes** com equipe Amil (ver `history/session_022_report_farmacologia.md`)
 3. **Confirmar Escitalopram MEVO 20945** — código inserido manualmente, não verificado no Mevo..xlsx
-4. **v0.7.0 / Onda 5** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3)
+4. **v0.8.0 / Onda 6** — fármacos de 2ª linha (Fluvoxamina, Clomipramina, Guanfacina XR, Prazosina, Buspirona) + limpeza de perguntas sem conduta (32 UIDs A3)
 5. Promover para v1.0.0 após QA clínico completo
 
 ---
@@ -214,13 +218,15 @@ Classificação dos uids A3 restantes:
 
 1. `AGENTE.md`
 2. `HANDOFF.md` (este)
-3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.6.0.json`
+3. `especialidades/psiquiatria/jsons/amil-ficha_psiquiatria-v0.7.0.json`
 
 ---
 
 ## NÃO SOBRESCREVER SEM REVISAR
 
-- v0.6.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.7.0 é o artefato ativo — não alterar sem novo patch documentado
+- v0.6.1 mantido como base histórica (input da Onda 5)
+- v0.6.0 mantido como marco histórico (session_027)
 - v0.5.0 mantido como marco histórico (session_026)
 - v0.4.0 mantido como marco histórico (session_025)
 - v0.3.0 mantido como marco histórico (session_024)
@@ -481,9 +487,49 @@ GRUPO F — 22 correções de acento em campos de display (titulo, nome, descric
 
 ---
 
+## O QUE FOI FEITO — session_028 (2026-03-11)
+
+**Onda 5 — Reforma Sindrômica → v0.7.0:**
+
+**Contexto:** Protocolo pensa sindromicamente mas prescreve baseado em `diagnostico_ativo`. Pacientes sem rótulo CID com síndrome bem caracterizada ficavam sem conduta. Solução: camada de expressões derivadas de fenótipo + expansão OR conservadora.
+
+**92 mudanças aplicadas em v0.7.0:**
+
+GRUPO X — Fix residual (1 mudança):
+- `tdah_abuso_substancias_ativo` derivado adicionado à `clinicalExpressions` (ausente no v0.6.1)
+
+GRUPO A — 20 expressões derivadas adicionadas à `clinicalExpressions` do summary node:
+- A1 (12 fenótipos base): `bipolaridade_nao_descartada`, `burnout_com_tdm_provavel`, `tag_provavel`, `panico_provavel`, `toc_provavel`, `tept_provavel`, `fobia_social_provavel`, `tdah_confirmado_operacional`, `anorexia_provavel`, `bulimia_provavel`, `tcap_provavel`, `depressao_unipolar_provavel`
+- A2 (7 candidatos terapêuticos): `candidato_isrs_depressao`, `candidato_isrs_ansiedade`, `candidato_estabilizador_mania`, `candidato_estimulante`, `candidato_atomoxetina`, `candidato_lisdex_tcap`, `candidato_antipsicotico_psicose`
+- A3 (1 agregador): `sindrome_em_investigacao`
+
+GRUPO B — condição de roteamento node-04→node-05 expandida (+5 cláusulas OR sindrômicas)
+
+GRUPO C — 22 medicamentos com condição expandida:
+- 11 ISRS/SNRI/outros: OR com candidato_isrs_depressao / isrs_ansiedade / fenótipos ansiosos
+- 7 TDAH: estimulantes REPLACE (+ tdah_confirmado_operacional + bipolar guard); lisdex/atomox OR append
+- 3 estabilizadores/AP: OR com candidato_estabilizador_mania / candidato_antipsicotico_psicose
+
+GRUPO D — 5 exames/perguntas expandidos:
+- TSH (litio/tdm) + depressao_unipolar / burnout; Beta-HCG + candidato_estabilizador
+- ecg_indicado_psico, sintomas_psicoticos_humor, causa_organica_investigada
+
+GRUPO E — 4 orientações:
+- 3 condições expandidas: "Sobre seu diagnóstico", "Sono e rotina", orient-tab (+ bipolaridade_nao_descartada)
+- 1 nova: orient-investigacao-001 (síndrome em avaliação — o que esperar)
+
+GRUPO F — 38 correções de acento em campos de display
+
+**Resultado:** 0 BLOQUEANTES ✅ | 9 nodes | 8 edges | 127 IIDs (+1) | 25 clinicalExpressions (+21) | 12 orientações (+1)
+
+**Script criado:** `scripts/patch_v061_to_v070.py`
+
+---
+
 ## DIVERGÊNCIAS / OVERRIDES
 
-- HANDOFF atualizado em 2026-03-11 (session_027) — sobrescreve estado de session_026
+- HANDOFF atualizado em 2026-03-11 (session_028) — sobrescreve estado de session_027
+- v0.7.0 agora é o artefato ativo (substituindo v0.6.1)
 - v0.6.0 agora é o artefato ativo (substituindo v0.5.0)
 - v0.5.0 mantido como marco histórico (session_026)
 - v0.4.0 mantido como marco histórico (session_025)
